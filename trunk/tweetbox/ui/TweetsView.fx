@@ -70,8 +70,9 @@ public class TweetsView extends CustomNode {
     public function refreshContents() { 
         if (controller.canExecute) {
             tweetList.addTweetsFromStatusList(model.friendUpdates, model.newFriendUpdates);
-            //tweetList.addTweetsFromStatusList(model.replies, model.newReplies);
-            tweetList.addTweetsFromStatusList(model.myUpdates, model.newMyUpdates);           
+            tweetList.addTweetsFromStatusList(model.replies, model.newReplies);
+            tweetList.addTweetsFromStatusList(model.myUpdates, model.newMyUpdates);       
+            tweetList.addTweetsFromStatusList(model.directMessages, model.newDirectMessages);       
         }
     }
 

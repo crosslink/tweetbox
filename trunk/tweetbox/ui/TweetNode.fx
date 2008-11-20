@@ -78,6 +78,8 @@ public class TweetNode extends CustomNode {
     
     private attribute controller = FrontController.getInstance();
     
+    
+    
     public function create(): Node {
         return Group {
             var model = Model.getInstance();
@@ -96,8 +98,11 @@ public class TweetNode extends CustomNode {
                     height: bind outerBoxRef.getHeight() + 4
                     arcWidth:10 
                     arcHeight:10
-                    fill: Color.WHITESMOKE
-                    
+                    fill: bind if (tweet.isReply) {
+                        style.REPLY_FILL
+                    } else {
+                        style.UPDATE_FILL
+                    }
                 },
                 outerBoxRef = HBox { 
                     translateY: 2
@@ -133,7 +138,7 @@ public class TweetNode extends CustomNode {
                             translateX: 7
                             html: "<strong>{user.screenName}</strong>: {tweet.text} <br>{DateUtil.formatAsTweetDisplayDate(tweet.createdAt)} with {tweet.source}"
                             width: bind width - imageViewRef.getWidth() - 100
-                            font: style.TWEET_TEXT_FONT
+                            font: style.UPDATE_TEXT_FONT
                         },
                     ]
                 },
