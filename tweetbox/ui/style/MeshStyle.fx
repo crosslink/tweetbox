@@ -50,9 +50,12 @@ public class MeshStyle {
     }
     
     // tweet styles
-    public attribute TWEET_FILL: Paint = Color.rgb(255,255,255);
-    public attribute TWEET_TEXT_FILL: Paint = Color.BLACK;
-    public attribute TWEET_TEXT_FONT: Font = Font {
+    public attribute UPDATE_FILL: Paint = Color.rgb(255,255,255);
+    public attribute REPLY_FILL: Paint = Color.rgb(255,200,200);
+    public attribute DIRECTMESSAGE_FILL: Paint = Color.rgb(200,255,200);
+    public attribute MYUPDATE_FILL: Paint = Color.rgb(200,200,255);
+    public attribute UPDATE_TEXT_FILL: Paint = Color.BLACK;
+    public attribute UPDATE_TEXT_FONT: Font = Font {
         name: "Sans serif"
         size: 11
     }
