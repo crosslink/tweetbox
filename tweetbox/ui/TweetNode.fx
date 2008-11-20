@@ -16,7 +16,6 @@ import javafx.scene.layout.*;
 import javafx.scene.geometry.*;
 import javafx.scene.paint.*;
 import javafx.scene.*;
-import org.json.simple.JSONObject;
 
 import tweetbox.model.*;
 import tweetbox.valueobject.TweetVO;

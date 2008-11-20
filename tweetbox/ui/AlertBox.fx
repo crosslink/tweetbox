@@ -11,13 +11,19 @@ import javafx.input.*;
 import javafx.scene.CustomNode;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import tweetbox.ui.HTMLNode;
 import javafx.scene.geometry.*;
+import javafx.scene.transform.*;
+import javafx.animation.*;
+import javafx.scene.text.*;
+
+import java.lang.System;
+import java.awt.Toolkit;
+import java.awt.Dimension;
+
+import tweetbox.ui.HTMLNode;
 import tweetbox.model.Model;
 import tweetbox.ui.style.Style;
 import tweetbox.control.FrontController;
-import javafx.scene.transform.*;
-import javafx.animation.*;
 
 /**
  * @author mnankman
@@ -27,14 +33,22 @@ public class AlertBox extends CustomNode {
     public attribute width:Integer;
     public attribute height:Integer;
     
+    private attribute screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
+    
     private attribute style = Style.getApplicationStyle();
     private attribute model = Model.getInstance();
     private attribute controller = FrontController.getInstance();
+    
+    private attribute newFriendUpdates:Integer;
+    private attribute newReplies:Integer;
+    private attribute newDirectMessages:Integer;
 
     public function create(): Node {
         return Group {
             content: [
                 Rectangle { 
+                    translateX:0
+                    translateY:0
                     stroke: style.APPLICATION_BACKGROUND_STROKE
                     x:0 y:0 
                     width: bind width - 2
@@ -48,10 +62,33 @@ public class AlertBox extends CustomNode {
                             hide();
                         }
                 },       
+                Group {
+                    content: [
+                        Rectangle { 
+                            x:0 
+                            y:0
+                            width: bind width - 2
+                            height: bind 20 
+                            arcWidth:20 
+                            arcHeight:20
+                            fill:style.APPLICATION_TITLEBAR_FILL                    
+                        },       
+                        Text {
+                            translateY: 15
+                            translateX: 10
+                            content: "TweetBox Alert"
+                            fill: style.APPLICATION_TITLEBAR_TEXT_FILL
+                            font: style.APPLICATION_TITLEBAR_TEXT_FONT                 
+                        }
+                    ]
+                },
                 HTMLNode {
-                    width: 300
-                    height: 200
-                    html: "<h1>new updates</h1>"
+                    width: bind width - 10
+                    height: bind height - 10
+                    translateX: 5
+                    translateY: 20
+                    html: bind "<center>{newFriendUpdates} new updates<br>{newReplies} new replies<br>{newDirectMessages} new direct messages</center>"
+                    
                 }
             ]
 
@@ -59,8 +96,8 @@ public class AlertBox extends CustomNode {
     }
 
     public attribute frame = Frame {
-        x:800
-        y:0
+        x: bind screenSize.getWidth() - width - 25
+        y: bind screenSize.getHeight() - height - 50
         stage: Stage {
             fill: null
         }
@@ -69,34 +106,53 @@ public class AlertBox extends CustomNode {
         width: width
         height: height
 	windowStyle: WindowStyle.TRANSPARENT
-        resizable: true
+        resizable: false
         visible: false;
+        
     }
     
-    public function show() {
+    public function show(u:Integer, r:Integer, d:Integer) {
+        newFriendUpdates = u;
+        newReplies = r;
+        newDirectMessages = d;
         frame.visible = true;
-        fadeIn.start;
+        fadeIn.start();
+        autoHide.start();
     }
     
     public function hide() {
-        fadeOut.start;
+        System.out.println("hiding alertBox");
+        fadeOut.start();
     }    
     
     public attribute fadeIn = Timeline {
         keyFrames: [
-            KeyFrame { time:300ms values:frame.opacity => 1.0 tween Interpolator.LINEAR
-            },
-            KeyFrame { time:5s  
-                timelines: [fadeOut]
+            KeyFrame { 
+                time:300ms 
+                values:frame.opacity => 1.0 tween Interpolator.LINEAR
+                
             },
         ]
     };
     
     public attribute fadeOut = Timeline {
         keyFrames: [
-            KeyFrame { time:1s values:frame.opacity => 0.0 tween Interpolator.LINEAR 
+            KeyFrame { 
+                time:300ms 
+                values:frame.opacity => 0.0 tween Interpolator.LINEAR 
+                action: function() {
+                    frame.visible = false;
+                }
+            },
+        ]
+    };
+
+    public attribute autoHide = Timeline {
+        keyFrames: [
+            KeyFrame { 
+                time:5s  
                 action: function() { 
-                    frame.visible = false; 
+                    hide(); 
                 }
             },
         ]

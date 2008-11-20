@@ -20,7 +20,6 @@ import javafx.scene.image.*;
 import javafx.ext.swing.*;
 import java.lang.System;
 import java.util.List;
-import org.json.simple.JSONObject;
 import tweetbox.ui.style.Style;
 
 /**
