@@ -20,8 +20,8 @@ public class MeshStyle {
     public attribute APPLICATION_BACKGROUND_FILL:Paint = LinearGradient {
         startX:0 startY:0 endX:0 endY: 1
         stops: [
-            Stop { offset:0 color:Color.rgb(41,170,210,0.8)},
-            Stop { offset:1 color:Color.rgb(245,245,245,0.8) },
+            Stop { offset:0 color:Color.rgb(41,170,210,0.9)},
+            Stop { offset:1 color:Color.rgb(245,245,245,0.9) },
         ]
     }
     

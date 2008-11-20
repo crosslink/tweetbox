@@ -11,8 +11,16 @@ import tweetbox.valueobject.*;
 import java.lang.System;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Vector;
 import java.util.Date;
 import java.util.ConcurrentModificationException;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.File;
+import java.io.IOException;
+
 import javafx.animation.*;
 
 import twitter4j.*;
@@ -35,6 +43,7 @@ public class FrontController {
     
     public function start() {
         loadConfig();
+        loadFromCache();
         var twitterAccount = getAccount("twitter");
         twitter = new AsyncTwitter(twitterAccount.login, twitterAccount.password);
         twitter.setSource("TweetBox");
@@ -102,7 +111,7 @@ public class FrontController {
     public function exit() {
         model.state = State.EXITING;
         saveConfig();
-        //saveTweetsToCache();
+        saveToCache();
         System.exit(0);
     }
     
@@ -197,10 +206,49 @@ public class FrontController {
         model.config.load();
     }
 
-    public function loadTweetsFromCache() {
+    public function loadFromCache() {
+        var cacheFile = new File(System.getProperty("user.home")+"/tweetbox.cache");
+        System.out.println("loading cache from: " + cacheFile.getPath());
+        var cache:Vector = new Vector();
+        try {
+            var input:ObjectInputStream = new ObjectInputStream(new FileInputStream(cacheFile));
+            cache = input.readObject() as Vector;
+            
+            model.friendUpdates = cache.get(0) as Vector;
+            model.newFriendUpdates = model.friendUpdates.size();
+            
+            model.replies = cache.get(1) as Vector;
+            model.newReplies = model.replies.size();
+            
+            model.myUpdates = cache.get(2) as Vector;
+            model.newMyUpdates = model.myUpdates.size();
+            
+            model.directMessages = cache.get(3) as Vector;
+            model.newDirectMessages = model.directMessages.size();
+            
+            System.out.println("cache loaded from: " + cacheFile.getPath());
+        }
+        catch (e:IOException) {
+            System.out.println("could not read from cache. Cause: " + e);
+        }
     }
     
-    public function saveTweetsToCache() {
+    public function saveToCache() {
+        var cacheFile = new File(System.getProperty("user.home")+"/tweetbox.cache");
+        System.out.println("saving cache to: " + cacheFile.getPath());
+        var cache:Vector = new Vector();
+        cache.add(model.friendUpdates);
+        cache.add(model.replies);
+        cache.add(model.myUpdates);
+        cache.add(model.directMessages);
+        try {
+            var output:ObjectOutputStream = new ObjectOutputStream(new FileOutputStream(cacheFile));
+            output.writeObject(cache);
+            System.out.println("cache saved to: " + cacheFile.getPath());
+        }
+        catch (e:IOException) {
+            System.out.println("could not save cache. Cause: " + e);
+        }
     }
 
     private attribute getFriendsTimelineTimeline = Timeline {

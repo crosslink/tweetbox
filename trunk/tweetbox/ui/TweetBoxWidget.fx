@@ -49,7 +49,7 @@ public class TweetBoxWidget extends CustomNode {
     
     public attribute alertBox = AlertBox {
         width: 200
-        height: 75
+        height: 120
     }
 
             
@@ -224,6 +224,7 @@ public class TweetBoxWidget extends CustomNode {
                             imageURL: "{__DIR__}icons/help.png"
                             action:
                             function():Void {
+                                alertBox.show(0,0,0);
                                 deckRef.visibleNodeId = "Help";
                             }
                         }
@@ -273,12 +274,15 @@ public class TweetBoxWidget extends CustomNode {
             KeyFrame { 
                 time: 1s 
                 action: function() { 
-                    if (model.newFriendUpdates + model.newReplies + model.newMyUpdates > 0) {
-                        alertBox.show();
+                    if (model.newFriendUpdates + model.newReplies + model.newDirectMessages > 0) {
+                        alertBox.show(model.newFriendUpdates, model.newReplies, model.newDirectMessages);
+                    }
+                    if (model.newFriendUpdates + model.newReplies + model.newDirectMessages + model.newMyUpdates > 0) {
                         tweetsView.refreshContents();
                         model.newFriendUpdates = 0;
-                        model.newMyUpdates = 0;
+                        model.newDirectMessages = 0;
                         model.newReplies = 0;
+                        model.newMyUpdates = 0;
                     }
                 }
             }
@@ -296,7 +300,6 @@ var widget = TweetBoxWidget {
 }
 
 widget.alertBox.frame.stage.content = [widget.alertBox];
-widget.alertBox.frame.visible = false;
 
 widget.checkUpdates.start();
 

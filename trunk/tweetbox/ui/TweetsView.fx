@@ -21,8 +21,6 @@ import javafx.ext.swing.*;
 import java.lang.System;
 import java.util.List;
 
-import org.json.simple.JSONObject;
-
 import tweetbox.model.*;
 import tweetbox.generic.component.ScrollView;
 import tweetbox.control.FrontController;
