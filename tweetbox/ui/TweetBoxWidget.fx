@@ -31,13 +31,19 @@ import tweetbox.control.FrontController;
 
 import java.lang.Thread;
 import java.lang.Runnable;
+import java.awt.Toolkit;
+import java.awt.Dimension;
 
 var deckRef:DeckNode;
 
 public class TweetBoxWidget extends CustomNode {
     
+    private attribute screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
+
     public attribute width:Integer;
     public attribute height:Integer;
+    private attribute x:Number = bind (screenSize.getWidth() - width) / 2;
+    private attribute y:Number = bind (screenSize.getHeight() - height) / 2;
     
     private attribute style = Style.getApplicationStyle();
     
@@ -119,8 +125,8 @@ public class TweetBoxWidget extends CustomNode {
                                 },
                                 tweetsView = TweetsView {
                                     translateY:20
-                                    height: bind height - 150
-                                    width: bind width - 10
+                                    height: bind height - 170
+                                    width: bind width - 20
                                 },
                             ]
                         },
@@ -245,6 +251,8 @@ public class TweetBoxWidget extends CustomNode {
     }
     
     public attribute frame = Frame {
+        x: bind x
+        y: bind y
         stage: Stage {
             fill: null
         }
@@ -258,7 +266,11 @@ public class TweetBoxWidget extends CustomNode {
     
     public attribute fadeIn = Timeline {
         keyFrames: [
-            KeyFrame { time:1s values:frame.opacity => 1.0 tween Interpolator.LINEAR
+            KeyFrame { 
+                time:1s 
+                values: [
+                    frame.opacity => 1.0 tween Interpolator.LINEAR,
+                 ]
             },
         ]
     };
@@ -292,7 +304,14 @@ public class TweetBoxWidget extends CustomNode {
         repeatCount: java.lang.Double.POSITIVE_INFINITY
     };
 }
-
+/*
+var splash = Splash {
+    width: 300
+    height: 200
+}
+splash.frame.stage.content = [splash];
+splash.show();
+*/
 var controller = FrontController.getInstance();
 controller.start();
 
@@ -302,10 +321,10 @@ var widget = TweetBoxWidget {
 }
 
 widget.alertBox.frame.stage.content = [widget.alertBox];
-
 widget.checkUpdates.start();
-
 widget.frame.stage.content = [widget];
+
+
 
 if (controller.getAccount("twitter") == null) 
     widget.deckRef.visibleNodeId = "Config"

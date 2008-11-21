@@ -76,7 +76,8 @@ public class TweetListVO {
     }
     
     public function clear() {
-        tweets.clear();
+        tweets = new Vector();
+        numTweets = 0;
     }
     
 }
