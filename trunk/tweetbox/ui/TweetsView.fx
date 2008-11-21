@@ -73,19 +73,21 @@ public class TweetsView extends CustomNode {
         selectGroup("all");
         return Group {
             var numRows:Integer = bind numTweets;
-            var scrollViewRef:ScrollView
+            var scrollViewRef:ScrollView;
+            var groupButtonsBoxRef:VBox;
+            var scrollViewWidth:Number = bind width - groupButtonsBoxRef.getWidth() - 5
             content: [
                 scrollViewRef = ScrollView {
                     height: bind height
-                    width: bind width - 160
+                    width: bind scrollViewWidth
                     content: bind for (row:Integer in [0..numRows-1]) {
                         TweetNode {
-                            width: bind width - scrollViewRef.vertScrollbarWidth;
+                            width: bind scrollViewWidth - 5
                             tweet: bind tweetList.getTweet(row);
                         }                                                
                     }
                 },
-                VBox {
+                groupButtonsBoxRef = VBox {
                     translateX: width - 150
                     translateY: 0
                     content: bind groupButtons

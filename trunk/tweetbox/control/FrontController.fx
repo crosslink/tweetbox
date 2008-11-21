@@ -58,6 +58,14 @@ public class FrontController {
                 model.state = State.READY;
             }
 
+            public function sentDirectMessage(message:DirectMessage) {
+                System.out.println("direct message was successfully sent");
+                model.myUpdates.add(0, message);    
+                model.newMyUpdates = 1;
+                model.updateText = "";
+                model.state = State.READY;
+            }
+
             public function gotFriendsTimeline(statuses:List) {
                 System.out.println("statuses received: " + statuses);
                 model.friendUpdates.addAll(0, statuses);    
@@ -166,7 +174,7 @@ public class FrontController {
         if  (canExecute) {
             model.state = State.RETRIEVING_SEARCHRESULTS;
             model.state = State.READY;
-            System.out.println("searchResults.size = " + model.numSearchResults);model.state = State.READY;
+            //System.out.println("searchResults.size = " + model.numSearchResults);model.state = State.READY;
         }
     }
     

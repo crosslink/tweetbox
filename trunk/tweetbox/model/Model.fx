@@ -32,11 +32,13 @@ public class Model {
    public attribute myUpdates:List = new Vector();
    public attribute newMyUpdates:Integer = 0;
 
-   public attribute searchResults:TweetListVO = new TweetListVO;
-   public attribute numSearchResults:Integer = bind searchResults.numTweets;
-   
    public attribute allNewUpdates:Integer = bind newFriendUpdates + newReplies + newDirectMessages + newMyUpdates;
    
+   /*
+   public attribute searchResults:TweetListVO = new TweetListVO;
+   public attribute numSearchResults:Integer = bind searchResults.numTweets;
+   */
+
    public attribute config:ConfigVO = ConfigVO{}
    
    public attribute state:Integer;

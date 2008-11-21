@@ -98,7 +98,7 @@ public class TweetNode extends CustomNode {
                 },
                 Rectangle {
                     translateY: 4
-                    width: bind width - 2
+                    width: bind width - 20
                     height: bind outerBoxRef.getHeight() + 4
                     arcWidth:10 
                     arcHeight:10

@@ -139,6 +139,7 @@ public class GroupButton extends CustomNode {
                             font: style.GROUPBUTTON_TEXT_FONT
                         },
                         Text {
+                            translateX: 10
                             visible: bind (_newUpdates>0)
                             content: bind " ({_newUpdates})"
                             fill: style.GROUPBUTTON_TEXT_FILL
