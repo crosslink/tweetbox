@@ -54,6 +54,10 @@ public class TweetListVO {
         }
     }
     
+    public function addTweetsFromStatusList(statusList:List) {
+        addTweetsFromStatusList(statusList, statusList.size());
+    }
+    
     public function addTweetsFromStatusList(statusList:List, numStatuses:Integer) {
         if (numStatuses > 0) {
             //var newTweets:List = new Vector();

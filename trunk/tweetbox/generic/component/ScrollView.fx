@@ -60,13 +60,13 @@ public class ScrollView extends CustomNode {
     
     public function create(): Node {
         return Group {
-            var needScrollbar:Boolean = true;
             var thumbStartY = 0.0;
             var thumbEndY = 0.0;
             var thumb:Rectangle;
             var track:Rectangle;
             var contentContainerRef:VBox;
             var scrollBarRef:Group;
+            var needScrollbar:Boolean = true //bind (contentContainerRef.getHeight() > height);
             blocksMouse:true
             content: [
                 contentContainerRef = VBox {

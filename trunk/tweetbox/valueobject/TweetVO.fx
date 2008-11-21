@@ -25,7 +25,8 @@ public class TweetVO {
     public attribute text:String = bind status.getText();
     public attribute createdAt:Date = bind status.getCreatedAt();
     public attribute source:String = bind status.getSource();
+    public attribute inReplyToId = bind status.getInReplyToUserId();
     
-    public attribute isReply:Boolean = bind (status.getInReplyToUserId() != 0)
+    public attribute isReply:Boolean = bind (status.getInReplyToUserId() != -1)
     
 }

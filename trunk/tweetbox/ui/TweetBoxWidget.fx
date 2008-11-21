@@ -112,14 +112,16 @@ public class TweetBoxWidget extends CustomNode {
                             id: "Home"
                             spacing: 4
                             content: [
+                                updateRef = UpdateNode {
+                                    translateY: 0
+                                    text: bind model.updateText
+                                    translateX: bind width / 2 - updateRef.getWidth() / 2
+                                },
                                 tweetsView = TweetsView {
+                                    translateY:20
                                     height: bind height - 150
                                     width: bind width - 10
                                 },
-                                updateRef = UpdateNode {
-                                    text: bind model.updateText
-                                    translateX: bind width / 2 - updateRef.getWidth() / 2
-                                }
                             ]
                         },
                     // The "Search" page
@@ -295,7 +297,7 @@ var controller = FrontController.getInstance();
 controller.start();
 
 var widget = TweetBoxWidget {
-    width: 510
+    width: 700
     height: 700
 }
 
