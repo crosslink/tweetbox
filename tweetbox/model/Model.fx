@@ -35,13 +35,36 @@ public class Model {
    public attribute searchResults:TweetListVO = new TweetListVO;
    public attribute numSearchResults:Integer = bind searchResults.numTweets;
    
+   public attribute allNewUpdates:Integer = bind newFriendUpdates + newReplies + newDirectMessages + newMyUpdates;
+   
    public attribute config:ConfigVO = ConfigVO{}
    
    public attribute state:Integer;
    
    public attribute updateText:String;
   
-  //-----------------Use Singleton pattern to get model instance -----------------------
+    public attribute groups:GroupVO[] = [
+        GroupVO {
+            id: "all" 
+            title:"All" 
+            newUpdates:bind allNewUpdates 
+            imageURL: "{__DIR__}icons/friends.png"
+        },
+        GroupVO {
+            id: "replies" 
+            title:"Replies" 
+            newUpdates:bind newReplies 
+            imageURL: "{__DIR__}icons/reply.png"
+        },
+        GroupVO {
+            id: "direct" 
+            title:"Direct Messages" 
+            newUpdates:bind newDirectMessages
+            imageURL: "{__DIR__}icons/email.png"
+        }
+    ];
+
+    //-----------------Use Singleton pattern to get model instance -----------------------
     private static attribute instance:Model;
 
     public static function getInstance():Model {

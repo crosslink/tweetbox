@@ -93,6 +93,10 @@ public class TweetNode extends CustomNode {
             content: bind [
                 
                 Rectangle {
+                    height: bind outerBoxRef.getHeight() + 5
+                    visible: false;
+                },
+                Rectangle {
                     translateY: 4
                     width: bind width - 2
                     height: bind outerBoxRef.getHeight() + 4

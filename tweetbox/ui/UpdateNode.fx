@@ -32,7 +32,7 @@ public class UpdateNode extends CustomNode {
         updateTextArea.setText(text);
     }
     
-    private attribute updateTextArea = new JTextArea(3,40);
+    private attribute updateTextArea = new JTextArea(3,55);
     
     public function create(): Node {
         updateTextArea.setText(text);

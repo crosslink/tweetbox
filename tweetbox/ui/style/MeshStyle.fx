@@ -49,7 +49,7 @@ public class MeshStyle {
         style: FontStyle.BOLD
     }
     
-    // tweet styles
+    // update styles
     public attribute UPDATE_FILL: Paint = Color.rgb(255,255,255);
     public attribute REPLY_FILL: Paint = Color.rgb(255,200,200);
     public attribute DIRECTMESSAGE_FILL: Paint = Color.rgb(200,255,200);
@@ -58,6 +58,17 @@ public class MeshStyle {
     public attribute UPDATE_TEXT_FONT: Font = Font {
         name: "Sans serif"
         size: 11
+    }
+
+    // group button styles
+    public attribute GROUPBUTTON_BORDER_COLOR: Paint = MESH_RED;
+    public attribute GROUPBUTTON_HOVER_FILL: Paint = Color.rgb(200,200,255);
+    public attribute GROUPBUTTON_SELECTED_FILL: Paint = Color.WHITE;
+    public attribute GROUPBUTTON_TEXT_FILL: Paint = MESH_RED;
+    public attribute GROUPBUTTON_TEXT_FONT: Font = Font {
+        name: "Sans serif"
+        size: 11
+        style: FontStyle.PLAIN
     }
     
 }

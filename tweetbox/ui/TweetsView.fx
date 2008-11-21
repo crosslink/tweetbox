@@ -26,6 +26,7 @@ import tweetbox.generic.component.ScrollView;
 import tweetbox.control.FrontController;
 import tweetbox.valueobject.TweetListVO;
 import tweetbox.valueobject.TweetVO;
+import tweetbox.valueobject.GroupVO;
 
 /**
  * @author mnankman
@@ -49,30 +50,79 @@ public class TweetsView extends CustomNode {
     private attribute model = Model.getInstance();
     private attribute controller = FrontController.getInstance();
     
+    
+    private attribute selectedGroup:GroupVO = model.groups[0]; 
+
+    private attribute groupButtons:GroupButton[] = bind [
+        for (group:GroupVO in model.groups) {
+            GroupButton {
+                width: 150
+                height: 40
+                groupId: bind group.id
+                caption: bind group.title
+                newUpdates: bind group.newUpdates
+                imageURL: bind group.imageURL
+                onSelected: bind function(id:String) {
+                    selectGroup(group.id)
+                }
+            }                          
+        }
+    ];
+    
     public function create(): Node {
+        selectGroup("all");
         return Group {
             var numRows:Integer = bind numTweets;
             var scrollViewRef:ScrollView
-            content: 
+            content: [
                 scrollViewRef = ScrollView {
                     height: bind height
-                    width: bind width
+                    width: bind width - 160
                     content: bind for (row:Integer in [0..numRows-1]) {
                         TweetNode {
                             width: bind width - scrollViewRef.vertScrollbarWidth;
                             tweet: bind tweetList.getTweet(row);
                         }                                                
                     }
+                },
+                VBox {
+                    translateX: width - 150
+                    translateY: 0
+                    content: bind groupButtons
                 }
+            ]
         };
     }
-
+    
+    public function selectGroup(id:String) {
+        System.out.println("showUpdates: " + id);
+        var newSelection:GroupVO[] = for (group:GroupVO in model.groups) {
+            if (group.id == id) group else null;
+        }
+        if (newSelection.size()>0) {
+            selectedGroup = newSelection[0];
+            for (button:GroupButton in groupButtons) {
+                button.selected = (button.groupId == id);
+            }
+            refreshContents();
+        }
+    }
+    
     public function refreshContents() { 
         if (controller.canExecute) {
-            tweetList.addTweetsFromStatusList(model.friendUpdates, model.newFriendUpdates);
-            tweetList.addTweetsFromStatusList(model.replies, model.newReplies);
-            tweetList.addTweetsFromStatusList(model.myUpdates, model.newMyUpdates);       
-            tweetList.addTweetsFromStatusList(model.directMessages, model.newDirectMessages);       
+            tweetList.clear();
+            if (selectedGroup.id == "all") {
+                tweetList.addTweetsFromStatusList(model.friendUpdates);
+                tweetList.addTweetsFromStatusList(model.replies);
+                tweetList.addTweetsFromStatusList(model.myUpdates);       
+                tweetList.addTweetsFromStatusList(model.directMessages);       
+            }
+            else if (selectedGroup.id == "replies") {
+                tweetList.addTweetsFromStatusList(model.replies);
+            }
+            else if (selectedGroup.id == "direct") {
+                tweetList.addTweetsFromStatusList(model.directMessages);
+            }
         }
     }
 
