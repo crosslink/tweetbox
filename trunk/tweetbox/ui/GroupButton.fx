@@ -41,24 +41,18 @@ public class GroupButton extends CustomNode {
     
     private attribute btnImage:Image;
     public attribute imageURL:String on replace {
-        btnImage = 
-        Image {
+        btnImage = Image {
             url: imageURL
         };
     }
    
     public attribute selected:Boolean = false on replace {
-        if (selected) {
-            selectedOpacityValue = 1
-        } else {
-            selectedOpacityValue = 0
-        }
+        fadeTimeline.start();
     }
     
     public attribute onSelected:function(id:String):Void;
     
     public attribute opacityValue:Number = 0;
-    public attribute selectedOpacityValue:Number = 0;
 
     private attribute fadeTimeline = Timeline {
         toggle: true
@@ -128,9 +122,9 @@ public class GroupButton extends CustomNode {
                     translateX: 5
                     content: [
                         ImageView {
-                            translateY: -10
-                            translateX: 5
-                            image: bind btnImage;
+                            translateY: -12
+                            translateX: 4
+                            image: btnImage;
                         },
                         Text {
                             translateX: 10
