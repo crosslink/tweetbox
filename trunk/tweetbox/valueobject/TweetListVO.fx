@@ -60,14 +60,15 @@ public class TweetListVO {
     
     public function addTweetsFromStatusList(statusList:List, numStatuses:Integer) {
         if (numStatuses > 0) {
-            //var newTweets:List = new Vector();
+            var newTweets:List = new Vector();
             var n:Integer = numStatuses;
             
             if (n > statusList.size()) n = statusList.size();
             
             for (i:Integer in [0..n - 1]) {
-                tweets.add(0, TweetVO {status: statusList.get(i) as Status})                                                
-            }        
+                newTweets.add(TweetVO {status: statusList.get(i) as Status})                                                
+            }
+            tweets.addAll(0, newTweets);
             //newTweets.addAll(tweets);
             //tweets = newTweets;
             numTweets = tweets.size();
