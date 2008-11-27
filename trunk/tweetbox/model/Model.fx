@@ -49,20 +49,20 @@ public class Model {
         GroupVO {
             id: "all" 
             title:"All" 
-            newUpdates:bind allNewUpdates 
-            imageURL: "{__DIR__}icons/friends.png"
+            newUpdates: bind allNewUpdates 
+            imageURL: "{__DIR__}../ui/icons/friends.png"
         },
         GroupVO {
             id: "replies" 
             title:"Replies" 
-            newUpdates:bind newReplies 
-            imageURL: "{__DIR__}icons/reply.png"
+            newUpdates: bind newReplies 
+            imageURL: "{__DIR__}../ui/icons/reply.png"
         },
         GroupVO {
             id: "direct" 
             title:"Direct Messages" 
-            newUpdates:bind newDirectMessages
-            imageURL: "{__DIR__}icons/email.png"
+            newUpdates: bind newDirectMessages
+            imageURL: "{__DIR__}../ui/icons/email.png"
         }
     ];
 
