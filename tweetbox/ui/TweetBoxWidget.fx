@@ -28,6 +28,7 @@ import tweetbox.model.State;
 import tweetbox.valueobject.AccountVO;
 import tweetbox.ui.style.Style;
 import tweetbox.control.FrontController;
+import tweetbox.generic.component.ScrollView;
 
 import java.lang.Thread;
 import java.lang.Runnable;
@@ -173,16 +174,22 @@ public class TweetBoxWidget extends CustomNode {
                         Group {
                             id: "Help"
                             content: [
-                                HTMLNode {
-                                    width: 300
-                                    html: "<em>emphasized</em><br><strong>bold</strong><br><a href=\"http://www.twitter.com\">link</a>"
-                                    font: style.UPDATE_TEXT_FONT
-                                },
-                                HTMLNode {
-                                    translateY:100
-                                    width: 300
-                                    html: "Morbi scelerisque eros cursus purus. Aenean felis mauris, tristique vitae, blandit nec, accumsan at, pede. Donec cursus pede ac mi. Fusce elementum consectetuer sapien. Nullam tempus metus in felis. Nunc viverra, risus in gravida rhoncus, erat justo congue augue, non vehicula dui quam in dui. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin at eros. Donec egestas euismod felis. Sed urna arcu, vulputate eu, dictum sit amet, auctor sit amet, sem. Proin pharetra ligula vitae elit. Ut lorem ante, semper vitae, dapibus id, consequat et, magna. "
-                                    font: style.UPDATE_TEXT_FONT
+                                ScrollView {
+                                    height: 200
+                                    width: 250
+                                    content :[
+                                        HTMLNode {
+                                            width: 300
+                                            html: "<em>emphasized</em><br><strong>bold</strong><br><a href=\"http://www.twitter.com\">link</a>"
+                                            font: style.UPDATE_TEXT_FONT
+                                        },
+                                        HTMLNode {
+                                            width: 200
+                                            html: "Morbi scelerisque eros cursus purus. Aenean felis mauris, tristique vitae, blandit nec, accumsan at, pede. Donec cursus pede ac mi. Fusce elementum consectetuer sapien. Nullam tempus metus in felis. Nunc viverra, risus in gravida rhoncus, erat justo congue augue, non vehicula dui quam in dui. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin at eros. Donec egestas euismod felis. Sed urna arcu, vulputate eu, dictum sit amet, auctor sit amet, sem. Proin pharetra ligula vitae elit. Ut lorem ante, semper vitae, dapibus id, consequat et, magna. "
+                                            font: style.UPDATE_TEXT_FONT
+                                        }
+                                    ]
+
                                 }
 
                             ]
@@ -262,6 +269,11 @@ public class TweetBoxWidget extends CustomNode {
         height: height
 	windowStyle: WindowStyle.TRANSPARENT
         resizable: true
+        icons: [
+            Image {url: "{__DIR__}images/tweetboxlogo25.gif"},
+            Image {url: "{__DIR__}images/tweetboxlogo100.gif"},
+        ]
+
     }
     
     public attribute fadeIn = Timeline {
