@@ -61,7 +61,7 @@ public class TweetsView extends CustomNode {
                 groupId: bind group.id
                 caption: bind group.title
                 newUpdates: bind group.newUpdates
-                imageURL: bind group.imageURL
+                imageURL: group.imageURL
                 onSelected: bind function(id:String) {
                     selectGroup(group.id)
                 }
@@ -69,17 +69,19 @@ public class TweetsView extends CustomNode {
         }
     ];
     
+    private attribute scrollViewRef:ScrollView;
+                
     public function create(): Node {
         selectGroup("all");
         return Group {
             var numRows:Integer = bind numTweets;
-            var scrollViewRef:ScrollView;
             var groupButtonsBoxRef:VBox;
             var scrollViewWidth:Number = bind width - groupButtonsBoxRef.getWidth() - 5
             content: [
                 scrollViewRef = ScrollView {
+                    translateX: 5
                     height: bind height
-                    width: bind scrollViewWidth
+                    width: bind scrollViewWidth - 5
                     content: bind for (row:Integer in [0..numRows-1]) {
                         TweetNode {
                             width: bind scrollViewWidth - 5
@@ -126,6 +128,7 @@ public class TweetsView extends CustomNode {
                 tweetList.addTweetsFromStatusList(model.directMessages);
             }
         }
+        //scrollViewRef.scrollToTop();        
     }
 
 }
