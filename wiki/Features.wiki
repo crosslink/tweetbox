@@ -1,0 +1,12 @@
+ * receive friends timeline
+ * receive replies
+ * send update
+ * switch between groups of tweets
+ * very crude configuration function for setting userid and password
+
+NOT IMPLEMENTED (OR WORKING) YET:
+ * send reply
+ * send direct messages
+ * follow
+ * block
+ * unfollow
