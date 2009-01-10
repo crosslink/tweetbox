@@ -20,64 +20,76 @@ import tweetbox.valueobject.*;
  */
 public class Model {
   
-   public attribute friendUpdates:List = new Vector();
-   public attribute newFriendUpdates:Integer;
+   public var friendUpdates:List = new Vector();
+   public var newFriendUpdates:Integer;
    
-   public attribute replies:List = new Vector();
-   public attribute newReplies:Integer;
+   public var replies:List = new Vector();
+   public var newReplies:Integer;
    
-   public attribute directMessages:List = new Vector();
-   public attribute newDirectMessages:Integer;
+   public var directMessages:List = new Vector();
+   public var newDirectMessages:Integer;
 
-   public attribute myUpdates:List = new Vector();
-   public attribute newMyUpdates:Integer = 0;
+   public var userUpdates:List = new Vector();
+   public var newUserUpdates:Integer = 0;
 
-   public attribute allNewUpdates:Integer = bind newFriendUpdates + newReplies + newDirectMessages + newMyUpdates;
+   public var allNewUpdates:Integer = bind newFriendUpdates + newReplies + newDirectMessages + newUserUpdates;
    
    /*
-   public attribute searchResults:TweetListVO = new TweetListVO;
-   public attribute numSearchResults:Integer = bind searchResults.numTweets;
+   public var searchResults:TweetListVO = new TweetListVO;
+   public var numSearchResults:Integer = bind searchResults.numTweets;
    */
 
-   public attribute config:ConfigVO = ConfigVO{}
+   public var config:ConfigVO = ConfigVO{}
    
-   public attribute state:Integer;
+   public var state:Integer;
    
-   public attribute updateText:String;
+   public var updateText:String;
   
-    public attribute groups:GroupVO[] = [
+    public var groups:GroupVO[] = [
         GroupVO {
-            id: "all" 
-            title:"All" 
-            newUpdates: bind allNewUpdates 
+            expanded: true
+            id: "friends" 
+            title:"Friends"
+            updates: bind friendUpdates
+            newUpdates: bind newFriendUpdates 
             imageURL: "{__DIR__}../ui/icons/friends.png"
         },
         GroupVO {
             id: "replies" 
             title:"Replies" 
-            newUpdates: bind newReplies 
+            updates: bind replies
+            newUpdates: bind newReplies
             imageURL: "{__DIR__}../ui/icons/reply.png"
         },
         GroupVO {
             id: "direct" 
             title:"Direct Messages" 
+            updates: bind directMessages
             newUpdates: bind newDirectMessages
             imageURL: "{__DIR__}../ui/icons/email.png"
-        }
+        },
+        GroupVO {
+            id: "user" 
+            title:"User" 
+            updates: bind userUpdates
+            newUpdates: bind newUserUpdates
+            imageURL: "{__DIR__}../ui/icons/user.png"
+        }        
     ];
+    
+}
 
-    //-----------------Use Singleton pattern to get model instance -----------------------
-    private static attribute instance:Model;
+//-----------------Use Singleton pattern to get model instance -----------------------
+var instance:Model;
 
-    public static function getInstance():Model {
-        if (instance == null) {
-            instance = Model {
-                state: State.READY;
-            };
-            
-        }
-        else {
-            instance;
-        }
+public function getInstance():Model {
+    if (instance == null) {
+        instance = Model {
+            state: State.READY;
+        };
+
+    }
+    else {
+        instance;
     }
 }
