@@ -18,12 +18,12 @@ public class MenuNode extends CustomNode {
   /*
    * A sequence containing the ButtonNode instances
    */
-    public attribute buttons:ButtonNode[];
+    public var buttons:ButtonNode[];
     
   /**
    * Create the Node
    */
-    public function create():Node {
+    public override function create():Node {
         HBox {
             spacing: 10
             content: buttons
