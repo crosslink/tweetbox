@@ -11,8 +11,8 @@ package tweetbox.valueobject;
  */
 
 public class AccountVO {
-   public attribute id:String;
-   public attribute serviceUrl:String;
-   public attribute login:String;
-   public attribute password:String;
+   public var id:String;
+   public var serviceUrl:String;
+   public var login:String;
+   public var password:String;
 }

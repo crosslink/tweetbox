@@ -16,17 +16,17 @@ import twitter4j.User;
  */
 
 public class TweetVO {
-    public attribute status:Status;
+    public var status:Status;
     
-    public attribute user:UserVO = UserVO {
+    public var user:UserVO = UserVO {
         user: bind status.getUser()
     }
     
-    public attribute text:String = bind status.getText();
-    public attribute createdAt:Date = bind status.getCreatedAt();
-    public attribute source:String = bind status.getSource();
-    public attribute inReplyToId = bind status.getInReplyToUserId();
+    public var text:String = bind status.getText();
+    public var createdAt:Date = bind status.getCreatedAt();
+    public var source:String = bind status.getSource();
+    public var inReplyToId = bind status.getInReplyToUserId();
     
-    public attribute isReply:Boolean = bind (status.getInReplyToUserId() != -1)
+    public var isReply:Boolean = bind (status.getInReplyToUserId() != -1)
     
 }

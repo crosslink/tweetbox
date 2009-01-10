@@ -13,8 +13,8 @@ import twitter4j.User;
  */
 
 public class UserVO {
-    public attribute user:User;
+    public var user:User;
     
-    public attribute screenName:String = bind user.getScreenName() as String;
-    public attribute profileImageUrl:String = bind user.getProfileImageURL().toString();
+    public var screenName:String = bind user.getScreenName() as String;
+    public var profileImageUrl:String = bind user.getProfileImageURL().toString();
 }

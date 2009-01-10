@@ -29,8 +29,8 @@ import twitter4j.Status;
  */
 
 public class TweetListVO {
-    public attribute tweets:List = new Vector();
-    public attribute numTweets:Integer = 0;
+    public var tweets:List = new Vector();
+    public var numTweets:Integer = 0;
     
     public function addTweets(tweetlist:TweetListVO) {
         var newTweets:List = new Vector();
@@ -72,7 +72,7 @@ public class TweetListVO {
             //newTweets.addAll(tweets);
             //tweets = newTweets;
             numTweets = tweets.size();
-            System.out.println("TweetListVO.numTweets = " + numTweets);
+            System.out.println("TweetListVO.numTweets = {numTweets}");
         }
     }
     
