@@ -10,10 +10,9 @@ import javafx.scene.CustomNode;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
-import javafx.ext.swing.ComponentView;
-import javafx.ext.swing.Label;
-import javafx.ext.swing.TextField;
-import javafx.ext.swing.Component;
+import javafx.ext.swing.SwingLabel;
+import javafx.ext.swing.SwingTextField;
+import javafx.ext.swing.SwingComponent;
 import javafx.scene.effect.Reflection;
 
 import com.javafxpert.custom_node.*;
@@ -28,23 +27,20 @@ import javax.swing.JTextArea;
  * @author mnankman
  */
 public class UpdateNode extends CustomNode {
-    public attribute text:String on replace {
+    public var text:String on replace {
         updateTextArea.setText(text);
     }
     
-    private attribute updateTextArea = new JTextArea(3,55);
+    var updateTextArea = new JTextArea(3,55);
     
-    public function create(): Node {
+    public override function create(): Node {
         updateTextArea.setText(text);
         updateTextArea.setLineWrap(true);
         updateTextArea.setWrapStyleWord(true);
         return HBox {
             var model = Model.getInstance();
-            var updateRef:TextField;
             content: [
-                ComponentView {
-                    component: Component.fromJComponent(updateTextArea);
-                },
+                SwingComponent.wrap(updateTextArea),
                 VBox {
                     translateX: 20
                     spacing: 10

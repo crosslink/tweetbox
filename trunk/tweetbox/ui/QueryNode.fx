@@ -10,9 +10,8 @@ import javafx.scene.CustomNode;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
-import javafx.ext.swing.ComponentView;
-import javafx.ext.swing.Label;
-import javafx.ext.swing.TextField;
+import javafx.ext.swing.SwingLabel;
+import javafx.ext.swing.SwingTextField;
 import tweetbox.model.Model;
 import tweetbox.model.State;
 import com.javafxpert.custom_node.*;
@@ -24,19 +23,14 @@ import tweetbox.control.FrontController;
  */
 public class QueryNode extends CustomNode {
     
-    private attribute queryRef:TextField;
+    var queryRef:SwingTextField;
     
-    public function create(): Node {
+    public override function create(): Node {
         return HBox {
             var model = Model.getInstance();
             content: [
-                ComponentView {
-                    component: 
-                    queryRef = TextField {
-                        columns: 36
-                        
-                    }
-
+                queryRef = SwingTextField {
+                    columns: 36
                 },
                 MenuNode {
                     translateX: 10

@@ -13,7 +13,7 @@ import javafx.scene.text.*;
 import javafx.scene.image.*;
 import javafx.scene.effect.*;
 import javafx.scene.layout.*;
-import javafx.scene.geometry.*;
+import javafx.scene.shape.*;
 import javafx.scene.paint.*;
 import javafx.scene.*;
 
@@ -26,12 +26,11 @@ import tweetbox.ui.style.Style;
 import tweetbox.ui.HTMLNode;
 import tweetbox.control.FrontController;
 
-import javafx.ext.swing.Component;
-import javafx.ext.swing.Label;
-import javafx.ext.swing.ComponentView;
+import javafx.ext.swing.SwingComponent;
+import javafx.ext.swing.SwingLabel;
 import javax.swing.JLabel;
 
-import javafx.input.MouseEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.animation.*;
 import javafx.scene.effect.*;
 import javafx.scene.transform.*;
@@ -43,29 +42,28 @@ import com.javafxpert.custom_node.ButtonNode;
  */
 public class TweetNode extends CustomNode {
 
-    public attribute tweet:TweetVO;
-    private attribute user:UserVO = bind tweet.user;
-    public attribute height:Integer;
-    public attribute width:Integer;
+    public var tweet:TweetVO;
+    var user:UserVO = bind tweet.user;
+    public var height:Number;
+    public var width:Number;
     
   /**
    * An image of a play button to be displayed in each row of the table
    */
-    public attribute buddyImage = Image {url: "{__DIR__}images/buddy.png"};
+    public var buddyImage = Image {url: "{__DIR__}images/buddy.png"};
     
-    private attribute style = Style.getApplicationStyle();
+    var nodeStyle = Style.getApplicationStyle();
    
   /**
    * The opacity of the text when not in a rollover state
    */
-    public attribute buttonOpacityValue:Number = 0.0;
+    public var buttonOpacityValue:Number = 0.0;
 
   /**
    * A Timeline to control fading behavior when mouse enters or exits a button
    */
-    private attribute fadeTimeline =
+    var fadeTimeline =
     Timeline {
-        toggle: true
         keyFrames: [
             KeyFrame {
                 time: 400ms
@@ -74,13 +72,13 @@ public class TweetNode extends CustomNode {
         ]
     };
 
-    private attribute mouseInside:Boolean;
+    var mouseInside:Boolean;
     
-    private attribute controller = FrontController.getInstance();
+    var controller = FrontController.getInstance();
     
     
     
-    public function create(): Node {
+    public override function create(): Node {
         return Group {
             var model = Model.getInstance();
             
@@ -93,24 +91,20 @@ public class TweetNode extends CustomNode {
             content: bind [
                 
                 Rectangle {
-                    height: bind outerBoxRef.getHeight() + 5
+                    height: bind outerBoxRef.layoutBounds.height + 5
                     visible: false;
                 },
                 Rectangle {
                     translateY: 4
                     width: bind width - 20
-                    height: bind outerBoxRef.getHeight() + 4
+                    height: bind outerBoxRef.layoutBounds.height + 4
                     arcWidth:10 
                     arcHeight:10
-                    fill: bind if (tweet.isReply) {
-                        style.REPLY_FILL
-                    } else {
-                        style.UPDATE_FILL
-                    }
+                    fill: nodeStyle.UPDATE_FILL
                 },
                 outerBoxRef = HBox { 
                     translateY: 2
-                    verticalAlignment: VerticalAlignment.TOP 
+                    //verticalAlignment: VerticalAlignment.TOP
                     content: [
                         imageViewRef = ImageView {
                             translateX: 5
@@ -127,13 +121,15 @@ public class TweetNode extends CustomNode {
                             onMouseEntered:
                             function(me:MouseEvent):Void {
                                 mouseInside = true;
-                                fadeTimeline.start();
+                                fadeTimeline.rate = 1.0;
+                                fadeTimeline.play();
                             }
 
                             onMouseExited:
                             function(me:MouseEvent):Void {
                                 mouseInside = false;
-                                fadeTimeline.start();
+                                fadeTimeline.rate = -1.0;
+                                fadeTimeline.play();
                                 me.node.effect = null
                             }
                         },
@@ -141,8 +137,8 @@ public class TweetNode extends CustomNode {
                             translateY: 5
                             translateX: 7
                             html: "<strong>{user.screenName}</strong>: {tweet.text} <br>{DateUtil.formatAsTweetDisplayDate(tweet.createdAt)} with {tweet.source}"
-                            width: bind width - imageViewRef.getWidth() - 100
-                            font: style.UPDATE_TEXT_FONT
+                            width: bind width - imageViewRef.layoutBounds.width - 100
+                            font: nodeStyle.UPDATE_TEXT_FONT
                         },
                     ]
                 },
