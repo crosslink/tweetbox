@@ -6,15 +6,14 @@
 
 package tweetbox.generic.component;
 
-import javafx.input.*;
+import javafx.scene.input.*;
 import javafx.scene.*;
-import javafx.scene.geometry.*;
+import javafx.scene.shape.*;
 import javafx.animation.*;
 import javafx.scene.transform.*;
 import javafx.scene.effect.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
-import com.javafxpert.custom_node.TableNode;
 import tweetbox.model.*;
 import javafx.scene.text.*;
 import javafx.scene.image.*;
@@ -31,55 +30,55 @@ public class ScrollView extends CustomNode {
   /*
    * Contains the height of the view in pixels.
    */
-    public attribute height:Integer;
+    public var height:Number;
 
   /*
    * Contains the width of the view in pixels.
    */
-    public attribute width:Integer;
+    public var width:Number;
 
-    private attribute style = Style.getApplicationStyle();
+    var nodeStyle = Style.getApplicationStyle();
 
   /*
    * The color or gradient of the vertical scrollbar.
    */
-    private attribute vertScrollbarFill:Paint = style.SCROLLBAR_TRACK_FILL;
+    var vertScrollbarFill:Paint = nodeStyle.SCROLLBAR_TRACK_FILL;
    
   /*
    * The color or gradient of the vertical scrollbar thumb.
    */
-    private attribute vertScrollbarThumbFill:Paint = style.SCROLLBAR_THUMB_FILL;
+    var vertScrollbarThumbFill:Paint = nodeStyle.SCROLLBAR_THUMB_FILL;
    
   /*
    * The width (in pixels) of the vertical scrollbar.
    */
-    public attribute vertScrollbarWidth:Integer = 14;
+    public var vertScrollbarWidth:Integer = 14;
 
-    public attribute scrollStepSize:Integer = 5;
+    public var scrollStepSize:Integer = 5;
     
-    public attribute content: Node[];
+    public var content: Node[];
     
-    private attribute thumbStartY = 0.0;
-    private attribute thumbEndY = 0.0;
-    private attribute scrollValue = 0.0;
-    private attribute thumb:Rectangle;
-    private attribute track:Rectangle;
-    private attribute scrollUpBtn:Rectangle;
-    private attribute scrollDownBtn:Rectangle;
+    var thumbStartY = 0.0;
+    var thumbEndY = 0.0;
+    var scrollValue = 0.0;
+    var thumb:Rectangle;
+    var track:Rectangle;
+    var scrollUpBtn:Rectangle;
+    var scrollDownBtn:Rectangle;
     
-    public function create(): Node {
+    public override function create(): Node {
         return Group {
             var contentContainerRef:VBox;
             var scrollBarRef:Group;
             blocksMouse:true
             content: [
                 contentContainerRef = VBox {
-                    transform: bind Translate.translate(0, -1.0 * thumbEndY * contentContainerRef.getBoundsHeight() / track.getHeight())
+                    transforms: bind [Translate.translate(0, -1.0 * thumbEndY * contentContainerRef.boundsInLocal.height / track.layoutBounds.height)]
                     content: bind for (node:Node in content) {node}
                 },
                 scrollBarRef = Group {
-                    visible: bind (contentContainerRef.getHeight() > height)
-                    transform: bind Translate.translate(width - vertScrollbarWidth, 0)
+                    visible: bind (contentContainerRef.layoutBounds.height > height)
+                    transforms: bind [Translate.translate(width - vertScrollbarWidth, 0)]
                     content: [
                         // scroll button "up"
                         Group {
@@ -96,7 +95,7 @@ public class ScrollView extends CustomNode {
 
                                     onMousePressed: function(e:MouseEvent):Void { 
                                         scrollDown.stop(); 
-                                        scrollUp.start(); 
+                                        scrollUp.play(); 
                                     } 
                                     onMouseReleased: function(e:MouseEvent):Void { 
                                         scrollDown.stop(); 
@@ -136,7 +135,7 @@ public class ScrollView extends CustomNode {
 
                                     onMousePressed: function(e:MouseEvent):Void { 
                                         scrollUp.stop(); 
-                                        scrollDown.start(); 
+                                        scrollDown.play(); 
                                     } 
                                     onMouseReleased: function(e:MouseEvent):Void { 
                                         scrollUp.stop(); 
@@ -166,13 +165,13 @@ public class ScrollView extends CustomNode {
 
                         // track + thumb
                         Group {
-                            translateY: bind scrollUpBtn.getHeight()
+                            translateY: bind scrollUpBtn.layoutBounds.height
                             content: [
                                 track = Rectangle {
                                     x: 0
                                     y: 0
                                     width: bind vertScrollbarWidth
-                                    height: bind height - scrollDownBtn.getHeight() - scrollUpBtn.getHeight() 
+                                    height: bind height - scrollDownBtn.layoutBounds.height - scrollUpBtn.layoutBounds.height 
                                     arcHeight: bind vertScrollbarWidth/2
                                     arcWidth: bind vertScrollbarWidth/2
                                     fill: bind vertScrollbarFill
@@ -183,14 +182,14 @@ public class ScrollView extends CustomNode {
                                     x: 0
                                     y: bind thumbEndY
                                     width: vertScrollbarWidth
-                                    height: bind (track.getHeight() / (contentContainerRef.getBoundsHeight()) * track.getHeight()) - 2*vertScrollbarWidth
+                                    height: bind (track.layoutBounds.height / (contentContainerRef.boundsInLocal.height) * track.layoutBounds.height) - 2*vertScrollbarWidth
                                     fill: vertScrollbarThumbFill
                                     arcHeight: bind vertScrollbarWidth/2
                                     arcWidth: bind vertScrollbarWidth/2
                                     onMouseDragged: function(e:MouseEvent):Void {
                                         scrollDown.stop(); 
                                         scrollUp.stop(); 
-                                        scrollTo(e.getDragY() - thumbStartY);
+                                        scrollTo(e.dragY - thumbStartY);
                                     }
                                 }
 
@@ -209,12 +208,12 @@ public class ScrollView extends CustomNode {
             onMouseWheelMoved: function(e:MouseEvent):Void {
                 scrollDown.stop(); 
                 scrollUp.stop(); 
-                scrollBy(e.getWheelRotation() * scrollStepSize);
+                scrollBy(e.wheelRotation * scrollStepSize);
             }
         };
     }
     
-    public attribute scrollDown = Timeline {
+    public var scrollDown = Timeline {
         keyFrames: [
             KeyFrame { 
                 time:100ms 
@@ -229,7 +228,7 @@ public class ScrollView extends CustomNode {
         repeatCount: java.lang.Double.POSITIVE_INFINITY
     };
 
-    public attribute scrollUp = Timeline {
+    public var scrollUp = Timeline {
         keyFrames: [
             KeyFrame { 
                 time:100ms 
@@ -247,28 +246,28 @@ public class ScrollView extends CustomNode {
     public function scrollBy(pixels:Number) {
         var tempY = thumbEndY + pixels;
         // Keep the scroll thumb within the bounds of the scrollbar
-        if (tempY >= 0 and tempY + thumb.getHeight() <= track.getHeight()) {
+        if (tempY >= 0 and tempY + thumb.layoutBounds.height <= track.layoutBounds.height) {
             thumbEndY = tempY; 
         }
         else if (tempY < 0) {
             thumbEndY = 0;
         }
         else {
-            thumbEndY = track.getHeight() - thumb.getHeight();
+            thumbEndY = track.layoutBounds.height - thumb.layoutBounds.height;
         }
     }
     
     public function scrollTo(pos:Number) {
         var tempY = pos;
         // Keep the scroll thumb within the bounds of the scrollbar
-        if (tempY >= 0 and tempY + thumb.getHeight() <= track.getHeight()) {
+        if (tempY >= 0 and tempY + thumb.layoutBounds.height <= track.layoutBounds.height) {
             thumbEndY = tempY; 
         }
         else if (tempY < 0) {
             thumbEndY = 0;
         }
         else {
-            thumbEndY = track.getHeight() - thumb.getHeight();
+            thumbEndY = track.layoutBounds.height - thumb.layoutBounds.height;
         }
     }
     
