@@ -12,7 +12,8 @@ import javafx.lang.Duration;
  */
 
 public class TwitterAPISettingsVO {
-    public attribute getFriendTimelineInterval:Duration;
-    public attribute getRepliesInterval:Duration;
-    public attribute getDirectMessagesInterval:Duration;
+    public var getFriendTimelineInterval:Duration;
+    public var getUserTimelineInterval:Duration;
+    public var getRepliesInterval:Duration;
+    public var getDirectMessagesInterval:Duration;
 }

@@ -11,9 +11,11 @@ package tweetbox.valueobject;
  */
 
 public class GroupVO {
-    public attribute id:String;
-    public attribute title:String;
-    public attribute newUpdates:Integer;
-    public attribute filter:String;
-    public attribute imageURL:String;
+    public var id:String;
+    public var title:String;
+    public var newUpdates:Integer;
+    public var updates:java.util.List;
+    public var filter:String;
+    public var imageURL:String;
+    public var expanded:Boolean=false;
 }

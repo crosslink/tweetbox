@@ -22,13 +22,14 @@ import java.lang.System;
 
 public class ConfigVO {
     
-    private attribute accounts:Map = new HashMap();
-    public attribute numAccounts = bind accounts.size();
+    var accounts:Map = new HashMap();
+    public var numAccounts = bind accounts.size();
     
-    public attribute twitterAPISettings = TwitterAPISettingsVO {
-        getDirectMessagesInterval: bind 5m
-        getFriendTimelineInterval: bind 5m
-        getRepliesInterval: bind 5m
+    public var twitterAPISettings = TwitterAPISettingsVO {
+        getDirectMessagesInterval: 1m
+        getFriendTimelineInterval: 1m
+        getUserTimelineInterval: 1m
+        getRepliesInterval: 1m
     };
     
     public function addAccount(account:AccountVO) {
@@ -55,28 +56,30 @@ public class ConfigVO {
     }
 
     public function save() {
-        var configFile = new File(System.getProperty("user.home")+"/tweetbox.properties");
-        System.out.println("saving config to: " + configFile.getPath());
+        var configFile = new File("{System.getProperty("user.home")}/tweetbox.properties");
+        System.out.println("saving config to: {configFile.getPath()}");
         var config:Properties = new Properties();
+        var outStream:java.io.OutputStream = new java.io.FileOutputStream(configFile);
         var account = getAccount("twitter");
         config.setProperty("twitter.login", account.login);
         config.setProperty("twitter.password", account.password);
         try {
-            config.store(new FileWriter(configFile), "TweetBox properties");
-            System.out.println("config saved to: " + configFile.getPath());
+            config.store(outStream, "TweetBox properties");
+            System.out.println("config saved to: {configFile.getPath()}");
         }
         catch (e:IOException) {
-            System.out.println("could not save config. Cause: " + e);
+            System.out.println("could not save config. Cause: {e}");
         }
     }
     
     public function load() {
-        var configFile = new File(System.getProperty("user.home")+"/tweetbox.properties");
-        System.out.println("loading config from: " + configFile.getPath());
+        var configFile = new File("{System.getProperty("user.home")}/tweetbox.properties");
+        System.out.println("loading config from: {configFile.getPath()}");
         var config:Properties = new Properties();
+        var inStream:java.io.InputStream = new java.io.FileInputStream(configFile);
         try {
-            config.load(new FileReader(configFile));
-            System.out.println("config loaded from: " + configFile.getPath());
+            config.load(inStream);
+            System.out.println("config loaded from: {configFile.getPath()}");
             var account = AccountVO {
                 id: "twitter"
                 login: config.getProperty("twitter.login") as String
@@ -85,7 +88,7 @@ public class ConfigVO {
             addAccount(account);
         }
         catch (e:IOException) {
-            System.out.println("could not load config. Cause: " + e);
+            System.out.println("could not load config. Cause: {e}");
         }
     }
 }
