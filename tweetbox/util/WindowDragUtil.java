@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JWindow;
 import javax.swing.SwingUtilities;
 
 /**
@@ -27,37 +28,27 @@ import javax.swing.SwingUtilities;
 public class WindowDragUtil {
     private final static boolean isMac = "Mac OS X".equals(System.getProperty("os.name"));
     
-    public static void makeFXFrameDraggable(Object object) {
+    public static void makeWindowDraggable(Window window) {
         try {
-            for (Method m : object.getClass().getMethods()) {
-                //System.out.println("method = " + m.getName());
+            if (window instanceof JWindow) {
+                makeJWindowDraggable((JWindow)window);
             }
-            Method getWindow = object.getClass().getMethod("get$window", (Class<?>[])null);
-            //System.out.println("get win = " + getWindow);
-            Object frameObject = getWindow.invoke(object, (Object[])null);
-            //System.out.println("got frameobject = " + frameObject);
-            for (Method m : frameObject.getClass().getMethods()) {
-                //System.out.println("new method = " + m.getName());
-            }
-            Method get = frameObject.getClass().getMethod("get", (Class<?>[])null);
-            JFrame frame = (JFrame) get.invoke(frameObject, (Object[])null);
-            //System.out.println("get = " + frame);
             
-            makeFrameDraggable(frame);
+            
         } catch (Throwable ex) {
             Logger.getLogger(WindowDragUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
-    public static void makeFrameDraggable(JFrame f) {
+    public static void makeJWindowDraggable(JWindow w) {
         if (isMac){
-            f.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", true);
+            w.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", true);
         } else {
             
-            DragHandler dragHandler = (DragHandler)f.getRootPane().getClientProperty("DragHandler");
+            DragHandler dragHandler = (DragHandler)w.getRootPane().getClientProperty("DragHandler");
             if (dragHandler == null) {
                 dragHandler = new DragHandler();
-                f.getRootPane().putClientProperty("DragHandler", dragHandler);
+                w.getRootPane().putClientProperty("DragHandler", dragHandler);
             }
             //add a handler to intercept AWT drag events. If they are not handled
             //by anything else, then use them to move the window around
@@ -86,7 +77,7 @@ public class WindowDragUtil {
                         //will form our x and y offsets
                         Window win = getWindow(e);
                         Point winPoint = win.getLocationOnScreen();
-                        Point mousePoint = e.getLocationOnScreen();
+                        Point mousePoint = e.getPoint();
                         xOffset = winPoint.x - mousePoint.x; //causes xoffset to be negative
                         yOffset = winPoint.y - mousePoint.y; //causes yoffset to be negative
                         //System.out.println("winPoint: " + winPoint + ", mousePoint: " + mousePoint + ", yOffset: " + yOffset);
@@ -96,7 +87,7 @@ public class WindowDragUtil {
                         //System.out.println("resizing = " + resizing);
                     } else if (e.getID() == e.MOUSE_DRAGGED && dragging) {
                         Window win = getWindow(e);
-                        Point mousePoint = e.getLocationOnScreen();
+                        Point mousePoint = e.getPoint();
                         Point winPoint = win.getLocationOnScreen();
                         winPoint.x = mousePoint.x + xOffset;
                         winPoint.y = mousePoint.y + yOffset;
