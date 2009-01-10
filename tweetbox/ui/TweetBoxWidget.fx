@@ -10,19 +10,25 @@ package tweetbox.ui;
  * @author mnankman
  */
 
-import javafx.application.*;
 import javafx.ext.swing.*;
 import javafx.scene.*;
-import javafx.scene.geometry.*;
+import javafx.scene.shape.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.text.*;
 import javafx.scene.transform.*;
+import javafx.stage.*;
 import javafx.animation.*;
 import java.lang.Object;
 import java.lang.System;
+import java.awt.Toolkit;
+import java.awt.Dimension;
+
+import org.jfxtras.stage.WindowHelper;
+
 import com.javafxpert.custom_node.*;
+
 import tweetbox.model.Model;
 import tweetbox.model.State;
 import tweetbox.valueobject.AccountVO;
@@ -30,321 +36,260 @@ import tweetbox.ui.style.Style;
 import tweetbox.control.FrontController;
 import tweetbox.generic.component.ScrollView;
 
-import java.lang.Thread;
-import java.lang.Runnable;
-import java.awt.Toolkit;
-import java.awt.Dimension;
+var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
+
+var nodeStyle = Style.getApplicationStyle();
 
 var deckRef:DeckNode;
 
-public class TweetBoxWidget extends CustomNode {
-    
-    private attribute screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
+var model = Model.getInstance();
+var controller = FrontController.getInstance();
 
-    public attribute width:Integer;
-    public attribute height:Integer;
-    private attribute x:Number = bind (screenSize.getWidth() - width) / 2;
-    private attribute y:Number = bind (screenSize.getHeight() - height) / 2;
+var alertBox = AlertBox {
+    width: 200
+    height: 120
+}
+
+var stageOpacityValue:Number = 0.0;
+
+var stageWidth = 800;
+var stageHeight = 600;
+var stage:Stage = Stage {
+    title: "TweetBox"
+    opacity: bind stageOpacityValue
+    width: bind stageWidth
+    height: bind stageHeight
+    x: (screenSize.width - stageWidth) / 2
+    y: (screenSize.height - stageHeight) / 2
+    //style: StageStyle.TRANSPARENT
+    resizable: true
+
+    icons: [
+        Image {url: "{__DIR__}images/tweetboxlogo25.gif"},
+        Image {url: "{__DIR__}images/tweetboxlogo100.gif"},
+    ]
     
-    private attribute style = Style.getApplicationStyle();
-    
-    public attribute deckRef:DeckNode;
-    
-    private attribute model = Model.getInstance();
-    private attribute controller = FrontController.getInstance();
-    private attribute tweetsView:TweetsView;
-    
-    public attribute alertBox = AlertBox {
-        width: 200
-        height: 120
+    visible: true
+
+    onClose: function():Void {
+        controller.exit();
     }
 
-            
-    public function create(): Node {
-        return Group {
-            var stageRef:Rectangle;
-            var menuRef:MenuNode;
-            var configRef:ConfigView;
-            var updateRef:UpdateNode;
-            var queryRef:QueryNode;
-            var statusBarRef:StatusBar;
-            content: [
-                Rectangle { 
-                    stroke: style.APPLICATION_BACKGROUND_STROKE
-                    x:0 y:0 
-                    width: bind width - 2
-                    height: bind height - 2
-                    arcWidth:20 
-                    arcHeight:20
-                    fill:style.APPLICATION_BACKGROUND_FILL
-                    
-                },       
-                Group {
-                    content: [
-                        Rectangle { 
-                            x:0 
-                            y:0
-                            width: bind width - 2
-                            height: bind 20 
-                            arcWidth:20 
-                            arcHeight:20
-                            fill:style.APPLICATION_TITLEBAR_FILL                    
-                        },       
-                        Text {
-                            translateY: 15
-                            translateX: 10
-                            content: "TweetBox"
-                            fill: style.APPLICATION_TITLEBAR_TEXT_FILL
-                            font: style.APPLICATION_TITLEBAR_TEXT_FONT                 
+    scene: Scene {
+        content: [
+            Group {
+                var stageRef:Rectangle;
+                var menuRef:MenuNode;
+                var configRef:ConfigView;
+                var updateRef:UpdateNode;
+                var queryRef:QueryNode;
+                var statusBarRef:StatusBar;
+                content: [
+                    Rectangle {
+                        stroke: nodeStyle.APPLICATION_BACKGROUND_STROKE
+                        x:0 y:0
+                        width: bind stage.scene.width - 2
+                        height: bind stage.scene.height - 2
+                        //arcWidth:20
+                        //arcHeight:20
+                        fill:nodeStyle.APPLICATION_BACKGROUND_FILL
+
+                    },
+                    /*
+                    Group {
+                        content: [
+                            Rectangle {
+                                x:0
+                                y:0
+                                width: bind width - 2
+                                height: bind 20
+                                arcWidth:20
+                                arcHeight:20
+                                fill:nodeStyle.APPLICATION_TITLEBAR_FILL
+                            },
+                            Text {
+                                translateY: 15
+                                translateX: 10
+                                content: "TweetBox"
+                                fill: nodeStyle.APPLICATION_TITLEBAR_TEXT_FILL
+                                font: nodeStyle.APPLICATION_TITLEBAR_TEXT_FONT
+                            }
+                        ]
+                    },
+                    ButtonNode {
+                        translateY: 3
+                        translateX: bind width - 20
+                        title: "exit"
+                        imageURL: "{__DIR__}icons/cancel.png"
+                        action:
+                        function():Void {
+                            fadeOut.play();
                         }
-                    ]
-                },
-                ButtonNode {
-                    translateY: 3
-                    translateX: bind width - 20
-                    title: "exit"
-                    imageURL: "{__DIR__}icons/cancel.png"
-                    action:
-                    function():Void {
-                        fadeOut.start();
+                    },
+                    */
+                    deckRef = DeckNode {
+                        translateX: 3
+                        translateY: 30
+                        fadeInDur: 0ms
+                        content: [
+                        // The "Home" page
+                            HomeView {
+                                translateY: 5
+                                width: bind stage.scene.width - 200
+                                height: bind stage.scene.height - 150
+                                id: "Home"
+                            },
+                        // The "Config" page
+                            Group {
+                                id: "Config"
+                                content: [
+                                    configRef = ConfigView {
+                                        translateX: bind stage.scene.width / 2 - configRef.layoutBounds.width / 2
+                                        translateY: bind stage.scene.height / 2
+                                    }
+                                ]
+                            },
+                        // The "Profile" page
+                            Group {
+                                id: "Profile"
+                                content: [
+                                    HTMLNode {
+                                        width: 300
+                                        html: "<h1>The profile page</h1>"
+                                        font: nodeStyle.UPDATE_TEXT_FONT
+                                    }
+                                ]
+                            },
+                        // The "Help" page
+                            Group {
+                                id: "Help"
+                                content: [
+                                    ScrollView {
+                                        height: 200
+                                        width: 250
+                                        content :[
+                                            HTMLNode {
+                                                width: 300
+                                                html: "<em>emphasized</em><br><strong>bold</strong><br><a href=\"http://www.twitter.com\">link</a>"
+                                                font: nodeStyle.UPDATE_TEXT_FONT
+                                            },
+                                            HTMLNode {
+                                                width: 200
+                                                html: "Morbi scelerisque eros cursus purus. Aenean felis mauris, tristique vitae, blandit nec, accumsan at, pede. Donec cursus pede ac mi. Fusce elementum consectetuer sapien. Nullam tempus metus in felis. Nunc viverra, risus in gravida rhoncus, erat justo congue augue, non vehicula dui quam in dui. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin at eros. Donec egestas euismod felis. Sed urna arcu, vulputate eu, dictum sit amet, auctor sit amet, sem. Proin pharetra ligula vitae elit. Ut lorem ante, semper vitae, dapibus id, consequat et, magna. "
+                                                font: nodeStyle.UPDATE_TEXT_FONT
+                                            }
+                                        ]
+
+                                    }
+
+                                ]
+
+                            }
+
+                        ]
+                    },
+                    menuRef = MenuNode {
+                        translateX: bind stage.scene.width / 2 - menuRef.layoutBounds.width / 2
+                        translateY: bind stage.scene.height - 50
+                        buttons: [
+                            ButtonNode {
+                                title: "Home"
+                                imageURL: "{__DIR__}icons/home.png"
+                                action:
+                                function():Void {
+                                    deckRef.visibleNodeId = "Home";
+                                }
+                            },
+                            ButtonNode {
+                                title: "Profile"
+                                imageURL: "{__DIR__}icons/friends.png"
+                                action:
+                                function():Void {
+                                    deckRef.visibleNodeId = "Profile";
+                                }
+                            },
+                            ButtonNode {
+                                title: "Config"
+                                imageURL: "{__DIR__}icons/config.png"
+                                action:
+                                function():Void {
+                                    deckRef.visibleNodeId = "Config";
+                                }
+                            },
+                            ButtonNode {
+                                title: "Help"
+                                imageURL: "{__DIR__}icons/help.png"
+                                action:
+                                function():Void {
+                                    alertBox.show(0,0,0,0);
+                                    deckRef.visibleNodeId = "Help";
+                                }
+                            }
+                        ]
+                    },
+                    statusBarRef = StatusBar {
+                        translateY: bind stage.scene.height - 22
+                        width: bind stage.scene.width - 2
+                        height: bind 20
+                        state: bind model.state;
                     }
-                },
-                deckRef = DeckNode {
-                    translateX: 3
-                    translateY: 30
-                    fadeInDur: 700ms
-                    content: [
-                    // The "Home" page
-                        VBox {
-                            id: "Home"
-                            spacing: 4
-                            content: [
-                                updateRef = UpdateNode {
-                                    translateY: 0
-                                    text: bind model.updateText
-                                    translateX: bind width / 2 - updateRef.getWidth() / 2
-                                },
-                                tweetsView = TweetsView {
-                                    translateY:20
-                                    height: bind height - 170
-                                    width: bind width - 20
-                                },
-                            ]
-                        },
-                    // The "Search" page
-                        /*
-                        VBox {
-                            var searchResultsView:TweetsView
-                            id: "Search"
-                            spacing: 4
-                            content: [
-                                searchResultsView = TweetsView {
-                                    tweets: bind model.searchResults
-                                    height: bind height - 120
-                                    width: bind width - 10
-                                },
-                                queryRef = QueryNode {
-                                    translateX: bind width / 2 - updateRef.getWidth() / 2
-                                }
-                            ]
-                        },
-                        */
-                    // The "Config" page
-                        Group {
-                            id: "Config"
-                            content: [
-                                configRef = ConfigView {
-                                    translateX: bind width / 2 - configRef.getWidth() / 2
-                                    translateY: bind height / 2
-                                }
-                            ]
-                        },
-                    // The "Profile" page
-                        Group {
-                            id: "Profile"
-                            content: [
-                                HTMLNode {
-                                    width: 300
-                                    html: "<h1>The profile page</h1>"
-                                    font: style.UPDATE_TEXT_FONT
-                                }
-                            ]
-                        },
-                    // The "Help" page
-                        Group {
-                            id: "Help"
-                            content: [
-                                ScrollView {
-                                    height: 200
-                                    width: 250
-                                    content :[
-                                        HTMLNode {
-                                            width: 300
-                                            html: "<em>emphasized</em><br><strong>bold</strong><br><a href=\"http://www.twitter.com\">link</a>"
-                                            font: style.UPDATE_TEXT_FONT
-                                        },
-                                        HTMLNode {
-                                            width: 200
-                                            html: "Morbi scelerisque eros cursus purus. Aenean felis mauris, tristique vitae, blandit nec, accumsan at, pede. Donec cursus pede ac mi. Fusce elementum consectetuer sapien. Nullam tempus metus in felis. Nunc viverra, risus in gravida rhoncus, erat justo congue augue, non vehicula dui quam in dui. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin at eros. Donec egestas euismod felis. Sed urna arcu, vulputate eu, dictum sit amet, auctor sit amet, sem. Proin pharetra ligula vitae elit. Ut lorem ante, semper vitae, dapibus id, consequat et, magna. "
-                                            font: style.UPDATE_TEXT_FONT
-                                        }
-                                    ]
 
-                                }
+                ]
 
-                            ]
-
-                        }
-                    
-                    ]
-                },
-                menuRef = MenuNode {
-                    translateX: bind width / 2 - menuRef.getWidth() / 2
-                    translateY: bind height - 50
-                    buttons: [
-                        ButtonNode {
-                            title: "Home"
-                            imageURL: "{__DIR__}icons/home.png"
-                            action:
-                            function():Void {
-                                deckRef.visibleNodeId = "Home";
-                            }
-                        },
-                        /*ButtonNode {
-                            title: "Search"
-                            imageURL: "{__DIR__}icons/find.png"
-                            action:
-                            function():Void {
-                                deckRef.visibleNodeId = "Search";
-                            }
-                        },*/
-                        ButtonNode {
-                            title: "Profile"
-                            imageURL: "{__DIR__}icons/friends.png"
-                            action:
-                            function():Void {
-                                deckRef.visibleNodeId = "Profile";
-                            }
-                        },
-                        ButtonNode {
-                            title: "Config"
-                            imageURL: "{__DIR__}icons/config.png"
-                            action:
-                            function():Void {
-                                deckRef.visibleNodeId = "Config";
-                            }
-                        },
-                        ButtonNode {
-                            title: "Help"
-                            imageURL: "{__DIR__}icons/help.png"
-                            action:
-                            function():Void {
-                                alertBox.show(0,0,0);
-                                deckRef.visibleNodeId = "Help";
-                            }
-                        }
-                    ]
-                },
-                statusBarRef = StatusBar {
-                    translateY: bind height - 22
-                    width: bind width - 2
-                    height: bind 20          
-                    state: bind model.state;
-                }
-                
-            ]
-
-        };
-    }
-    
-    public attribute frame = Frame {
-        x: bind x
-        y: bind y
-        stage: Stage {
-            fill: null
-        }
-        title: "TweetBox"
-        opacity: 0.0
-        width: width
-        height: height
-	windowStyle: WindowStyle.TRANSPARENT
-        resizable: true
-        icons: [
-            Image {url: "{__DIR__}images/tweetboxlogo25.gif"},
-            Image {url: "{__DIR__}images/tweetboxlogo100.gif"},
-        ]
-
-    }
-    
-    public attribute fadeIn = Timeline {
-        keyFrames: [
-            KeyFrame { 
-                time:1s 
-                values: [
-                    frame.opacity => 1.0 tween Interpolator.LINEAR,
-                 ]
-            },
-        ]
-    };
-    
-    public attribute fadeOut = Timeline {
-        keyFrames: [
-            KeyFrame { time:1s values:frame.opacity => 0.0 tween Interpolator.LINEAR 
-                action: function() { controller.exit(); }
-            },
-        ]
-    };
-    
-    public attribute checkUpdates = Timeline {
-        keyFrames: [
-            KeyFrame { 
-                time: 1s 
-                action: function() { 
-                    if (model.newFriendUpdates + model.newReplies + model.newDirectMessages > 0) {
-                        alertBox.show(model.newFriendUpdates, model.newReplies, model.newDirectMessages);
-                    }
-                    if (model.newFriendUpdates + model.newReplies + model.newDirectMessages + model.newMyUpdates > 0) {
-                        tweetsView.refreshContents();
-                        model.newFriendUpdates = 0;
-                        model.newDirectMessages = 0;
-                        model.newReplies = 0;
-                        model.newMyUpdates = 0;
-                    }
-                }
             }
         ]
-        repeatCount: java.lang.Double.POSITIVE_INFINITY
-    };
-}
-/*
-var splash = Splash {
-    width: 300
-    height: 200
-}
-splash.frame.stage.content = [splash];
-splash.show();
-*/
-var controller = FrontController.getInstance();
-controller.start();
 
-var widget = TweetBoxWidget {
-    width: 700
-    height: 700
+    }
 }
 
-widget.alertBox.frame.stage.content = [widget.alertBox];
-widget.checkUpdates.start();
-widget.frame.stage.content = [widget];
+
+var fadeIn = Timeline {
+    keyFrames: [
+        KeyFrame {
+            time:1s
+            values: [
+                stageOpacityValue => 1.0 tween Interpolator.LINEAR,
+             ]
+        },
+    ]
+};
+
+var fadeOut = Timeline {
+    keyFrames: [
+        KeyFrame { time:1s values:stageOpacityValue => 0.0 tween Interpolator.LINEAR
+            action: function() { controller.exit(); }
+        },
+    ]
+};
+
+var checkUpdates = Timeline {
+    keyFrames: [
+        KeyFrame {
+            time: 10s
+            action: function() {
+                if (model.newFriendUpdates + model.newUserUpdates + model.newReplies + model.newDirectMessages > 0) {
+                    alertBox.show(model.newFriendUpdates, model.newUserUpdates, model.newReplies, model.newDirectMessages);
+                }
+            }
+        }
+    ]
+    repeatCount: java.lang.Double.POSITIVE_INFINITY
+};
 
 
 
-if (controller.getAccount("twitter") == null) 
-    widget.deckRef.visibleNodeId = "Config"
-else
-    widget.deckRef.visibleNodeId = "Home";
+function run() {
+    var controller = FrontController.getInstance();
+    controller.start();
+
+    //checkUpdates.play();
     
-tweetbox.util.WindowDragUtil.makeFXFrameDraggable(widget.frame);
-widget.frame.visible = true;
-widget.fadeIn.start();
+    if (controller.getAccount("twitter") == null)
+        deckRef.visibleNodeId = "Config"
+    else
+        deckRef.visibleNodeId = "Home";
 
-
+    //tweetbox.util.WindowDragUtil.makeWindowDraggable(WindowHelper.extractWindow(stage));
+    //stage.visible = true;
+    //fadeIn.play();
+}

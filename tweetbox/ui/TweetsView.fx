@@ -6,9 +6,9 @@
 
 package tweetbox.ui;
 
-import javafx.input.*;
+import javafx.scene.input.*;
 import javafx.scene.*;
-import javafx.scene.geometry.*;
+import javafx.scene.shape.*;
 import javafx.scene.transform.*;
 import javafx.scene.effect.*;
 import javafx.scene.layout.*;
@@ -21,114 +21,135 @@ import javafx.ext.swing.*;
 import java.lang.System;
 import java.util.List;
 
+import twitter4j.Status;
+
 import tweetbox.model.*;
 import tweetbox.generic.component.ScrollView;
 import tweetbox.control.FrontController;
 import tweetbox.valueobject.TweetListVO;
 import tweetbox.valueobject.TweetVO;
 import tweetbox.valueobject.GroupVO;
+import tweetbox.ui.style.Style;
 
 /**
  * @author mnankman
  */
-public class TweetsView extends CustomNode {
+public class TweetsView extends CustomNode, Resizable {
 
-  /*
-   * Contains the height of the view in pixels.
-   */
-    public attribute height:Integer;
+    public var minimizedHeight:Number;
+    public var minimizedWidth:Number;
 
-  /*
-   * Contains the width of the view in pixels.
-   */
-    public attribute width:Integer;
-    
-    public attribute tweetList:TweetListVO = TweetListVO{};
-    
-    public attribute numTweets:Integer = bind tweetList.numTweets;
-    
-    private attribute model = Model.getInstance();
-    private attribute controller = FrontController.getInstance();
-    
-    
-    private attribute selectedGroup:GroupVO = model.groups[0]; 
+    var expandedWidth:Number = width;
+    var expandedHeight:Number = height;
 
-    private attribute groupButtons:GroupButton[] = bind [
-        for (group:GroupVO in model.groups) {
-            GroupButton {
-                width: 150
-                height: 40
-                groupId: bind group.id
-                caption: bind group.title
-                newUpdates: bind group.newUpdates
-                imageURL: group.imageURL
-                onSelected: bind function(id:String) {
-                    selectGroup(group.id)
-                }
-            }                          
-        }
-    ];
+    override var width on replace {
+        expandedWidth = width;
+    }
+
+    override var height on replace {
+        expandedHeight = height;
+    }
+
+    public var tweets:List;
     
-    private attribute scrollViewRef:ScrollView;
+    public var newTweets:Integer on replace {
+        numRows = tweets.size();
+        // this could be done more optimally, but good enough for now
+    };
+
+    public var minimized:Boolean = false;
+    
+    public var onExpand:function(view:TweetsView):Void;
+    public var onMinimize:function(view:TweetsView):Void;
+
+    public var title:String = "updates";
+    var scrollViewRef:ScrollView;
                 
-    public function create(): Node {
-        selectGroup("all");
-        return Group {
-            var numRows:Integer = bind numTweets;
-            var groupButtonsBoxRef:VBox;
-            var scrollViewWidth:Number = bind width - groupButtonsBoxRef.getWidth() - 5
-            content: [
-                scrollViewRef = ScrollView {
-                    translateX: 5
-                    height: bind height
-                    width: bind scrollViewWidth - 5
-                    content: bind for (row:Integer in [0..numRows-1]) {
-                        TweetNode {
-                            width: bind scrollViewWidth - 5
-                            tweet: bind tweetList.getTweet(row);
-                        }                                                
-                    }
-                },
-                groupButtonsBoxRef = VBox {
-                    translateX: width - 150
-                    translateY: 0
-                    content: bind groupButtons
+    var numRows:Integer;
+    var groupButtonsBoxRef:VBox;
+            
+    var nodeStyle = Style.getApplicationStyle();
+
+    var expandedView:Group = Group {
+        content: [
+            Rectangle {
+                fill: null
+                stroke: nodeStyle.GROUPBUTTON_BORDER_COLOR
+                fill: null;
+                x:0
+                y:0
+                width: bind expandedWidth
+                height: bind expandedHeight
+            },
+            TitleBar {
+                translateX: 2
+                translateY:2
+                title: bind "{title} ({numRows})"
+                width: bind expandedWidth - 1
+
+                onMouseClicked: function(me:MouseEvent):Void {
+                     minimized = true;
+                     onMinimize(this);
                 }
-            ]
+            },
+            scrollViewRef = ScrollView {
+                translateX: 5
+                translateY: 25
+                height: bind expandedHeight - 25
+                width: bind expandedWidth - 8
+                content: bind for (row:Integer in [0..numRows - 1]) {
+                    TweetNode {
+                        width: bind expandedWidth - 5
+                        tweet: TweetVO {
+                            status: bind tweets.get(row) as Status;
+                        }
+                    }
+                }
+            }
+        ]
+    }
+
+    var minimizedView:Group = Group {
+        content: [
+            Rectangle {
+                fill: nodeStyle.GROUPBUTTON_HOVER_FILL
+                stroke: nodeStyle.GROUPBUTTON_BORDER_COLOR
+                fill: null
+                x:0
+                y:0
+                width: bind minimizedWidth
+                height: bind minimizedHeight
+
+                onMouseClicked: function(me:MouseEvent):Void {
+                     minimized = false;
+                     onExpand(this);
+                }
+            },
+            TitleBar {
+                translateX: 2
+                translateY: 2
+                title: bind "{title} ({numRows})"
+                width: bind minimizedWidth-1
+
+                onMouseClicked: function(me:MouseEvent):Void {
+                     minimized = false;
+                     onExpand(this);
+                }
+            }
+        ]
+    }
+
+    var currentView:Node = bind if (minimized) minimizedView else expandedView;
+
+    public override function create(): Node {
+        numRows = tweets.size();
+        return Group {
+            content: bind currentView
         };
     }
     
-    public function selectGroup(id:String) {
-        System.out.println("showUpdates: " + id);
-        var newSelection:GroupVO[] = for (group:GroupVO in model.groups) {
-            if (group.id == id) group else null;
-        }
-        if (newSelection.size()>0) {
-            selectedGroup = newSelection[0];
-            for (button:GroupButton in groupButtons) {
-                button.selected = (button.groupId == id);
-            }
-            refreshContents();
-        }
-    }
-    
-    public function refreshContents() { 
-        if (controller.canExecute) {
-            tweetList.clear();
-            if (selectedGroup.id == "all") {
-                tweetList.addTweetsFromStatusList(model.friendUpdates);
-                tweetList.addTweetsFromStatusList(model.replies);
-                tweetList.addTweetsFromStatusList(model.myUpdates);       
-                tweetList.addTweetsFromStatusList(model.directMessages);       
-            }
-            else if (selectedGroup.id == "replies") {
-                tweetList.addTweetsFromStatusList(model.replies);
-            }
-            else if (selectedGroup.id == "direct") {
-                tweetList.addTweetsFromStatusList(model.directMessages);
-            }
-        }
-        //scrollViewRef.scrollToTop();        
+    public override function toString():String {
+        return "TweetsView[title = {title}, newTweets = {newTweets}, minimized = {minimized}] ";
     }
 
 }

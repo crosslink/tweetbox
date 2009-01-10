@@ -6,14 +6,13 @@
 
 package tweetbox.ui;
 
-import javafx.ext.swing.Component;
-import javafx.ext.swing.Label;
-import javafx.ext.swing.ComponentView;
+import javafx.ext.swing.SwingComponent;
+import javafx.ext.swing.SwingLabel;
 import javax.swing.JLabel;
 import javafx.scene.CustomNode;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Font;
+import javafx.scene.text.Font;
 import javafx.scene.paint.Paint;
 
 /**
@@ -23,36 +22,34 @@ import javafx.scene.paint.Paint;
 public class HTMLNode extends CustomNode {
     
     /** the html content that this node must render. surrounding <html> tag can be omited */
-    public attribute html:String on replace {
+    public var html:String on replace {
         htmlLabel.setText("<html><p width=\"{width}\">{html}</p></html>");
     }
     
     /** the base font to be used for this node */
-    public attribute font:Font on replace {
-        htmlLabel.setFont(font.getAWTFont())
+    public var font:Font on replace {
+        htmlLabel.setFont(new java.awt.Font(font.name, java.awt.Font.PLAIN, font.size))
     }
     
     /** the width of this node in pixels */
-    public attribute width:Integer on replace {
+    public var width:Number on replace {
         htmlLabel.setSize(width, height)
     }
     
     /** the height of this node in pixels */
-    public attribute height:Integer on replace {
+    public var height:Number on replace {
         htmlLabel.setSize(width, height)
     }
         
-    private attribute htmlLabel:JLabel = new JLabel();
+    var htmlLabel:JLabel = new JLabel();
     
-    public function create(): Node {
+    public override function create(): Node {
         htmlLabel.setText("<html><p width=\"{width}\">{html}</p></html>");
-        htmlLabel.setFont(font.getAWTFont());
+        htmlLabel.setFont(new java.awt.Font(font.name, java.awt.Font.PLAIN, font.size));
         htmlLabel.setSize(width, height);
         return Group {
             content: [
-                ComponentView {
-                    component: Component.fromJComponent(htmlLabel);
-                }
+                SwingComponent.wrap(htmlLabel)
             ]
 
         };

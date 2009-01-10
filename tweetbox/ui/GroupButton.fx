@@ -10,11 +10,11 @@ import javafx.scene.CustomNode;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.text.Text;
-import javafx.scene.geometry.Rectangle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.Color;
-import javafx.input.MouseEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.animation.*;
 import javafx.scene.image.*;
 
@@ -26,36 +26,36 @@ import tweetbox.ui.style.*;
 
 public class GroupButton extends CustomNode {
     
-    private attribute style = Style.getApplicationStyle();
+    var nodeStyle = Style.getApplicationStyle();
     
-    public attribute width:Integer;
-    public attribute height:Integer;
+    public var width:Integer;
+    public var height:Integer;
     
-    public attribute caption:String;
-    public attribute groupId:String;
+    public var caption:String;
+    public var groupId:String;
 
-    private attribute _newUpdates:Integer;
-    public attribute newUpdates:Integer on replace {
+    var _newUpdates:Integer;
+    public var newUpdates:Integer on replace {
         _newUpdates = newUpdates;
     }
     
-    private attribute btnImage:Image;
-    public attribute imageURL:String on replace {
+    var btnImage:Image;
+    public var imageURL:String on replace {
         btnImage = Image {
             url: imageURL
         };
     }
    
-    public attribute selected:Boolean = false on replace {
-        fadeTimeline.start();
+    public var selected:Boolean = false on replace {
+        fadeTimeline.play();
     }
     
-    public attribute onSelected:function(id:String):Void;
+    public var onSelected:function(id:String):Void;
     
-    public attribute opacityValue:Number = 0;
+    public var opacityValue:Number = 0;
 
-    private attribute fadeTimeline = Timeline {
-        toggle: true
+    var fadeTimeline = Timeline {
+        autoReverse: true
         keyFrames: [
             KeyFrame {
                 time: 500ms
@@ -64,7 +64,7 @@ public class GroupButton extends CustomNode {
         ]
     };
 
-    public function create(): Node {
+    public override function create(): Node {
         return Group {
             content: [
                 Rectangle {
@@ -74,7 +74,7 @@ public class GroupButton extends CustomNode {
                     visible: false;
                 },
                 Rectangle {
-                    fill: bind style.GROUPBUTTON_SELECTED_FILL
+                    fill: bind nodeStyle.GROUPBUTTON_SELECTED_FILL
                     opacity: bind opacityValue
                     x:0 y:0 
                     width: bind width - 2
@@ -84,11 +84,11 @@ public class GroupButton extends CustomNode {
                     blocksMouse: true
                     
                     onMouseEntered: function(me:MouseEvent):Void {
-                        fadeTimeline.start();
+                        fadeTimeline.play();
                     }
                     
                     onMouseExited: function(me:MouseEvent):Void {
-                        fadeTimeline.start();
+                        fadeTimeline.play();
                         me.node.effect = null;
                     }
                     
@@ -98,7 +98,7 @@ public class GroupButton extends CustomNode {
                     }
                 },
                 Rectangle { 
-                    fill: bind style.GROUPBUTTON_SELECTED_FILL
+                    fill: bind nodeStyle.GROUPBUTTON_SELECTED_FILL
                     visible: bind selected
                     stroke: null
                     x:0 y:0 
@@ -109,7 +109,7 @@ public class GroupButton extends CustomNode {
                 },
                 Rectangle { 
                     fill: null
-                    stroke: style.GROUPBUTTON_BORDER_COLOR
+                    stroke: nodeStyle.GROUPBUTTON_BORDER_COLOR
                     fill: null;
                     x:0 y:0 
                     width: bind width - 2
@@ -129,15 +129,15 @@ public class GroupButton extends CustomNode {
                         Text {
                             translateX: 10
                             content: bind "{caption}"
-                            fill: style.GROUPBUTTON_TEXT_FILL
-                            font: style.GROUPBUTTON_TEXT_FONT
+                            fill: nodeStyle.GROUPBUTTON_TEXT_FILL
+                            font: nodeStyle.GROUPBUTTON_TEXT_FONT
                         },
                         Text {
                             translateX: 10
                             visible: bind (_newUpdates>0)
                             content: bind " ({_newUpdates})"
-                            fill: style.GROUPBUTTON_TEXT_FILL
-                            font: style.GROUPBUTTON_TEXT_FONT
+                            fill: nodeStyle.GROUPBUTTON_TEXT_FILL
+                            font: nodeStyle.GROUPBUTTON_TEXT_FONT
                         }
                     ]
 

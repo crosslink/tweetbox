@@ -10,8 +10,8 @@ import javafx.scene.CustomNode;
 import javafx.scene.Group;
 import javafx.animation.*;
 import javafx.scene.Node;
-import javafx.scene.geometry.Rectangle;
-import javafx.scene.geometry.Line;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import tweetbox.ui.style.Style;
 import tweetbox.model.Model;
@@ -24,8 +24,8 @@ import java.lang.System;
 
 public class StatusBar extends CustomNode {
     
-    private attribute style = Style.getApplicationStyle();
-    private attribute stateDescriptions:String[] = [
+    var nodeStyle = Style.getApplicationStyle();
+    var stateDescriptions:String[] = [
         "ready",
         "error",
         "retrieving updates...",
@@ -35,45 +35,45 @@ public class StatusBar extends CustomNode {
         "sending update...",
         "yeah, go ahead, shut me down again"
     ];
-    private attribute statusTextNodes:Node[] = [
+    var statusTextNodes:Node[] = [
         for (i:Integer in [State.READY..State.EXITING]) {
             Text {
                 id: "{i}"
                 content: bind stateDescriptions[i]  
-                fill: style.APPLICATION_STATUSBAR_TEXT_FILL
-                font: style.APPLICATION_STATUSBAR_TEXT_FONT                 
+                fill: nodeStyle.APPLICATION_STATUSBAR_TEXT_FILL
+                font: nodeStyle.APPLICATION_STATUSBAR_TEXT_FONT
             }
         }                        
     ];
-    private attribute visibleTextNodeRef:Node;
+    var textContainer:Group;
     
-    public attribute width:Integer;
-    public attribute height:Integer;
+    public var width:Number;
+    public var height:Number;
     
-    public attribute state:Integer on replace {
-        visibleTextNodeRef = statusTextNodes[state];
-        System.out.println("state changed to: " + state + " (" + stateDescriptions[state] + ")");
-        System.out.println("visible text node: " + visibleTextNodeRef.id);
-        fadeTimeline.start();
+    public var state:Integer on replace {
+        textContainer.content = [statusTextNodes[state]];
+        System.out.println("state changed to: {state} ({stateDescriptions[state]})");
+        System.out.println("visible text node: {statusTextNodes[state].id}");
+        fadeTimeline.play();
     }
 
   /**
-   * This attribute is interpolated by a Timeline, and the opacity
-   * attribute of this DeckNode class is bound to it.  This helps
+   * This var is interpolated by a Timeline, and the opacity
+   * var of this DeckNode class is bound to it.  This helps
    * enable the fade-in effect.
    */
-   private attribute opa:Number;
+   var opa:Number;
 
   /**
-   * Override the opacity attribute so that it can be bound to the
-   * opa attribute that is interpolated by a Timeline
+   * Override the opacity var so that it can be bound to the
+   * opa var that is interpolated by a Timeline
    */
-  override attribute opacity = bind opa;
+  override var opacity = bind opa;
 
   /**
    * A Timeline to control the fade-in behavior
    */
-    private attribute fadeTimeline =
+    var fadeTimeline =
     Timeline {
         keyFrames: [
             KeyFrame {
@@ -83,7 +83,7 @@ public class StatusBar extends CustomNode {
         ]
     };
 
-    public function create(): Node {
+    public override function create(): Node {
         return Group {
             var textRef:Node;
             content: [
@@ -92,19 +92,16 @@ public class StatusBar extends CustomNode {
                     y:0
                     width: bind width - 2
                     height: bind 20 
-                    arcWidth:20 
-                    arcHeight:20
-                    fill:style.APPLICATION_STATUSBAR_FILL                    
+                    fill:nodeStyle.APPLICATION_STATUSBAR_FILL
                 },
                 Line {
                     startX: 10
                     endX: bind width - 10;
-                    stroke: style.APPLICATION_STATUSBAR_TEXT_FILL
+                    stroke: nodeStyle.APPLICATION_STATUSBAR_TEXT_FILL
                 },
-                Group {
+                textContainer = Group {
                     translateY: 15
-                    translateX: bind (width - visibleTextNodeRef.getWidth())/2;
-                    content: bind visibleTextNodeRef
+                    translateX: bind (width - statusTextNodes[state].layoutBounds.width)/2;
                 }
             ]
 

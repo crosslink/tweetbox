@@ -10,10 +10,11 @@ package tweetbox.ui.style;
  * @author mnankman
  */
 
-public class Style {
-    private static attribute APPLICATIONSTYLE = MeshStyle{}
-    
-    public static function getApplicationStyle() {
-        return APPLICATIONSTYLE;
-    }
+// var APPLICATIONSTYLE = SummerSurfStyle{}
+var APPLICATIONSTYLE = MeshStyle{}
+// var APPLICATIONSTYLE = BlackCoffeeStyle{}
+
+public function getApplicationStyle() {
+    return APPLICATIONSTYLE;
 }
+

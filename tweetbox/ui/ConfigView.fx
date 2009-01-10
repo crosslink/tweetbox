@@ -10,56 +10,48 @@ import javafx.scene.CustomNode;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
-import javafx.ext.swing.ComponentView;
-import javafx.ext.swing.Component;
-import javafx.ext.swing.Label;
-import javafx.ext.swing.TextField;
+import javafx.ext.swing.SwingComponent;
+import javafx.ext.swing.SwingLabel;
+import javafx.ext.swing.SwingTextField;
 import javax.swing.JPasswordField;
 import tweetbox.model.Model;
 import com.javafxpert.custom_node.*;
 import tweetbox.control.FrontController;
+import tweetbox.generic.component.ScrollView;
 
 /**
  * @author mnankman
  */
 public class ConfigView extends CustomNode {
     
-    public function create(): Node {
+    public override function create(): Node {
         return Group {
             var controller = FrontController.getInstance();
             var model = Model.getInstance();
             var twitterAccount = controller.getAccount("twitter");
-            var loginField:TextField;
+            var loginField:SwingTextField;
             var passwordField:JPasswordField = new JPasswordField(twitterAccount.password, 20);
             content: [
-                ComponentView {
+                SwingLabel {
                     translateX: 10
                     translateY: 10
-                    component: Label {
-                        text: "login: "
-                    }
+                    text: "login: "
                 },       
-                ComponentView {
+                SwingTextField {
                     translateX: 100
                     translateY: 10
-                    component: 
-                    loginField = TextField {
-                        columns: 20
-                        text: twitterAccount.login
-                    }
-
+                    columns: 20
+                    text: twitterAccount.login
                 },
-                ComponentView {
+                SwingLabel {
                     translateX: 10
                     translateY: 40
-                    component: Label {
-                        text: "password: "
-                    }
+                    text: "password: "
                 },                                    
-                ComponentView {
+                Group {
                     translateX: 100
                     translateY: 40
-                    component: Component.fromJComponent(passwordField)
+                    content: SwingComponent.wrap(passwordField)
 
                 },
                 MenuNode {
@@ -71,7 +63,7 @@ public class ConfigView extends CustomNode {
                             imageURL: "{__DIR__}icons/accept.png"
                             action:
                             function():Void {
-                                twitterAccount.password = passwordField.getText();
+                                twitterAccount.password = "{passwordField.getPassword()}";
                                 controller.updateAccount(twitterAccount);
                             }
                         }
