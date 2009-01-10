@@ -7,7 +7,6 @@
 package tweetbox.ui.layout;
 
 import javafx.scene.Node;
-import tweetbox.util.SequenceUtil;
 
 /**
  * @author mnankman
