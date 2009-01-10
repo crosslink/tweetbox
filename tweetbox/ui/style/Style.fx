@@ -10,9 +10,7 @@ package tweetbox.ui.style;
  * @author mnankman
  */
 
-// var APPLICATIONSTYLE = SummerSurfStyle{}
 var APPLICATIONSTYLE = MeshStyle{}
-// var APPLICATIONSTYLE = BlackCoffeeStyle{}
 
 public function getApplicationStyle() {
     return APPLICATIONSTYLE;

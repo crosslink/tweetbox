@@ -10,28 +10,21 @@ package tweetbox.ui;
  * @author mnankman
  */
 
-import javafx.ext.swing.*;
 import javafx.scene.*;
 import javafx.scene.shape.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.*;
-import javafx.scene.text.*;
 import javafx.scene.transform.*;
 import javafx.stage.*;
 import javafx.animation.*;
 import java.lang.Object;
-import java.lang.System;
 import java.awt.Toolkit;
 import java.awt.Dimension;
-
-import org.jfxtras.stage.WindowHelper;
 
 import com.javafxpert.custom_node.*;
 
 import tweetbox.model.Model;
 import tweetbox.model.State;
-import tweetbox.valueobject.AccountVO;
 import tweetbox.ui.style.Style;
 import tweetbox.control.FrontController;
 import tweetbox.generic.component.ScrollView;
@@ -43,6 +36,7 @@ var nodeStyle = Style.getApplicationStyle();
 var deckRef:DeckNode;
 
 var model = Model.getInstance();
+
 var controller = FrontController.getInstance();
 
 var alertBox = AlertBox {
@@ -53,7 +47,9 @@ var alertBox = AlertBox {
 var stageOpacityValue:Number = 0.0;
 
 var stageWidth = 800;
+
 var stageHeight = 600;
+
 var stage:Stage = Stage {
     title: "TweetBox"
     opacity: bind stageOpacityValue
@@ -95,38 +91,6 @@ var stage:Stage = Stage {
                         fill:nodeStyle.APPLICATION_BACKGROUND_FILL
 
                     },
-                    /*
-                    Group {
-                        content: [
-                            Rectangle {
-                                x:0
-                                y:0
-                                width: bind width - 2
-                                height: bind 20
-                                arcWidth:20
-                                arcHeight:20
-                                fill:nodeStyle.APPLICATION_TITLEBAR_FILL
-                            },
-                            Text {
-                                translateY: 15
-                                translateX: 10
-                                content: "TweetBox"
-                                fill: nodeStyle.APPLICATION_TITLEBAR_TEXT_FILL
-                                font: nodeStyle.APPLICATION_TITLEBAR_TEXT_FONT
-                            }
-                        ]
-                    },
-                    ButtonNode {
-                        translateY: 3
-                        translateX: bind width - 20
-                        title: "exit"
-                        imageURL: "{__DIR__}icons/cancel.png"
-                        action:
-                        function():Void {
-                            fadeOut.play();
-                        }
-                    },
-                    */
                     deckRef = DeckNode {
                         translateX: 3
                         translateY: 30
@@ -289,7 +253,6 @@ function run() {
     else
         deckRef.visibleNodeId = "Home";
 
-    //tweetbox.util.WindowDragUtil.makeWindowDraggable(WindowHelper.extractWindow(stage));
     //stage.visible = true;
     //fadeIn.play();
 }

@@ -85,32 +85,20 @@ public class TweetNode extends CustomNode {
             var profileImageUrl:String = bind user.profileImageUrl;
             var screenNameRef: Text;
             var statusRef: HTMLNode;
-            var outerBoxRef: HBox;
             var imageViewRef:ImageView;
-            
-            content: bind [
-                
-                Rectangle {
-                    height: bind outerBoxRef.layoutBounds.height + 5
-                    visible: false;
-                },
-                Rectangle {
-                    translateY: 4
-                    width: bind width - 20
-                    height: bind outerBoxRef.layoutBounds.height + 4
-                    arcWidth:10 
-                    arcHeight:10
-                    fill: nodeStyle.UPDATE_FILL
-                },
-                outerBoxRef = HBox { 
+
+            var tweetContentBox:HBox = HBox {
                     translateY: 2
                     //verticalAlignment: VerticalAlignment.TOP
                     content: [
+
+                        // renders the profile image
+                        // TODO: create generic component for this
                         imageViewRef = ImageView {
                             translateX: 5
                             translateY: 4
-                            image: bind 
-                                if (profileImageUrl == null) 
+                            image: bind
+                                if (profileImageUrl == null)
                                     buddyImage
                                 else
                                     Image {
@@ -118,21 +106,22 @@ public class TweetNode extends CustomNode {
                                         url: "{user.profileImageUrl}"
                                     }
 
-                            onMouseEntered:
-                            function(me:MouseEvent):Void {
+                            onMouseEntered: function(me:MouseEvent):Void {
                                 mouseInside = true;
                                 fadeTimeline.rate = 1.0;
                                 fadeTimeline.play();
                             }
 
-                            onMouseExited:
-                            function(me:MouseEvent):Void {
+                            onMouseExited: function(me:MouseEvent):Void {
                                 mouseInside = false;
                                 fadeTimeline.rate = -1.0;
                                 fadeTimeline.play();
                                 me.node.effect = null
                             }
                         },
+
+                        // renders the content of the tweet
+                        // TODO: currently, the HTML node is noninteractive. Needs to become interactive of course.
                         HTMLNode {
                             translateY: 5
                             translateX: 7
@@ -141,8 +130,9 @@ public class TweetNode extends CustomNode {
                             font: nodeStyle.UPDATE_TEXT_FONT
                         },
                     ]
-                },
-                Group {
+                };
+
+            var tweetActionButtonGroup: Group = Group {
                     translateX: 5
                     translateY: 5
                     opacity: bind buttonOpacityValue
@@ -193,7 +183,29 @@ public class TweetNode extends CustomNode {
                         },
                     ]
 
-                }
+                };
+
+            content: bind [
+
+                // invisible rectangle to consume height (and a bit extra to create a gap between tweets
+                Rectangle {
+                    height: bind tweetContentBox.layoutBounds.height + 5
+                    visible: false;
+                },
+                
+                // the background of the tweet
+                Rectangle {
+                    translateY: 4
+                    width: bind width - 20
+                    height: bind tweetContentBox.layoutBounds.height + 4
+                    arcWidth:10 
+                    arcHeight:10
+                    fill: nodeStyle.UPDATE_FILL
+                },
+                
+                tweetContentBox,
+
+                tweetActionButtonGroup
                 
             ]
         };
