@@ -23,86 +23,118 @@ import java.io.IOException;
 
 import javafx.animation.*;
 
-import twitter4j.*;
+import twitter4j.AsyncTwitter;
+import twitter4j.TwitterAdapter;
+import twitter4j.TwitterListener;
+import twitter4j.Status;
+import twitter4j.DirectMessage;
+import twitter4j.TwitterException;
 
 /**
  * @author mnankman
  */
 
 public class FrontController {
-    private attribute model = Model.getInstance();
+    var model = Model.getInstance();
     
-    private attribute isReady:Boolean = bind (model.state == State.READY);
-    private attribute isError:Boolean = bind (model.state == State.ERROR);
-    public attribute canExecute:Boolean = bind (isReady or isError);
+    var isReady:Boolean = bind (model.state == State.READY);
+    var isError:Boolean = bind (model.state == State.ERROR);
+    public var canExecute:Boolean = bind (isReady or isError);
     
-    private attribute since:Calendar = Calendar.getInstance();
+    var since:Calendar = Calendar.getInstance();
     
-    private attribute twitter:AsyncTwitter;
-    private attribute twitterListener:TwitterListener;
+    var twitter:AsyncTwitter;
+    var twitterListener:TwitterListener;
     
     public function start() {
         loadConfig();
-        loadFromCache();
+        //loadFromCache();
         var twitterAccount = getAccount("twitter");
         twitter = new AsyncTwitter(twitterAccount.login, twitterAccount.password);
         twitter.setSource("TweetBox");
         
         twitterListener = TwitterAdapter {
             
-            public function updated(status:Status) {
+            public override function updated(status:Status) {
                 System.out.println("update was successfully sent");
-                model.myUpdates.add(0, status);    
-                model.newMyUpdates = 1;
+                model.userUpdates.add(0, status);    
+                model.newUserUpdates = 1;
                 model.updateText = "";
                 model.state = State.READY;
             }
 
-            public function sentDirectMessage(message:DirectMessage) {
+            public override function sentDirectMessage(message:DirectMessage) {
                 System.out.println("direct message was successfully sent");
-                model.myUpdates.add(0, message);    
-                model.newMyUpdates = 1;
+                model.userUpdates.add(0, message);    
+                model.newUserUpdates = 1;
                 model.updateText = "";
                 model.state = State.READY;
             }
 
-            public function gotFriendsTimeline(statuses:List) {
-                System.out.println("statuses received: " + statuses);
-                model.friendUpdates.addAll(0, statuses);    
+            public override function gotFriendsTimeline(statuses:List) {
+                System.out.println("statuses received: {statuses}");
+                for (i:Integer in [0..statuses.size()-1]) {
+                    var s:Status = statuses.get(i) as Status;
+                    if (not model.friendUpdates.contains(s)) {
+                        model.friendUpdates.add(s);
+                    }
+                }
                 model.newFriendUpdates = statuses.size();
                 model.state = State.READY;
-                System.out.println("model.newFriendUpdates = " + model.newFriendUpdates);    
+                System.out.println("model.newFriendUpdates = {model.newFriendUpdates}");
             }            
             
-            public function gotReplies(statuses:List) {
-                System.out.println("replies received: " + statuses);
-                model.replies.addAll(0, statuses);    
+            public override function gotUserTimeline(statuses:List) {
+                System.out.println("statuses received: {statuses}");
+                for (i:Integer in [0..statuses.size()-1]) {
+                    var s:Status = statuses.get(i) as Status;
+                    if (not model.userUpdates.contains(s)) {
+                        model.userUpdates.add(s);
+                    }
+                }
+                model.newUserUpdates = statuses.size();
+                model.state = State.READY;
+                System.out.println("model.newUserUpdates = {model.newUserUpdates}");
+            }            
+            
+            public override function gotReplies(statuses:List) {
+                System.out.println("replies received: {statuses}");
+                for (i:Integer in [0..statuses.size()-1]) {
+                    var s:Status = statuses.get(i) as Status;
+                    if (not model.replies.contains(s)) {
+                        model.replies.add(s);
+                    }
+
+                }
                 model.newReplies = statuses.size();
                 model.state = State.READY;
-                System.out.println("model.newReplies = " + model.newReplies);    
+                System.out.println("model.newReplies = {model.newReplies}");
             }            
             
-            public function gotDirectMessages(statuses:List) {
-                System.out.println("direct messages received: " + statuses);
+            public override function gotDirectMessages(statuses:List) {
+                System.out.println("direct messages received: {statuses}");
                 model.directMessages.addAll(0, statuses);    
                 model.newDirectMessages = statuses.size();
                 model.state = State.READY;
-                System.out.println("model.newDirectMessages = " + model.newDirectMessages);    
+                System.out.println("model.newDirectMessages = {model.newDirectMessages}");
             }            
             
-            public function onException(e:TwitterException, method:Integer) {
+            public override function onException(e:TwitterException, method:Integer) {
                 model.state = State.ERROR;
                 if (method == AsyncTwitter.UPDATE) {
-                    System.out.println("error during update, cause: " + e);
+                    System.out.println("error during update, cause: {e}");
                     
                 } else if (method == AsyncTwitter.FRIENDS_TIMELINE ) {
-                    System.out.println("error during retrieval of friends timeline, cause: " + e);
+                    System.out.println("error during retrieval of friends timeline, cause: {e}");
+          
+                } else if (method == AsyncTwitter.USER_TIMELINE ) {
+                    System.out.println("error during retrieval of user timeline, cause: {e}");
           
                 } else if (method == AsyncTwitter.REPLIES ) {
-                    System.out.println("error during retrieval of replies, cause: " + e);
+                    System.out.println("error during retrieval of replies, cause: {e}");
           
                 } else if (method == AsyncTwitter.DIRECT_MESSAGES ) {
-                    System.out.println("error during retrieval of direct messages, cause: " + e);
+                    System.out.println("error during retrieval of direct messages, cause: {e}");
           
                 } else {
                     
@@ -111,15 +143,17 @@ public class FrontController {
             }
         };
         
-        getFriendsTimelineTimeline.start();
-        getRepliesTimeline.start();
-        getDirectMessagesTimeline.start();
+        getFriendsTimelineTimeline.play();
+        getUserTimelineTimeline.play();
+        getRepliesTimeline.play();
+        getDirectMessagesTimeline.play();
+        
     }
     
     public function exit() {
         model.state = State.EXITING;
         saveConfig();
-        saveToCache();
+        //saveToCache();
         System.exit(0);
     }
     
@@ -128,6 +162,15 @@ public class FrontController {
             System.out.println("get friends timeline");
             model.state = State.RETRIEVING_TIMELINE;
             twitter.getFriendsTimelineAsync(getSinceDate(model.friendUpdates), twitterListener);
+            model.state = State.READY;
+        }
+    }
+    
+    public function getUserTimeline() {
+        if  (canExecute) {
+            System.out.println("get user timeline");
+            model.state = State.RETRIEVING_TIMELINE;
+            twitter.getUserTimelineAsync(twitterListener);
             model.state = State.READY;
         }
     }
@@ -158,7 +201,7 @@ public class FrontController {
         }
     }
     
-    private function getSinceDate(statuses:List): Date {
+    function getSinceDate(statuses:List): Date {
         var cal:Calendar = Calendar.getInstance();
         if (statuses != null and statuses.size() > 0) {
             var status:Status = statuses.get(0) as Status;
@@ -215,8 +258,8 @@ public class FrontController {
     }
 
     public function loadFromCache() {
-        var cacheFile = new File(System.getProperty("user.home")+"/tweetbox.cache");
-        System.out.println("loading cache from: " + cacheFile.getPath());
+        var cacheFile = new File("{System.getProperty("user.home")}/tweetbox.cache");
+        System.out.println("loading cache from: {cacheFile.getPath()}");
         var cache:Vector = new Vector();
         try {
             var input:ObjectInputStream = new ObjectInputStream(new FileInputStream(cacheFile));
@@ -228,38 +271,38 @@ public class FrontController {
             model.replies = cache.get(1) as Vector;
             model.newReplies = model.replies.size();
             
-            model.myUpdates = cache.get(2) as Vector;
-            model.newMyUpdates = model.myUpdates.size();
+            model.userUpdates = cache.get(2) as Vector;
+            model.newUserUpdates = model.userUpdates.size();
             
             model.directMessages = cache.get(3) as Vector;
             model.newDirectMessages = model.directMessages.size();
             
-            System.out.println("cache loaded from: " + cacheFile.getPath());
+            System.out.println("cache loaded from: {cacheFile.getPath()}");
         }
         catch (e:IOException) {
-            System.out.println("could not read from cache. Cause: " + e);
+            System.out.println("could not read from cache. Cause: {e}");
         }
     }
     
     public function saveToCache() {
-        var cacheFile = new File(System.getProperty("user.home")+"/tweetbox.cache");
-        System.out.println("saving cache to: " + cacheFile.getPath());
+        var cacheFile = new File("{System.getProperty("user.home")}/tweetbox.cache");
+        System.out.println("saving cache to: {cacheFile.getPath()}");
         var cache:Vector = new Vector();
         cache.add(model.friendUpdates);
         cache.add(model.replies);
-        cache.add(model.myUpdates);
+        cache.add(model.userUpdates);
         cache.add(model.directMessages);
         try {
             var output:ObjectOutputStream = new ObjectOutputStream(new FileOutputStream(cacheFile));
             output.writeObject(cache);
-            System.out.println("cache saved to: " + cacheFile.getPath());
+            System.out.println("cache saved to: {cacheFile.getPath()}");
         }
         catch (e:IOException) {
-            System.out.println("could not save cache. Cause: " + e);
+            System.out.println("could not save cache. Cause: {e}");
         }
     }
 
-    private attribute getFriendsTimelineTimeline = Timeline {
+    var getFriendsTimelineTimeline = Timeline {
         keyFrames: [
             KeyFrame { 
                 time: 1ms 
@@ -276,7 +319,24 @@ public class FrontController {
         repeatCount: java.lang.Double.POSITIVE_INFINITY
     };
 
-    private attribute getRepliesTimeline = Timeline {
+    var getUserTimelineTimeline = Timeline {
+        keyFrames: [
+            KeyFrame { 
+                time: 1ms 
+                action: function() { 
+                    getUserTimeline();
+                }
+            },
+            KeyFrame { 
+                time: bind model.config.twitterAPISettings.getUserTimelineInterval 
+                action: function() {}
+            }
+            
+        ]
+        repeatCount: java.lang.Double.POSITIVE_INFINITY
+    };
+
+    var getRepliesTimeline = Timeline {
         keyFrames: [
             KeyFrame { 
                 time: 1ms 
@@ -293,7 +353,7 @@ public class FrontController {
         repeatCount: java.lang.Double.POSITIVE_INFINITY
     };
 
-    private attribute getDirectMessagesTimeline = Timeline {
+    var getDirectMessagesTimeline = Timeline {
         keyFrames: [
             KeyFrame { 
                 time: 1ms 
@@ -310,19 +370,16 @@ public class FrontController {
         repeatCount: java.lang.Double.POSITIVE_INFINITY
     };
 
-  //-----------------Use Singleton pattern to get model instance -----------------------
-    private static attribute instance:FrontController;
+}
 
-    public static function getInstance():FrontController {
-        if (instance == null) {
-            instance = FrontController {}
-;
-        }
-        else {
-            instance;
-        }
+//-----------------Use Singleton pattern to get frontcontroller instance -----------------------
+var instance:FrontController;
+
+public function getInstance():FrontController {
+    if (instance == null) {
+        instance = FrontController {};
     }
-
-    
-    
+    else {
+        instance;
+    }
 }
