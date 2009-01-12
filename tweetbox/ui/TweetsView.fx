@@ -96,7 +96,7 @@ public class TweetsView extends CustomNode, Resizable {
                 translateX: 5
                 translateY: 25
                 height: bind expandedHeight - 25
-                width: bind expandedWidth - 8
+                width: bind expandedWidth - 25
                 content: bind for (row:Integer in [0..numRows - 1]) {
                     TweetNode {
                         width: bind expandedWidth - 5
