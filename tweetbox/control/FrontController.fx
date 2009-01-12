@@ -142,16 +142,13 @@ public class FrontController {
                 }
             }
         };
-        
-        getFriendsTimelineTimeline.play();
-        getUserTimelineTimeline.play();
-        getRepliesTimeline.play();
-        getDirectMessagesTimeline.play();
-        
+
+        startReceiving();
     }
     
     public function exit() {
         model.state = State.EXITING;
+        stopReceiving();
         saveConfig();
         //saveToCache();
         System.exit(0);
@@ -369,6 +366,20 @@ public class FrontController {
         ]
         repeatCount: java.lang.Double.POSITIVE_INFINITY
     };
+
+    function startReceiving(): Void {
+        getFriendsTimelineTimeline.play();
+        getUserTimelineTimeline.play();
+        getRepliesTimeline.play();
+        getDirectMessagesTimeline.play();
+    }
+
+    function stopReceiving(): Void {
+        getFriendsTimelineTimeline.stop();
+        getUserTimelineTimeline.stop();
+        getRepliesTimeline.stop();
+        getDirectMessagesTimeline.stop();
+    }
 
 }
 
