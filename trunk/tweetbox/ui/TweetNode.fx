@@ -118,6 +118,11 @@ public class TweetNode extends CustomNode {
                                 fadeTimeline.play();
                                 me.node.effect = null
                             }
+
+                            clip: Rectangle {
+                                width: 50
+                                height: 50
+                            }
                         },
 
                         // renders the content of the tweet

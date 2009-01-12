@@ -99,8 +99,8 @@ var stage:Stage = Stage {
                         // The "Home" page
                             HomeView {
                                 translateY: 5
-                                width: bind stage.scene.width - 200
-                                height: bind stage.scene.height - 150
+                                width: bind stage.scene.width - 20
+                                height: bind stage.scene.height - 130
                                 id: "Home"
                             },
                         // The "Config" page

@@ -19,6 +19,7 @@ import tweetbox.model.Model;
 import tweetbox.ui.layout.FlowBox;
 import tweetbox.ui.layout.SortingFlowBox;
 import tweetbox.valueobject.GroupVO;
+import tweetbox.generic.component.ScrollView;
 
 /**
  * @author mnankman
@@ -36,8 +37,8 @@ public class HomeView extends CustomNode {
     var minimizedTweetsViewWidth:Integer = 120;
 
     var expandedTweetsViewMinimalWidth:Integer = 300;
-    var expandedTweetsViews:Integer = 0;
-    var expandedTweetsViewHeight:Number = bind height - 20;
+    var expandedTweetsViewHeight:Number = bind height - 50;
+    var expandedTweetsViewWidth:Number = 300;
 
     var tweetsViews:TweetsView[] = for (group:GroupVO in model.groups) {
         TweetsView {
@@ -46,7 +47,7 @@ public class HomeView extends CustomNode {
             tweets: bind group.updates
             newTweets: bind group.newUpdates
             height: bind expandedTweetsViewHeight
-            width: bind expandedTweetsViewWidth()
+            width: bind expandedTweetsViewWidth
             minimizedHeight: bind minimizedTweetsViewHeight
             minimizedWidth: bind minimizedTweetsViewWidth
             onExpand: onTweetsViewExpand
@@ -66,18 +67,26 @@ public class HomeView extends CustomNode {
                             text: bind model.updateText
                             translateX: 10
                         },
-                        SortingFlowBox {
-                            orientation: FlowBox.FLOWORIENTATION_VERTICAL
-                            width: bind width - 50
+                        ScrollView {
+                            width: bind width 
                             height: bind height - 20
-                            spacing: 10
-                            translateX: 10
-                            translateY: 20
-                            content: tweetsViews
-                            compareNodes: function(node1:Object, node2:Object): Integer {
-                                return compareTweetsViews(node1 as TweetsView, node2 as TweetsView);
-                            }
+                            content: [
+                                SortingFlowBox {
+                                    orientation: FlowBox.FLOWORIENTATION_VERTICAL
+                                    width: bind width
+                                    height: bind height - 20
+                                    spacing: 10
+                                    translateX: 10
+                                    translateY: 20
+                                    content: tweetsViews
+                                    compareNodes: function(node1:Object, node2:Object): Integer {
+                                        return compareTweetsViews(node1 as TweetsView, node2 as TweetsView);
+                                    }
+                                }
+                            ]
+
                         }
+                        
                     ]
                 }
             ]
@@ -101,26 +110,9 @@ public class HomeView extends CustomNode {
         return result;
     }
 
-    function expandedTweetsViewWidthCorrection():Number {
-        if (expandedTweetsViews == sizeof tweetsViews)
-            return 0.0
-        else
-            return minimizedTweetsViewWidth;
-    }
-
-    bound function expandedTweetsViewWidth(): Number {
-        return Math.min(
-            Math.max(
-                width / expandedTweetsViews - expandedTweetsViewWidthCorrection(),
-                expandedTweetsViewMinimalWidth),
-            width - expandedTweetsViewWidthCorrection());
-    }
-
     function onTweetsViewMinimize(view:TweetsView):Void {
-        if (expandedTweetsViews>0) expandedTweetsViews--;
     }
 
     function onTweetsViewExpand(view:TweetsView):Void {
-        if (expandedTweetsViews < sizeof tweetsViews) expandedTweetsViews++;
     }
 }
