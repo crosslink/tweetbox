@@ -23,13 +23,14 @@ import java.io.IOException;
 
 import javafx.animation.*;
 
-import twitter4j.AsyncTwitter;
+import twitter4j.Twitter;
 import twitter4j.TwitterAdapter;
 import twitter4j.TwitterListener;
 import twitter4j.Status;
 import twitter4j.DirectMessage;
 import twitter4j.TwitterException;
 
+import org.jfxtras.async.JFXWorker;
 /**
  * @author mnankman
  */
@@ -37,112 +38,17 @@ import twitter4j.TwitterException;
 public class FrontController {
     var model = Model.getInstance();
     
-    var isReady:Boolean = bind (model.state == State.READY);
-    var isError:Boolean = bind (model.state == State.ERROR);
-    public var canExecute:Boolean = bind (isReady or isError);
-    
     var since:Calendar = Calendar.getInstance();
     
-    var twitter:AsyncTwitter;
-    var twitterListener:TwitterListener;
-    
+    var twitter:Twitter;
+
     public function start() {
         loadConfig();
         //loadFromCache();
         var twitterAccount = getAccount("twitter");
-        twitter = new AsyncTwitter(twitterAccount.login, twitterAccount.password);
+        twitter = new Twitter(twitterAccount.login, twitterAccount.password);
         twitter.setSource("TweetBox");
         
-        twitterListener = TwitterAdapter {
-            
-            public override function updated(status:Status) {
-                System.out.println("update was successfully sent");
-                model.userUpdates.add(0, status);    
-                model.newUserUpdates = 1;
-                model.updateText = "";
-                model.state = State.READY;
-            }
-
-            public override function sentDirectMessage(message:DirectMessage) {
-                System.out.println("direct message was successfully sent");
-                model.userUpdates.add(0, message);    
-                model.newUserUpdates = 1;
-                model.updateText = "";
-                model.state = State.READY;
-            }
-
-            public override function gotFriendsTimeline(statuses:List) {
-                System.out.println("statuses received: {statuses}");
-                for (i:Integer in [0..statuses.size()-1]) {
-                    var s:Status = statuses.get(i) as Status;
-                    if (not model.friendUpdates.contains(s)) {
-                        model.friendUpdates.add(s);
-                    }
-                }
-                model.newFriendUpdates = statuses.size();
-                model.state = State.READY;
-                System.out.println("model.newFriendUpdates = {model.newFriendUpdates}");
-            }            
-            
-            public override function gotUserTimeline(statuses:List) {
-                System.out.println("statuses received: {statuses}");
-                for (i:Integer in [0..statuses.size()-1]) {
-                    var s:Status = statuses.get(i) as Status;
-                    if (not model.userUpdates.contains(s)) {
-                        model.userUpdates.add(s);
-                    }
-                }
-                model.newUserUpdates = statuses.size();
-                model.state = State.READY;
-                System.out.println("model.newUserUpdates = {model.newUserUpdates}");
-            }            
-            
-            public override function gotReplies(statuses:List) {
-                System.out.println("replies received: {statuses}");
-                for (i:Integer in [0..statuses.size()-1]) {
-                    var s:Status = statuses.get(i) as Status;
-                    if (not model.replies.contains(s)) {
-                        model.replies.add(s);
-                    }
-
-                }
-                model.newReplies = statuses.size();
-                model.state = State.READY;
-                System.out.println("model.newReplies = {model.newReplies}");
-            }            
-            
-            public override function gotDirectMessages(statuses:List) {
-                System.out.println("direct messages received: {statuses}");
-                model.directMessages.addAll(0, statuses);    
-                model.newDirectMessages = statuses.size();
-                model.state = State.READY;
-                System.out.println("model.newDirectMessages = {model.newDirectMessages}");
-            }            
-            
-            public override function onException(e:TwitterException, method:Integer) {
-                model.state = State.ERROR;
-                if (method == AsyncTwitter.UPDATE) {
-                    System.out.println("error during update, cause: {e}");
-                    
-                } else if (method == AsyncTwitter.FRIENDS_TIMELINE ) {
-                    System.out.println("error during retrieval of friends timeline, cause: {e}");
-          
-                } else if (method == AsyncTwitter.USER_TIMELINE ) {
-                    System.out.println("error during retrieval of user timeline, cause: {e}");
-          
-                } else if (method == AsyncTwitter.REPLIES ) {
-                    System.out.println("error during retrieval of replies, cause: {e}");
-          
-                } else if (method == AsyncTwitter.DIRECT_MESSAGES ) {
-                    System.out.println("error during retrieval of direct messages, cause: {e}");
-          
-                } else {
-                    
-                   
-                }
-            }
-        };
-
         startReceiving();
     }
     
@@ -154,50 +60,134 @@ public class FrontController {
         System.exit(0);
     }
     
-    public function getFriendsTimeline() {
-        if  (canExecute) {
-            System.out.println("get friends timeline");
-            model.state = State.RETRIEVING_TIMELINE;
-            twitter.getFriendsTimelineAsync(getSinceDate(model.friendUpdates), twitterListener);
-            model.state = State.READY;
+    public function getFriendsTimelineInBackground():Void {
+        var worker:JFXWorker = JFXWorker {
+            inBackground: getFriendsTimeline
+            onDone: function(result): Void {
+                processReceivedStatuses(result as List, model.friendUpdates);
+            }
         }
     }
-    
+
+    public function getFriendsTimeline(): Object {
+        var result:Object = null;
+        System.out.println("get friends timeline");
+        result = twitter.getFriendsTimeline(getSinceDate(model.friendUpdates.updates));
+        return result;
+    }
+
+    public function getUserTimelineInBackground():Void {
+        var worker:JFXWorker = JFXWorker {
+            inBackground: getUserTimeline
+            onDone: function(result): Void {
+                processReceivedStatuses(result as List, model.userUpdates);
+            }
+        }
+    }
+
     public function getUserTimeline() {
-        if  (canExecute) {
-            System.out.println("get user timeline");
-            model.state = State.RETRIEVING_TIMELINE;
-            twitter.getUserTimelineAsync(twitterListener);
-            model.state = State.READY;
+        var result:Object = null;
+        System.out.println("get user timeline");
+        result = twitter.getUserTimeline();
+        return result;
+    }
+
+    public function getRepliesInBackground():Void {
+        var worker:JFXWorker = JFXWorker {
+            inBackground: getReplies
+            onDone: function(result): Void {
+                processReceivedStatuses(result as List, model.replies);
+            }
         }
     }
-    
+
     public function getReplies() {
-        if  (canExecute) {
-            System.out.println("get replies");
-            model.state = State.RETRIEVING_REPLIES;
-            twitter.getRepliesAsync(twitterListener);
-            model.state = State.READY;
+        var result:Object = null;
+        System.out.println("get replies");
+        result = twitter.getReplies();
+        return result;
+    }
+
+    public function getDirectMessagesInBackground():Void {
+        var worker:JFXWorker = JFXWorker {
+            inBackground: getDirectMessages
+            onDone: function(result): Void {
+                processReceivedDirectMessages(result as List, model.directMessages);
+            }
         }
     }
-    
+
     public function getDirectMessages() {
-        if  (canExecute) {
-            System.out.println("get direct messages");
-            model.state = State.RETRIEVING_DIRECT_MESSAGES;
-            twitter.getDirectMessagesAsync(getSinceDate(model.directMessages), twitterListener);
-            model.state = State.READY;
-        }
+        var result:Object = null;
+        System.out.println("get direct messages");
+        //result = twitter.getDirectMessages(getSinceDate(model.directMessages.updates));
+        result = twitter.getDirectMessages();
+        return result;
     }
     
     public function sendUpdate(update:String) {
-        if  (canExecute) {
-            var twitterAccount = getAccount("twitter");
-            model.state = State.SENDING_UPDATE;
-            twitter.updateAsync(update, twitterListener);
-        }
+        var result:Object = null;
+        var twitterAccount = getAccount("twitter");
+        result = twitter.update(update);
+        return result;
     }
     
+    function processReceivedStatuses(statuses:List, group:GroupVO) {
+        if (statuses != null) {
+            System.out.println("processReceivedStatuses({statuses.size()} statuses, {group.id})");
+            var temp:List = new Vector();
+            for (i:Integer in [0..statuses.size()-1]) {
+                var s:Status = statuses.get(i) as Status;
+                if (not group.updates.contains(s)) {
+                    temp.add(s);
+                }
+            }
+            group.updates.addAll(0, temp);
+            group.newUpdates = statuses.size();
+            model.state = State.READY;
+            System.out.println("group[{group.id}].newUpdates = {group.newUpdates}");
+        }
+        else {
+            System.out.println("processReceivedStatuses(null, {group.id})");
+        }
+    }
+
+    function processReceivedDirectMessages(dms:List, group:GroupVO) {
+        if (dms != null) {
+            System.out.println("processReceivedStatuses({dms.size()} statuses, {group.id})");
+            var temp:List = new Vector();
+            for (i:Integer in [0..dms.size()-1]) {
+                var dm:DirectMessage = dms.get(i) as DirectMessage;
+                if (not group.updates.contains(dm)) {
+                    temp.add(dm);
+                }
+            }
+            group.updates.addAll(0, temp);
+            group.newUpdates = dms.size();
+            model.state = State.READY;
+            System.out.println("group[{group.id}].newUpdates = {group.newUpdates}");
+        }
+        else {
+            System.out.println("processReceivedStatuses(null, {group.id})");
+        }
+    }
+
+    function updated(status:Status) {
+        System.out.println("update was successfully sent");
+        model.userUpdates.updates.add(0, status);
+        model.userUpdates.newUpdates = 1;
+        model.updateText = "";
+        model.state = State.READY;
+    }
+
+    function sentDirectMessage(message:DirectMessage) {
+        System.out.println("direct message was successfully sent");
+        model.directMessages.updates.add(0, message);
+        model.directMessages.newUpdates = 1;
+        model.updateText = "";
+        model.state = State.READY;
+    }
+
     function getSinceDate(statuses:List): Date {
         var cal:Calendar = Calendar.getInstance();
         if (statuses != null and statuses.size() > 0) {
@@ -211,11 +201,6 @@ public class FrontController {
     }
 
     public function search(query:String) {
-        if  (canExecute) {
-            model.state = State.RETRIEVING_SEARCHRESULTS;
-            model.state = State.READY;
-            //System.out.println("searchResults.size = " + model.numSearchResults);model.state = State.READY;
-        }
     }
     
     public function reply(to:String) {
@@ -254,6 +239,7 @@ public class FrontController {
         model.config.load();
     }
 
+    /*
     public function loadFromCache() {
         var cacheFile = new File("{System.getProperty("user.home")}/tweetbox.cache");
         System.out.println("loading cache from: {cacheFile.getPath()}");
@@ -298,13 +284,13 @@ public class FrontController {
             System.out.println("could not save cache. Cause: {e}");
         }
     }
-
+    */
     var getFriendsTimelineTimeline = Timeline {
         keyFrames: [
             KeyFrame { 
                 time: 1ms 
                 action: function() { 
-                    getFriendsTimeline();
+                    getFriendsTimelineInBackground();
                 }
             },
             KeyFrame { 
@@ -321,7 +307,7 @@ public class FrontController {
             KeyFrame { 
                 time: 1ms 
                 action: function() { 
-                    getUserTimeline();
+                    getUserTimelineInBackground();
                 }
             },
             KeyFrame { 
@@ -338,7 +324,7 @@ public class FrontController {
             KeyFrame { 
                 time: 1ms 
                 action: function() { 
-                    getReplies();
+                    getRepliesInBackground();
                 }
             },
             KeyFrame { 
@@ -355,7 +341,7 @@ public class FrontController {
             KeyFrame { 
                 time: 1ms 
                 action: function() { 
-                    getDirectMessages();
+                    getDirectMessagesInBackground();
                 }
             },
             KeyFrame { 
