@@ -19,62 +19,44 @@ import tweetbox.valueobject.*;
  * The model behind the TableNode example
  */
 public class Model {
-  
-   public var friendUpdates:List = new Vector();
-   public var newFriendUpdates:Integer;
-   
-   public var replies:List = new Vector();
-   public var newReplies:Integer;
-   
-   public var directMessages:List = new Vector();
-   public var newDirectMessages:Integer;
-
-   public var userUpdates:List = new Vector();
-   public var newUserUpdates:Integer = 0;
-
-   public var allNewUpdates:Integer = bind newFriendUpdates + newReplies + newDirectMessages + newUserUpdates;
-   
-   /*
-   public var searchResults:TweetListVO = new TweetListVO;
-   public var numSearchResults:Integer = bind searchResults.numTweets;
-   */
 
    public var config:ConfigVO = ConfigVO{}
    
    public var state:Integer;
    
    public var updateText:String;
+
+   public var friendUpdates:GroupVO = GroupVO {
+        expanded: true
+        id: "friends"
+        title:"Friends"
+        imageURL: "{__DIR__}../ui/icons/friends.png"
+    }
+
+    public var replies:GroupVO = GroupVO {
+        expanded: true
+        id: "replies"
+        title:"Replies"
+        imageURL: "{__DIR__}../ui/icons/reply.png"
+    }
+
+    public var directMessages:GroupVO = GroupVO {
+        id: "direct"
+        title:"Direct Messages"
+        imageURL: "{__DIR__}../ui/icons/email.png"
+    }
+
+    public var userUpdates:GroupVO = GroupVO {
+        id: "user"
+        title:"User"
+        imageURL: "{__DIR__}../ui/icons/user.png"
+    }
   
     public var groups:GroupVO[] = [
-        GroupVO {
-            expanded: true
-            id: "friends" 
-            title:"Friends"
-            updates: bind friendUpdates
-            newUpdates: bind newFriendUpdates 
-            imageURL: "{__DIR__}../ui/icons/friends.png"
-        },
-        GroupVO {
-            id: "replies" 
-            title:"Replies" 
-            updates: bind replies
-            newUpdates: bind newReplies
-            imageURL: "{__DIR__}../ui/icons/reply.png"
-        },
-        GroupVO {
-            id: "direct" 
-            title:"Direct Messages" 
-            updates: bind directMessages
-            newUpdates: bind newDirectMessages
-            imageURL: "{__DIR__}../ui/icons/email.png"
-        },
-        GroupVO {
-            id: "user" 
-            title:"User" 
-            updates: bind userUpdates
-            newUpdates: bind newUserUpdates
-            imageURL: "{__DIR__}../ui/icons/user.png"
-        }        
+        friendUpdates,
+        replies,
+        directMessages,
+        userUpdates
     ];
     
 }
