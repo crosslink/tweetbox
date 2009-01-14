@@ -22,6 +22,7 @@ import java.lang.System;
 import java.util.List;
 
 import twitter4j.Status;
+import twitter4j.DirectMessage;
 
 import tweetbox.model.*;
 import tweetbox.generic.component.ScrollView;
@@ -73,7 +74,6 @@ public class TweetsView extends CustomNode, Resizable {
     var expandedView:Group = Group {
         content: [
             Rectangle {
-                fill: null
                 stroke: nodeStyle.GROUPBUTTON_BORDER_COLOR
                 fill: null;
                 x:0
@@ -96,12 +96,19 @@ public class TweetsView extends CustomNode, Resizable {
                 translateX: 5
                 translateY: 25
                 height: bind expandedHeight - 25
-                width: bind expandedWidth - 25
+                width: bind expandedWidth - 20
                 content: bind for (row:Integer in [0..numRows - 1]) {
                     TweetNode {
                         width: bind expandedWidth - 5
                         tweet: TweetVO {
-                            status: bind tweets.get(row) as Status;
+                            status: bind 
+                                if (tweets.get(row) instanceof Status)
+                                    tweets.get(row) as Status
+                                else null
+                            dm: bind
+                                if (tweets.get(row) instanceof DirectMessage)
+                                    tweets.get(row) as DirectMessage
+                                else null
                         }
                     }
                 }
@@ -110,11 +117,10 @@ public class TweetsView extends CustomNode, Resizable {
     }
 
     var minimizedView:Group = Group {
-        content: [
+        content: bind [
             Rectangle {
-                fill: nodeStyle.GROUPBUTTON_HOVER_FILL
-                stroke: nodeStyle.GROUPBUTTON_BORDER_COLOR
                 fill: null
+                stroke: nodeStyle.GROUPBUTTON_BORDER_COLOR
                 x:0
                 y:0
                 width: bind minimizedWidth
@@ -135,7 +141,20 @@ public class TweetsView extends CustomNode, Resizable {
                      minimized = false;
                      onExpand(this);
                 }
-            }
+            },
+            if (numRows>0) {
+                ImageView {
+                    translateX: 10
+                    translateY: 40
+                
+                    image: bind profileImageForMostRecentUpdate()
+                
+                    clip: Rectangle {
+                        width: 50
+                        height: 50
+                    }
+                }
+            } else null
         ]
     }
 
@@ -152,4 +171,11 @@ public class TweetsView extends CustomNode, Resizable {
         return "TweetsView[title = {title}, newTweets = {newTweets}, minimized = {minimized}] ";
     }
 
+    bound function profileImageForMostRecentUpdate(): Image {
+        var status:Status = tweets.get(0) as Status;
+        return Image {
+            backgroundLoading: true
+            url: status.getUser().getProfileImageURL().toString()
+        }
+    }
 }
