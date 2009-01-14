@@ -231,9 +231,11 @@ var checkUpdates = Timeline {
         KeyFrame {
             time: 10s
             action: function() {
+                /*
                 if (model.newFriendUpdates + model.newUserUpdates + model.newReplies + model.newDirectMessages > 0) {
                     alertBox.show(model.newFriendUpdates, model.newUserUpdates, model.newReplies, model.newDirectMessages);
                 }
+                */
             }
         }
     ]
