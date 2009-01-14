@@ -13,8 +13,8 @@ package tweetbox.valueobject;
 public class GroupVO {
     public var id:String;
     public var title:String;
-    public var newUpdates:Integer;
-    public var updates:java.util.List;
+    public var newUpdates:Integer = 0;
+    public var updates:java.util.List = new java.util.Vector();
     public var filter:String;
     public var imageURL:String;
     public var expanded:Boolean=false;
