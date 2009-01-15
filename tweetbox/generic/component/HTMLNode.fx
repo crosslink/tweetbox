@@ -4,7 +4,7 @@
  * Created on 17-nov-2008, 20:11:49
  */
 
-package tweetbox.ui;
+package tweetbox.generic.component;
 
 import javafx.ext.swing.SwingComponent;
 import javafx.ext.swing.SwingLabel;
@@ -14,6 +14,9 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Paint;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 
 /**
  * @author mnankman
@@ -53,5 +56,25 @@ public class HTMLNode extends CustomNode {
             ]
 
         };
+    }
+}
+
+function run(): Void {
+    Stage {
+        width: 400
+        height: 400
+        scene: Scene {
+            fill: Color.WHITE
+            content: [
+                HTMLNode {
+                    width: 300
+                    html: "<em>emphasized</em><br><strong>bold</strong><br><a href=\"http://www.google.com\">link</a>"
+                    font: Font {
+                        name: "Sans serif"
+                        size: 11
+                    }
+                }
+            ]
+        }
     }
 }

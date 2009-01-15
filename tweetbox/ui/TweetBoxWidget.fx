@@ -21,19 +21,18 @@ import java.lang.Object;
 import java.awt.Toolkit;
 import java.awt.Dimension;
 
-import com.javafxpert.custom_node.*;
-
 import tweetbox.model.Model;
 import tweetbox.model.State;
 import tweetbox.ui.style.Style;
 import tweetbox.control.FrontController;
 import tweetbox.generic.component.ScrollView;
+import tweetbox.generic.component.Button;
+import tweetbox.generic.component.Window;
+import tweetbox.ui.layout.FlowBox;
 
 var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
 
 var nodeStyle = Style.getApplicationStyle();
-
-var deckRef:DeckNode;
 
 var model = Model.getInstance();
 
@@ -44,21 +43,19 @@ var alertBox = AlertBox {
     height: 120
 }
 
-var stageOpacityValue:Number = 0.0;
+var configDialog = ConfigDialog {}
 
-var stageWidth = 800;
-
-var stageHeight = 600;
+var stageWidth = 810;
+var stageHeight = 700;
 
 var stage:Stage = Stage {
     title: "TweetBox"
-    opacity: bind stageOpacityValue
     width: bind stageWidth
     height: bind stageHeight
     x: (screenSize.width - stageWidth) / 2
     y: (screenSize.height - stageHeight) / 2
-    //style: StageStyle.TRANSPARENT
     resizable: true
+    visible: true
 
     icons: [
         Image {url: "{__DIR__}images/tweetboxlogo25.gif"},
@@ -75,10 +72,7 @@ var stage:Stage = Stage {
         content: [
             Group {
                 var stageRef:Rectangle;
-                var menuRef:MenuNode;
-                var configRef:ConfigView;
-                var updateRef:UpdateNode;
-                var queryRef:QueryNode;
+                var menuRef:Node;
                 var statusBarRef:StatusBar;
                 content: [
                     Rectangle {
@@ -86,110 +80,30 @@ var stage:Stage = Stage {
                         x:0 y:0
                         width: bind stage.scene.width - 2
                         height: bind stage.scene.height - 2
-                        //arcWidth:20
-                        //arcHeight:20
                         fill:nodeStyle.APPLICATION_BACKGROUND_FILL
 
                     },
-                    deckRef = DeckNode {
-                        translateX: 3
-                        translateY: 30
-                        fadeInDur: 0ms
+                    menuRef = FlowBox {
+                        orientation: FlowBox.FLOWORIENTATION_HORIZONTAL
+                        width: bind stage.scene.width * 0.8
+                        translateX: 5
+                        translateY: 5
                         content: [
-                        // The "Home" page
-                            HomeView {
-                                translateY: 5
-                                width: bind stage.scene.width - 20
-                                height: bind stage.scene.height - 130
-                                id: "Home"
-                            },
-                        // The "Config" page
-                            Group {
-                                id: "Config"
-                                content: [
-                                    configRef = ConfigView {
-                                        translateX: bind stage.scene.width / 2 - configRef.layoutBounds.width / 2
-                                        translateY: bind stage.scene.height / 2
-                                    }
-                                ]
-                            },
-                        // The "Profile" page
-                            Group {
-                                id: "Profile"
-                                content: [
-                                    HTMLNode {
-                                        width: 300
-                                        html: "<h1>The profile page</h1>"
-                                        font: nodeStyle.UPDATE_TEXT_FONT
-                                    }
-                                ]
-                            },
-                        // The "Help" page
-                            Group {
-                                id: "Help"
-                                content: [
-                                    ScrollView {
-                                        height: 200
-                                        width: 250
-                                        content :[
-                                            HTMLNode {
-                                                width: 300
-                                                html: "<em>emphasized</em><br><strong>bold</strong><br><a href=\"http://www.twitter.com\">link</a>"
-                                                font: nodeStyle.UPDATE_TEXT_FONT
-                                            },
-                                            HTMLNode {
-                                                width: 200
-                                                html: "Morbi scelerisque eros cursus purus. Aenean felis mauris, tristique vitae, blandit nec, accumsan at, pede. Donec cursus pede ac mi. Fusce elementum consectetuer sapien. Nullam tempus metus in felis. Nunc viverra, risus in gravida rhoncus, erat justo congue augue, non vehicula dui quam in dui. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin at eros. Donec egestas euismod felis. Sed urna arcu, vulputate eu, dictum sit amet, auctor sit amet, sem. Proin pharetra ligula vitae elit. Ut lorem ante, semper vitae, dapibus id, consequat et, magna. "
-                                                font: nodeStyle.UPDATE_TEXT_FONT
-                                            }
-                                        ]
-
-                                    }
-
-                                ]
-
-                            }
-
-                        ]
-                    },
-                    menuRef = MenuNode {
-                        translateX: bind stage.scene.width / 2 - menuRef.layoutBounds.width / 2
-                        translateY: bind stage.scene.height - 50
-                        buttons: [
-                            ButtonNode {
-                                title: "Home"
-                                imageURL: "{__DIR__}icons/home.png"
-                                action:
-                                function():Void {
-                                    deckRef.visibleNodeId = "Home";
-                                }
-                            },
-                            ButtonNode {
-                                title: "Profile"
-                                imageURL: "{__DIR__}icons/friends.png"
-                                action:
-                                function():Void {
-                                    deckRef.visibleNodeId = "Profile";
-                                }
-                            },
-                            ButtonNode {
-                                title: "Config"
+                            Button {
+                                label: "Config"
                                 imageURL: "{__DIR__}icons/config.png"
                                 action:
                                 function():Void {
-                                    deckRef.visibleNodeId = "Config";
-                                }
-                            },
-                            ButtonNode {
-                                title: "Help"
-                                imageURL: "{__DIR__}icons/help.png"
-                                action:
-                                function():Void {
-                                    alertBox.show(0,0,0,0);
-                                    deckRef.visibleNodeId = "Help";
+                                    configDialog.visible = true;
                                 }
                             }
                         ]
+                    },
+                    HomeView {
+                        translateX: 5
+                        translateY: menuRef.layoutBounds.height + 10
+                        width: bind stage.scene.width - 20
+                        height: bind stage.scene.height - 100
                     },
                     statusBarRef = StatusBar {
                         translateY: bind stage.scene.height - 22
@@ -206,25 +120,6 @@ var stage:Stage = Stage {
     }
 }
 
-
-var fadeIn = Timeline {
-    keyFrames: [
-        KeyFrame {
-            time:1s
-            values: [
-                stageOpacityValue => 1.0 tween Interpolator.LINEAR,
-             ]
-        },
-    ]
-};
-
-var fadeOut = Timeline {
-    keyFrames: [
-        KeyFrame { time:1s values:stageOpacityValue => 0.0 tween Interpolator.LINEAR
-            action: function() { controller.exit(); }
-        },
-    ]
-};
 
 var checkUpdates = Timeline {
     keyFrames: [
@@ -249,12 +144,4 @@ function run() {
     controller.start();
 
     //checkUpdates.play();
-    
-    if (controller.getAccount("twitter") == null)
-        deckRef.visibleNodeId = "Config"
-    else
-        deckRef.visibleNodeId = "Home";
-
-    //stage.visible = true;
-    //fadeIn.play();
 }

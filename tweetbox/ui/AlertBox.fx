@@ -21,7 +21,7 @@ import java.lang.System;
 import java.awt.Toolkit;
 import java.awt.Dimension;
 
-import tweetbox.ui.HTMLNode;
+import tweetbox.generic.component.HTMLNode;
 import tweetbox.model.Model;
 import tweetbox.ui.style.Style;
 import tweetbox.control.FrontController;

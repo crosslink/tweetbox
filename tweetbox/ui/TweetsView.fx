@@ -21,11 +21,14 @@ import javafx.ext.swing.*;
 import java.lang.System;
 import java.util.List;
 
+import twitter4j.TwitterResponse;
 import twitter4j.Status;
 import twitter4j.DirectMessage;
+import twitter4j.User;
 
 import tweetbox.model.*;
 import tweetbox.generic.component.ScrollView;
+import tweetbox.generic.util.ImageCache;
 import tweetbox.control.FrontController;
 import tweetbox.valueobject.TweetListVO;
 import tweetbox.valueobject.TweetVO;
@@ -58,7 +61,10 @@ public class TweetsView extends CustomNode, Resizable {
         // this could be done more optimally, but good enough for now
     };
 
-    public var minimized:Boolean = false;
+    public var minimized:Boolean = false on replace {
+        //expandTimeLine.rate = if (minimized) 1.0 else -1.0;
+        //expandTimeLine.play();
+    };
     
     public var onExpand:function(view:TweetsView):Void;
     public var onMinimize:function(view:TweetsView):Void;
@@ -71,10 +77,26 @@ public class TweetsView extends CustomNode, Resizable {
             
     var nodeStyle = Style.getApplicationStyle();
 
+    var minimizedViewOpacityValue:Number = 1.0;
+    var expandedViewOpacityValue:Number = 1.0;
+
+    public var expandTimeLine = Timeline {
+        keyFrames: [
+            KeyFrame {
+                time: bind 100ms
+                values: [
+                    expandedViewOpacityValue => 1.0 tween Interpolator.LINEAR,
+                    minimizedViewOpacityValue => 1.0 tween Interpolator.LINEAR,
+                ]
+            }
+        ]
+    };
+
     var expandedView:Group = Group {
+        opacity: bind expandedViewOpacityValue
         content: [
             Rectangle {
-                stroke: nodeStyle.GROUPBUTTON_BORDER_COLOR
+                stroke: nodeStyle.TWEETSVIEW_STROKE
                 fill: null;
                 x:0
                 y:0
@@ -117,10 +139,11 @@ public class TweetsView extends CustomNode, Resizable {
     }
 
     var minimizedView:Group = Group {
+        opacity: bind minimizedViewOpacityValue
         content: bind [
             Rectangle {
                 fill: null
-                stroke: nodeStyle.GROUPBUTTON_BORDER_COLOR
+                stroke: nodeStyle.TWEETSVIEW_STROKE
                 x:0
                 y:0
                 width: bind minimizedWidth
@@ -172,10 +195,17 @@ public class TweetsView extends CustomNode, Resizable {
     }
 
     bound function profileImageForMostRecentUpdate(): Image {
-        var status:Status = tweets.get(0) as Status;
-        return Image {
-            backgroundLoading: true
-            url: status.getUser().getProfileImageURL().toString()
-        }
+        var update:TwitterResponse = tweets.get(0) as TwitterResponse;
+        
+        var user:User = if (update instanceof Status)
+            (update as Status).getUser()
+        else if (update instanceof DirectMessage)
+            (update as DirectMessage).getSender()
+        else null;
+
+        return if (user != null)
+            ImageCache.getInstance().getImage(user.getProfileImageURL().toString())
+        else
+            null
     }
 }

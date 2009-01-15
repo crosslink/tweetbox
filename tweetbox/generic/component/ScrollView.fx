@@ -21,6 +21,8 @@ import javafx.ext.swing.*;
 import java.lang.System;
 import java.util.List;
 import tweetbox.ui.style.Style;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
 
 /**
  * @author mnankman
@@ -112,5 +114,31 @@ public class ScrollView extends CustomNode {
     
     public function scrollToTop() {
         vertScrollBar.scrollTo(0);
+    }
+}
+
+function run(): Void {
+    Stage {
+        width: 400
+        height: 400
+        scene: Scene {
+            fill: Color.WHITE
+            content: [
+                ScrollView {
+                    translateX: 20
+                    translateY: 20
+                    width: 300
+                    height: 300
+                    content: bind for (i:Integer in [0..19]) {
+                        Text {
+                            translateY: i*25
+                            translateX: i*25
+                            content: "this is line {i}"
+                        }
+                    }
+
+                }
+            ]
+        }
     }
 }

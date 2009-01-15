@@ -33,6 +33,17 @@ public class MeshStyle {
     public var SCROLLBAR_TRACK_FILL: Paint = Color.WHITE;
     public var SCROLLBAR_THUMB_FILL: Paint = MESH_RED;
 
+    // tweetsview styles
+    public var TWEETSVIEW_TITLEBAR_FILL: Paint = MESH_RED;
+    public var TWEETSVIEW_STROKE: Paint = MESH_RED;
+    public var TWEETSVIEW_FILL: Paint = Color.TRANSPARENT;
+    public var TWEETSVIEW_TITLEBAR_TEXT_FILL: Paint = Color.WHITE;
+    public var TWEETSVIEW_TITLEBAR_TEXT_FONT: Font = Font {
+        name: "Sans serif"
+        size: 11
+        embolden: true
+    }
+
     // title bar styles
     public var APPLICATION_TITLEBAR_FILL: Paint = MESH_RED;
     public var APPLICATION_TITLEBAR_TEXT_FILL: Paint = Color.WHITE;
@@ -62,15 +73,28 @@ public class MeshStyle {
         size: 11
     }
 
-    // group button styles
-    public var GROUPBUTTON_BORDER_COLOR: Paint = MESH_RED;
-    public var GROUPBUTTON_HOVER_FILL: Paint = Color.rgb(200,200,255);
-    public var GROUPBUTTON_SELECTED_FILL: Paint = Color.WHITE;
-    public var GROUPBUTTON_TEXT_FILL: Paint = MESH_RED;
-    public var GROUPBUTTON_TEXT_FONT: Font = Font {
+    // button styles
+    public var BUTTON_STROKE: Paint = LinearGradient {
+        startX: 0 startY: 0 endX: 0 endY: 1
+        stops: [
+            Stop { offset: 0.0 color: MESH_RED },
+            Stop { offset: 1.0 color: Color.rgb(255,61,88) },
+        ]
+    };
+
+    public var BUTTON_FILL: Paint = LinearGradient {
+        startX: 0 startY: 0 endX: 0 endY: 1
+        stops: [
+            Stop { offset: 0.0 color: Color.rgb(255,61,88) },
+            Stop { offset: 0.4 color: MESH_RED },
+            Stop { offset: 0.8 color: Color.rgb(236,52,79) },
+            Stop { offset: 1.0 color: Color.rgb(217,33,60) },
+        ]
+    };
+    public var BUTTON_TEXT_FILL: Paint = Color.WHITE;
+    public var BUTTON_TEXT_FONT: Font = Font {
         name: "Sans serif"
-        size: 18
-        embolden: true
+        size: 11
     }
     
 }
