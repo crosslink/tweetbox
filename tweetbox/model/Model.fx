@@ -58,6 +58,8 @@ public class Model {
         directMessages,
         userUpdates
     ];
+
+    public var alertMessages:String[] = [];
     
 }
 

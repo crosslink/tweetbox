@@ -38,7 +38,7 @@ public class HomeView extends CustomNode {
 
     var expandedTweetsViewMinimalWidth:Integer = 300;
     var expandedTweetsViewHeight:Number = bind height - 50;
-    var expandedTweetsViewWidth:Number = 300;
+    var expandedTweetsViewWidth:Number = 360;
 
     var tweetsViews:TweetsView[] = for (group:GroupVO in model.groups) {
         TweetsView {

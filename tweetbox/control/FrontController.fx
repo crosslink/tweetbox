@@ -145,6 +145,7 @@ public class FrontController {
             group.updates.addAll(0, temp);
             group.newUpdates = statuses.size();
             model.state = State.READY;
+            addAlertMessage("{group.newUpdates} new updates in {group.title}");
             System.out.println("group[{group.id}].newUpdates = {group.newUpdates}");
         }
         else {
@@ -165,6 +166,7 @@ public class FrontController {
             group.updates.addAll(0, temp);
             group.newUpdates = dms.size();
             model.state = State.READY;
+            addAlertMessage("{group.newUpdates} new direct messages");
             System.out.println("group[{group.id}].newUpdates = {group.newUpdates}");
         }
         else {
@@ -178,6 +180,7 @@ public class FrontController {
         model.userUpdates.newUpdates = 1;
         model.updateText = "";
         model.state = State.READY;
+        addAlertMessage("update was sent succesfully");
     }
 
     function sentDirectMessage(message:DirectMessage) {
@@ -186,6 +189,7 @@ public class FrontController {
         model.directMessages.newUpdates = 1;
         model.updateText = "";
         model.state = State.READY;
+        addAlertMessage("direct message was sent succesfully");
     }
 
     function getSinceDate(statuses:List): Date {
@@ -237,6 +241,14 @@ public class FrontController {
     
     public function loadConfig() {
         model.config.load();
+    }
+
+    public function addAlertMessage(message:String): Void {
+        insert message before model.alertMessages[0];
+    }
+
+    public function clearAlertMessages(): Void {
+        delete model.alertMessages;
     }
 
     /*
