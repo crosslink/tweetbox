@@ -15,8 +15,7 @@ import javafx.ext.swing.SwingTextField;
 import javafx.ext.swing.SwingComponent;
 import javafx.scene.effect.Reflection;
 
-import com.javafxpert.custom_node.*;
-import java.lang.System;
+import tweetbox.generic.component.Button;
 
 import tweetbox.model.Model;
 import tweetbox.control.FrontController;
@@ -45,22 +44,13 @@ public class UpdateNode extends CustomNode {
                     translateX: 20
                     spacing: 10
                     content: [
-                        ButtonNode {
-                            title: "send"
+                        Button {
+                            label: "update"
                             imageURL: "{__DIR__}icons/accept.png"
-                            action:
-                            function():Void {
+                            action: function():Void {
                                 FrontController.getInstance().sendUpdate(updateTextArea.getText());
                             }
                         },
-                        ButtonNode {
-                            title: "short"
-                            imageURL: "{__DIR__}icons/link.png"
-                            action:
-                            function():Void {
-                                
-                            }
-                        }
                     ]
                     
                 }    

@@ -14,9 +14,9 @@ import javafx.ext.swing.SwingLabel;
 import javafx.ext.swing.SwingTextField;
 import tweetbox.model.Model;
 import tweetbox.model.State;
-import com.javafxpert.custom_node.*;
 import java.lang.System;
 import tweetbox.control.FrontController;
+import tweetbox.generic.component.Button;
 
 /**
  * @author mnankman
@@ -32,19 +32,15 @@ public class QueryNode extends CustomNode {
                 queryRef = SwingTextField {
                     columns: 36
                 },
-                MenuNode {
+                Button {
                     translateX: 10
-                    buttons: [
-                        ButtonNode {
-                            title: "send query"
-                            imageURL: "{__DIR__}icons/accept.png"
-                            action:
-                            function():Void {
-                                FrontController.getInstance().search(queryRef.text);
-                                queryRef.text = "";
-                            }
-                        }
-                    ]
+                    label: "send query"
+                    imageURL: "{__DIR__}icons/accept.png"
+                    action:
+                    function():Void {
+                        FrontController.getInstance().search(queryRef.text);
+                        queryRef.text = "";
+                    }
                 }
             ]
 

@@ -23,8 +23,9 @@ import tweetbox.valueobject.UserVO;
 import tweetbox.util.DateUtil;
 import tweetbox.util.HtmlUtil;
 import tweetbox.ui.style.Style;
-import tweetbox.ui.HTMLNode;
+import tweetbox.generic.component.HTMLNode;
 import tweetbox.control.FrontController;
+import tweetbox.generic.util.ImageCache;
 
 import javafx.ext.swing.SwingComponent;
 import javafx.ext.swing.SwingLabel;
@@ -35,7 +36,12 @@ import javafx.animation.*;
 import javafx.scene.effect.*;
 import javafx.scene.transform.*;
 
-import com.javafxpert.custom_node.ButtonNode;
+def replyIcon = Image {url: "{__DIR__}icons/reply.png"};
+def dmIcon = Image {url: "{__DIR__}icons/email.png"};
+def followIcon = Image {url: "{__DIR__}icons/follow.png"};
+def rtIcon = Image {url: "{__DIR__}icons/control_fastforward.png"};
+def buddyImage = Image {url: "{__DIR__}images/buddy.png"};
+
 
 /**
  * @author mnankman
@@ -47,35 +53,10 @@ public class TweetNode extends CustomNode {
     public var height:Number;
     public var width:Number;
     
-  /**
-   * An image of a play button to be displayed in each row of the table
-   */
-    public var buddyImage = Image {url: "{__DIR__}images/buddy.png"};
-    
     var nodeStyle = Style.getApplicationStyle();
    
-  /**
-   * The opacity of the text when not in a rollover state
-   */
-    public var buttonOpacityValue:Number = 0.0;
-
-  /**
-   * A Timeline to control fading behavior when mouse enters or exits a button
-   */
-    var fadeTimeline =
-    Timeline {
-        keyFrames: [
-            KeyFrame {
-                time: 400ms
-                values: [buttonOpacityValue => 1.0 tween Interpolator.LINEAR]
-            }
-        ]
-    };
-
-    var mouseInside:Boolean;
-    
     var controller = FrontController.getInstance();
-    
+    var imageCache = ImageCache.getInstance();
     
     
     public override function create(): Node {
@@ -97,26 +78,19 @@ public class TweetNode extends CustomNode {
                         imageViewRef = ImageView {
                             translateX: 5
                             translateY: 4
+
                             image: bind
                                 if (profileImageUrl == null)
                                     buddyImage
                                 else
-                                    Image {
-                                        backgroundLoading: true
-                                        url: "{user.profileImageUrl}"
-                                    }
+                                    imageCache.getImage("{user.profileImageUrl}")
 
                             onMouseEntered: function(me:MouseEvent):Void {
-                                mouseInside = true;
-                                fadeTimeline.rate = 1.0;
-                                fadeTimeline.play();
+                                tweetActionButtonGroup.visible = true;
                             }
 
                             onMouseExited: function(me:MouseEvent):Void {
-                                mouseInside = false;
-                                fadeTimeline.rate = -1.0;
-                                fadeTimeline.play();
-                                me.node.effect = null
+                                tweetActionButtonGroup.visible = false;
                             }
 
                             clip: Rectangle {
@@ -133,21 +107,20 @@ public class TweetNode extends CustomNode {
                             html: "<strong>{user.screenName}</strong>: {tweet.text} <br>{DateUtil.formatAsTweetDisplayDate(tweet.createdAt)} with {tweet.source}"
                             width: bind width - imageViewRef.layoutBounds.width - 100
                             font: nodeStyle.UPDATE_TEXT_FONT
-                        },
+                        }
                     ]
                 };
 
             var tweetActionButtonGroup: Group = Group {
                     translateX: 5
                     translateY: 5
-                    opacity: bind buttonOpacityValue
+                    visible: false
+                    //opacity: bind buttonOpacityValue
                     content: [
                         ImageView {
                             translateX: 5
                             translateY: 5
-                            image: Image {
-                                url: "{__DIR__}icons/reply.png"
-                            }
+                            image: bind replyIcon
                             onMouseClicked:
                             function(me:MouseEvent):Void {
                                 controller.reply(user.screenName);
@@ -156,9 +129,7 @@ public class TweetNode extends CustomNode {
                         ImageView {
                             translateX: 25
                             translateY: 5
-                            image: Image {
-                                url: "{__DIR__}icons/email.png"
-                            }
+                            image: bind dmIcon
                             onMouseClicked:
                             function(me:MouseEvent):Void {
                                 controller.direct(user.screenName);
@@ -167,9 +138,7 @@ public class TweetNode extends CustomNode {
                         ImageView {
                             translateX: 5
                             translateY: 25
-                            image: Image {
-                                url: "{__DIR__}icons/follow.png"
-                            }
+                            image: bind followIcon
                             onMouseClicked:
                             function(me:MouseEvent):Void {
                                 controller.follow(user.screenName);
@@ -178,9 +147,7 @@ public class TweetNode extends CustomNode {
                         ImageView {
                             translateX: 25
                             translateY: 25
-                            image: Image {
-                                url: "{__DIR__}icons/control_fastforward.png"
-                            }
+                            image: bind rtIcon
                             onMouseClicked:
                             function(me:MouseEvent):Void {
                                 controller.retweet(user.screenName, tweet.text);
