@@ -73,6 +73,14 @@ public class MeshStyle {
         size: 11
     }
 
+    // alert box styles
+    public var ALERT_TEXT_FILL: Paint = Color.BLACK;
+    public var ALERT_TEXT_FONT: Font = Font {
+        name: "Sans serif"
+        size: 14
+        embolden: true
+    }
+
     // button styles
     public var BUTTON_STROKE: Paint = LinearGradient {
         startX: 0 startY: 0 endX: 0 endY: 1

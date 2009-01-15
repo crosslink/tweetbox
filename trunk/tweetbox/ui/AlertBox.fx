@@ -16,6 +16,7 @@ import javafx.scene.transform.*;
 import javafx.animation.*;
 import javafx.scene.text.*;
 import javafx.stage.*;
+import javafx.scene.layout.VBox;
 
 import java.lang.System;
 import java.awt.Toolkit;
@@ -40,13 +41,12 @@ public class AlertBox {
     var model = Model.getInstance();
     var controller = FrontController.getInstance();
     
-    var newFriendUpdates:Integer;
-    var newUserUpdates:Integer;
-    var newReplies:Integer;
-    var newDirectMessages:Integer;
-
     var stageOpacityValue:Number = 0.0;
 
+    var visible:Boolean = bind (sizeof model.alertMessages > 0) on replace {
+        if (visible) show() else hide();
+    };
+    
     var content:Group = Group {
         content: [
             Rectangle {
@@ -85,18 +85,22 @@ public class AlertBox {
                     }
                 ]
             },
-            HTMLNode {
-                width: bind width - 10
-                height: bind height - 10
+            VBox {
                 translateX: 5
                 translateY: 20
-                html: bind "<center>{newFriendUpdates} new updates<br>{newReplies} new replies<br>{newDirectMessages} new direct messages</center>"
-
+                content: bind for (message in model.alertMessages) {
+                    HTMLNode {
+                        width: bind width - 10
+                        height: bind height - 10
+                        html: message
+                        font: nodeStyle.ALERT_TEXT_FONT
+                    }
+                }
             }
         ]
     };
 
-    public var stage = Stage {
+    var stage:Stage = Stage {
         x: bind screenSize.width - width - 25
         y: bind screenSize.height - height - 50
         title: "TweetBox Alert"
@@ -111,19 +115,16 @@ public class AlertBox {
         }
     };
     
-    public function show(f:Integer, u:Integer, r:Integer, d:Integer) {
-        newFriendUpdates = f;
-        newUserUpdates = u;
-        newReplies = r;
-        newDirectMessages = d;
+    public function show() {
         stage.visible = true;
-        fadeIn.play();
+        //fadeIn.play();
         autoHide.play();
     }
     
     public function hide() {
         System.out.println("hiding alertBox");
-        fadeOut.play();
+        stage.visible = false;
+        //fadeOut.play();
     }    
     
     var fadeIn = Timeline {
@@ -151,7 +152,7 @@ public class AlertBox {
     var autoHide = Timeline {
         keyFrames: [
             KeyFrame { 
-                time:5s  
+                time:20s
                 action: function() { 
                     hide(); 
                 }

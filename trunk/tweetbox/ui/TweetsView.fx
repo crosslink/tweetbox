@@ -57,8 +57,22 @@ public class TweetsView extends CustomNode, Resizable {
     public var tweets:List;
     
     public var newTweets:Integer on replace {
-        numRows = tweets.size();
-        // this could be done more optimally, but good enough for now
+        for (row:Integer in [0..newTweets - 1]) {
+            insert TweetNode {
+                width: bind expandedWidth - 5
+                tweet: TweetVO {
+                    status: bind
+                        if (tweets.get(row) instanceof Status)
+                            tweets.get(row) as Status
+                        else null
+                    dm: bind
+                        if (tweets.get(row) instanceof DirectMessage)
+                            tweets.get(row) as DirectMessage
+                        else null
+                }
+            } before tweetNodes[row];
+        } 
+        numRows = sizeof tweetNodes;
     };
 
     public var minimized:Boolean = false on replace {
@@ -79,6 +93,8 @@ public class TweetsView extends CustomNode, Resizable {
 
     var minimizedViewOpacityValue:Number = 1.0;
     var expandedViewOpacityValue:Number = 1.0;
+
+    var tweetNodes:TweetNode[] = [];
 
     public var expandTimeLine = Timeline {
         keyFrames: [
@@ -119,21 +135,7 @@ public class TweetsView extends CustomNode, Resizable {
                 translateY: 25
                 height: bind expandedHeight - 25
                 width: bind expandedWidth - 20
-                content: bind for (row:Integer in [0..numRows - 1]) {
-                    TweetNode {
-                        width: bind expandedWidth - 5
-                        tweet: TweetVO {
-                            status: bind 
-                                if (tweets.get(row) instanceof Status)
-                                    tweets.get(row) as Status
-                                else null
-                            dm: bind
-                                if (tweets.get(row) instanceof DirectMessage)
-                                    tweets.get(row) as DirectMessage
-                                else null
-                        }
-                    }
-                }
+                content: bind tweetNodes
             }
         ]
     }
