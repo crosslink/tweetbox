@@ -14,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.shape.*;
 import javafx.scene.transform.*;
 import javafx.animation.*;
+import javafx.lang.Duration;
 import javafx.scene.text.*;
 import javafx.stage.*;
 import javafx.scene.layout.VBox;
@@ -34,7 +35,11 @@ import tweetbox.control.FrontController;
 public class AlertBox {
     public var width:Integer;
     public var height:Integer;
-    
+
+    public var onClick: function();
+
+    public var autoHideDelay:Duration = 20s;
+
     var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
     
     var nodeStyle = Style.getApplicationStyle();
@@ -53,27 +58,25 @@ public class AlertBox {
                 translateX:0
                 translateY:0
                 stroke: nodeStyle.APPLICATION_BACKGROUND_STROKE
+                strokeWidth: 3
                 x:0 y:0
                 width: bind width - 2
                 height: bind height - 2
-                arcWidth:20
-                arcHeight:20
                 fill:nodeStyle.APPLICATION_BACKGROUND_FILL
 
                 onMouseClicked:
                     function(me:MouseEvent):Void {
                         hide();
+                        onClick();
                     }
             },
             Group {
                 content: [
                     Rectangle {
-                        x:0
-                        y:0
-                        width: bind width - 2
+                        x:3
+                        y:3
+                        width: bind width - 6
                         height: bind 20
-                        arcWidth:20
-                        arcHeight:20
                         fill:nodeStyle.APPLICATION_TITLEBAR_FILL
                     },
                     Text {
@@ -152,7 +155,7 @@ public class AlertBox {
     var autoHide = Timeline {
         keyFrames: [
             KeyFrame { 
-                time:20s
+                time: bind autoHideDelay
                 action: function() { 
                     hide(); 
                 }
@@ -160,4 +163,17 @@ public class AlertBox {
         ]
     };
     
+}
+
+public function run(): Void {
+    var ab = AlertBox {
+        width: 300
+        height: 300
+        autoHideDelay: 24h
+        onClick: function() {
+            System.exit(0);
+        }
+    }
+    FrontController.getInstance().addAlertMessage("Click this box to close it");
+    ab.show();
 }
