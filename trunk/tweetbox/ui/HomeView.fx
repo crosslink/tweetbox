@@ -16,8 +16,8 @@ import java.lang.Math;
 
 import tweetbox.model.Model;
 
-import tweetbox.ui.layout.FlowBox;
-import tweetbox.ui.layout.SortingFlowBox;
+import tweetbox.generic.layout.FlowBox;
+import tweetbox.generic.layout.SortingFlowBox;
 import tweetbox.valueobject.GroupVO;
 import tweetbox.generic.component.ScrollView;
 

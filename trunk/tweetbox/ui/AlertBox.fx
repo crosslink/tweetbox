@@ -23,6 +23,8 @@ import java.lang.System;
 import java.awt.Toolkit;
 import java.awt.Dimension;
 
+import org.jfxtras.stage.JFXStage;
+
 import tweetbox.generic.component.HTMLNode;
 import tweetbox.model.Model;
 import tweetbox.ui.style.Style;
@@ -90,12 +92,11 @@ public class AlertBox {
             },
             VBox {
                 translateX: 5
-                translateY: 20
+                translateY: 40
                 content: bind for (message in model.alertMessages) {
-                    HTMLNode {
-                        width: bind width - 10
-                        height: bind height - 10
-                        html: message
+                    Text {
+                        wrappingWidth: bind width - 10
+                        content: message
                         font: nodeStyle.ALERT_TEXT_FONT
                     }
                 }
@@ -103,7 +104,8 @@ public class AlertBox {
         ]
     };
 
-    var stage:Stage = Stage {
+    var stage:JFXStage = JFXStage {
+        alwaysOnTop: true
         x: bind screenSize.width - width - 25
         y: bind screenSize.height - height - 50
         title: "TweetBox Alert"
@@ -116,6 +118,7 @@ public class AlertBox {
         scene: Scene {
             content: bind content
         }
+
     };
     
     public function show() {
@@ -127,6 +130,7 @@ public class AlertBox {
     public function hide() {
         System.out.println("hiding alertBox");
         stage.visible = false;
+        controller.clearAlertMessages();
         //fadeOut.play();
     }    
     

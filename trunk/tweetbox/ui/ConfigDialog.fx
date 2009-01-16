@@ -22,7 +22,7 @@ import org.jfxtras.stage.JFXDialog;
 import tweetbox.model.Model;
 import tweetbox.control.FrontController;
 import tweetbox.generic.component.Button;
-import tweetbox.ui.layout.FlowBox;
+import tweetbox.generic.layout.FlowBox;
 import tweetbox.ui.style.Style;
 
 /**

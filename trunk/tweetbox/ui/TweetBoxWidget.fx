@@ -17,9 +17,13 @@ import javafx.scene.layout.*;
 import javafx.scene.transform.*;
 import javafx.stage.*;
 import javafx.animation.*;
+
+import org.jfxtras.stage.JFXStage;
+
 import java.lang.Object;
 import java.awt.Toolkit;
 import java.awt.Dimension;
+import java.awt.Frame;
 
 import tweetbox.model.Model;
 import tweetbox.model.State;
@@ -28,7 +32,7 @@ import tweetbox.control.FrontController;
 import tweetbox.generic.component.ScrollView;
 import tweetbox.generic.component.Button;
 import tweetbox.generic.component.Window;
-import tweetbox.ui.layout.FlowBox;
+import tweetbox.generic.layout.FlowBox;
 
 var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
 var nodeStyle = Style.getApplicationStyle();
@@ -54,17 +58,12 @@ var checkUpdates = Timeline {
 };
 
 function run() {
-    var alertBox = AlertBox {
-        width: 200
-        height: 120
-    }
-
     var configDialog = ConfigDialog {}
 
     var controller = FrontController.getInstance();
     controller.start();
 
-    var stage:Stage = Stage {
+    var stage:JFXStage = JFXStage {
         title: "TweetBox"
         width: bind stageWidth
         height: bind stageHeight
@@ -135,6 +134,19 @@ function run() {
 
         }
     };
+
+    var windowFrame:Frame = stage.getWindow().getOwner() as Frame;
     
+    var alertBox = AlertBox {
+        width: 200
+        height: 120
+        onClick: function() {
+            if (windowFrame.getState()==Frame.ICONIFIED) windowFrame.setState(Frame.NORMAL);
+            windowFrame.setVisible(true);
+            windowFrame.repaint();
+            stage.getWindow().toFront();
+            stage.getWindow().requestFocus();
+        }
+    }
     //checkUpdates.play();
 }
