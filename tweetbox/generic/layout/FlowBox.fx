@@ -4,7 +4,7 @@
  * Created on 9-jan-2009, 9:32:27
  */
 
-package tweetbox.ui.layout;
+package tweetbox.generic.layout;
 
 import javafx.scene.layout.Container;
 import javafx.scene.layout.Resizable;
@@ -23,9 +23,9 @@ public class FlowBox extends Container {
     public var orientation:Integer = FLOWORIENTATION_HORIZONTAL;
     public var spacing:Integer = 5;
 
-    override var content on replace {
+    override var content;/* on replace {
         impl_requestLayout();
-    }
+    }*/
 
     override var width on replace {
         impl_requestLayout();
@@ -60,9 +60,14 @@ public class FlowBox extends Container {
         var x:Number = 0;
         var y:Number = 0;
         var rowHeight:Number = 0;
-        var nodes:Node[] = getContent();
-        for (node:Node in nodes) {
-            if (x+node.boundsInLocal.width+spacing >= maximumWidth) {
+        var w:Number = 0;
+        var h:Number = 0;
+        var bounds;
+        for (node:Node in getContent()) {
+            bounds = node.layoutBounds;
+            w = bounds.width;
+            h = bounds.height;
+            if (x+h+spacing >= maximumWidth) {
                 y += rowHeight + spacing;
                 x = 0;
                 rowHeight = 0;
@@ -72,9 +77,9 @@ public class FlowBox extends Container {
             node.impl_layoutY = y;
 
             // update the height of the current row
-            if (node.boundsInLocal.height > rowHeight) rowHeight = node.boundsInLocal.height;
+            if (h > rowHeight) rowHeight = h;
 
-            x += node.boundsInLocal.width + spacing;
+            x += w + spacing;
         }
     }
 

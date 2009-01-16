@@ -4,7 +4,7 @@
  * Created on 9-jan-2009, 10:41:29
  */
 
-package tweetbox.ui.layout;
+package tweetbox.generic.layout;
 
 import javafx.scene.Node;
 

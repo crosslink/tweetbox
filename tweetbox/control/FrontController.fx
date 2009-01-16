@@ -244,11 +244,14 @@ public class FrontController {
     }
 
     public function addAlertMessage(message:String): Void {
-        insert message before model.alertMessages[0];
+        if (model.alertMessages != null and sizeof model.alertMessages > 0) 
+            insert message into model.alertMessages
+        else
+            model.alertMessages = [message];
     }
 
     public function clearAlertMessages(): Void {
-        delete model.alertMessages;
+        model.alertMessages = [];
     }
 
     /*

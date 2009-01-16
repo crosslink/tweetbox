@@ -59,7 +59,7 @@ public class TweetsView extends CustomNode, Resizable {
     public var newTweets:Integer on replace {
         for (row:Integer in [0..newTweets - 1]) {
             insert TweetNode {
-                width: bind expandedWidth - 5
+                width: expandedWidth - 5
                 tweet: TweetVO {
                     status: bind
                         if (tweets.get(row) instanceof Status)
