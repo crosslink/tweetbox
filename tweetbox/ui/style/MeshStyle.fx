@@ -77,7 +77,7 @@ public class MeshStyle {
     public var ALERT_TEXT_FILL: Paint = Color.BLACK;
     public var ALERT_TEXT_FONT: Font = Font {
         name: "Sans serif"
-        size: 14
+        size: 12
         embolden: true
     }
 

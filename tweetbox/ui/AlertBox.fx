@@ -40,7 +40,7 @@ public class AlertBox {
 
     public var onClick: function();
 
-    public var autoHideDelay:Duration = 20s;
+    public var autoHideDelay:Duration = 10s;
 
     var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
     

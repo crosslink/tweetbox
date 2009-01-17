@@ -52,9 +52,10 @@ def buddyImage = Image {url: "{__DIR__}images/buddy.png"};
 public class TweetNode extends CustomNode {
 
     public var tweet:TweetVO;
-    var user:UserVO = bind tweet.user;
     public var height:Number;
     public var width:Number;
+
+    var user:UserVO = bind tweet.user;
 
     var tweetContentWidth:Number = width - 150;
     
@@ -63,77 +64,6 @@ public class TweetNode extends CustomNode {
     var controller = FrontController.getInstance();
     var imageCache = ImageCache.getInstance();
 
-    var tweetContent: Node[] = [];
-    var tcCurrentRow:Number = 0;
-    var tcX:Number = 0;
-    var tcY:Number = 0;
-    var tcRowHeight:Number = 0;
-
-    function linkClicked(url:String) {
-        println("link: {url} clicked")
-    }
-
-    function addToTweetContent(node:Node) {
-        var w:Number = 0;
-        var h:Number = 0;
-        var bounds = node.layoutBounds;
-        w = bounds.width;
-        h = bounds.height;
-        if (tcX+h >= tweetContentWidth) {
-            tcY += tcRowHeight;
-            tcX = 0;
-            tcRowHeight = 0;
-        }
-
-        node.translateX = tcX;
-        node.translateY = tcY;
-
-        // update the height of the current row
-        if (h > tcRowHeight) tcRowHeight = h;
-
-        tcX += w;
-        insert node into tweetContent;
-    }
-
-    function createTextNode(content:String): Void {
-        addToTweetContent(Text {
-            content: content
-            font: nodeStyle.UPDATE_TEXT_FONT
-        });
-    }
-
-    function creatLinkNode(content:String): Void {
-        addToTweetContent(Text {
-            content: content
-            font: nodeStyle.UPDATE_TEXT_FONT
-            underline: true
-            fill: Color.BLUE
-            cursor: Cursor.HAND
-            onMouseClicked: function(e:MouseEvent) {
-                linkClicked(content);
-            }
-        });
-    }
-
-    function createTextNodes(content:String): Void {
-        var tokens:String[] = content.split("\\s");
-        for (t:String in tokens) {
-            if (t.startsWith("http") or t.startsWith("ftp"))
-                creatLinkNode(t)
-            else
-                createTextNode(t)
-        }
-    }
-
-    function createTweetContent(): Node[] {
-        tweetContent = [];
-        createTextNode("{user.screenName}: ");
-        createTextNodes(tweet.text);
-        createTextNodes("{DateUtil.formatAsTweetDisplayDate(tweet.createdAt)} with ");
-        addToTweetContent(HTMLNode {html: tweet.source font: nodeStyle.UPDATE_TEXT_FONT onLinkClicked:linkClicked});
-        return tweetContent;
-    }
-    
     public override function create(): Node {
         var model = Model.getInstance();
 
@@ -196,7 +126,10 @@ public class TweetNode extends CustomNode {
                     Group {
                         translateX: 7
                         translateY: 8
-                        content: createTweetContent()
+                        content: TweetContentRenderer {
+                            maxWidth: tweetContentWidth
+                            tweet: tweet
+                        }
                     }
                 ]
             };
