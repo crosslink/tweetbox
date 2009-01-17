@@ -142,11 +142,10 @@ public class FrontController {
                     temp.add(s);
                 }
             }
+            if (group.updates.size() > 0 and temp.size() > 0) addAlertMessage("{temp.size()} new updates in {group.title}");
             group.updates.addAll(0, temp);
-            group.newUpdates = statuses.size();
+            group.newUpdates = temp.size();
             model.state = State.READY;
-            addAlertMessage("{group.newUpdates} new updates in {group.title}");
-            System.out.println("group[{group.id}].newUpdates = {group.newUpdates}");
         }
         else {
             System.out.println("processReceivedStatuses(null, {group.id})");
@@ -163,11 +162,10 @@ public class FrontController {
                     temp.add(dm);
                 }
             }
+            if (group.updates.size() > 0 and temp.size() > 0) addAlertMessage("{temp.size()} new direct messages");
             group.updates.addAll(0, temp);
-            group.newUpdates = dms.size();
             model.state = State.READY;
-            addAlertMessage("{group.newUpdates} new direct messages");
-            System.out.println("group[{group.id}].newUpdates = {group.newUpdates}");
+            group.newUpdates = temp.size();
         }
         else {
             System.out.println("processReceivedStatuses(null, {group.id})");

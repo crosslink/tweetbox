@@ -131,6 +131,7 @@ public class TweetsView extends CustomNode, Resizable {
                 }
             },
             scrollViewRef = ScrollView {
+                hasHorizontalScrollBar: false
                 translateX: 5
                 translateY: 25
                 height: bind expandedHeight - 25
