@@ -75,10 +75,7 @@ public class TweetsView extends CustomNode, Resizable {
         numRows = sizeof tweetNodes;
     };
 
-    public var minimized:Boolean = false on replace {
-        //expandTimeLine.rate = if (minimized) 1.0 else -1.0;
-        //expandTimeLine.play();
-    };
+    public var minimized:Boolean = false;
     
     public var onExpand:function(view:TweetsView):Void;
     public var onMinimize:function(view:TweetsView):Void;
@@ -96,17 +93,6 @@ public class TweetsView extends CustomNode, Resizable {
 
     var tweetNodes:TweetNode[] = [];
 
-    public var expandTimeLine = Timeline {
-        keyFrames: [
-            KeyFrame {
-                time: bind 100ms
-                values: [
-                    expandedViewOpacityValue => 1.0 tween Interpolator.LINEAR,
-                    minimizedViewOpacityValue => 1.0 tween Interpolator.LINEAR,
-                ]
-            }
-        ]
-    };
 
     var expandedView:Group = Group {
         opacity: bind expandedViewOpacityValue
