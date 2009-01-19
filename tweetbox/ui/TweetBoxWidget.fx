@@ -58,10 +58,13 @@ var checkUpdates = Timeline {
 };
 
 function run() {
-    var configDialog = ConfigDialog {}
-
     var controller = FrontController.getInstance();
     controller.start();
+
+    var configDialog = ConfigDialog {
+        visible: not controller.isAccountConfigured("twitter")
+    }
+
 
     var stage:JFXStage = JFXStage {
         title: "TweetBox"

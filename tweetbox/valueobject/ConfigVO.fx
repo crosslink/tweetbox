@@ -56,14 +56,14 @@ public class ConfigVO {
     }
 
     public function save() {
-        var configFile = new File("{System.getProperty("user.home")}/tweetbox.properties");
-        System.out.println("saving config to: {configFile.getPath()}");
-        var config:Properties = new Properties();
-        var outStream:java.io.OutputStream = new java.io.FileOutputStream(configFile);
-        var account = getAccount("twitter");
-        config.setProperty("twitter.login", account.login);
-        config.setProperty("twitter.password", account.password);
         try {
+            var configFile = new File("{System.getProperty("user.home")}/tweetbox.properties");
+            System.out.println("saving config to: {configFile.getPath()}");
+            var config:Properties = new Properties();
+            var outStream:java.io.OutputStream = new java.io.FileOutputStream(configFile);
+            var account = getAccount("twitter");
+            config.setProperty("twitter.login", account.login);
+            config.setProperty("twitter.password", account.password);
             config.store(outStream, "TweetBox properties");
             System.out.println("config saved to: {configFile.getPath()}");
         }
@@ -73,11 +73,11 @@ public class ConfigVO {
     }
     
     public function load() {
-        var configFile = new File("{System.getProperty("user.home")}/tweetbox.properties");
-        System.out.println("loading config from: {configFile.getPath()}");
-        var config:Properties = new Properties();
-        var inStream:java.io.InputStream = new java.io.FileInputStream(configFile);
         try {
+            var configFile = new File("{System.getProperty("user.home")}/tweetbox.properties");
+            System.out.println("loading config from: {configFile.getPath()}");
+            var config:Properties = new Properties();
+            var inStream:java.io.InputStream = new java.io.FileInputStream(configFile);
             config.load(inStream);
             System.out.println("config loaded from: {configFile.getPath()}");
             var account = AccountVO {

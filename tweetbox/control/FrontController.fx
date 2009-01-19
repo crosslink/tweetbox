@@ -43,12 +43,18 @@ public class FrontController {
     var twitter:Twitter;
 
     public function start() {
+        twitter = new Twitter();
+        twitter.setSource("TweetBox");
+
         loadConfig();
         //loadFromCache();
-        var twitterAccount = getAccount("twitter");
-        twitter = new Twitter(twitterAccount.login, twitterAccount.password);
-        twitter.setSource("TweetBox");
-        
+
+        if (isAccountConfigured("twitter")) {
+            var twitterAccount = getAccount("twitter");
+            twitter.setUserId(twitterAccount.login);
+            twitter.setPassword(twitterAccount.password);
+        }
+
         startReceiving();
     }
     
@@ -72,7 +78,13 @@ public class FrontController {
     public function getFriendsTimeline(): Object {
         var result:Object = null;
         System.out.println("get friends timeline");
-        result = twitter.getFriendsTimeline(getSinceDate(model.friendUpdates.updates));
+        try {
+            result = twitter.getFriendsTimeline(getSinceDate(model.friendUpdates.updates));
+        }
+        catch (e:TwitterException) {
+            stopReceiving();
+            println("twitter exception: {e}");
+        }
         return result;
     }
 
@@ -88,7 +100,13 @@ public class FrontController {
     public function getUserTimeline() {
         var result:Object = null;
         System.out.println("get user timeline");
-        result = twitter.getUserTimeline();
+        try {
+            result = twitter.getUserTimeline();
+        }
+        catch (e:TwitterException) {
+            stopReceiving();
+            println("twitter exception: {e}");
+        }
         return result;
     }
 
@@ -104,7 +122,13 @@ public class FrontController {
     public function getReplies() {
         var result:Object = null;
         System.out.println("get replies");
-        result = twitter.getReplies();
+        try {
+            result = twitter.getReplies();
+        }
+        catch (e:TwitterException) {
+            stopReceiving();
+            println("twitter exception: {e}");
+        }
         return result;
     }
 
@@ -121,14 +145,26 @@ public class FrontController {
         var result:Object = null;
         System.out.println("get direct messages");
         //result = twitter.getDirectMessages(getSinceDate(model.directMessages.updates));
-        result = twitter.getDirectMessages();
+        try {
+            result = twitter.getDirectMessages();
+        }
+        catch (e:TwitterException) {
+            stopReceiving();
+            println("twitter exception: {e}");
+        }
         return result;
     }
     
     public function sendUpdate(update:String) {
         var result:Object = null;
         var twitterAccount = getAccount("twitter");
-        result = twitter.update(update);
+        try {
+            result = twitter.update(update);
+        }
+        catch (e:TwitterException) {
+            stopReceiving();
+            println("twitter exception: {e}");
+        }
         return result;
     }
     
@@ -222,7 +258,12 @@ public class FrontController {
     }
     
     public function updateAccount(updatedAccount:AccountVO) {
+        stopReceiving();
         model.config.updateAccount(updatedAccount);
+        twitter.setUserId(updatedAccount.login);
+        twitter.setPassword(updatedAccount.password);
+        saveConfig();
+        startReceiving();
     }
 
     public function addAccount(newAccount:AccountVO) {
@@ -231,6 +272,10 @@ public class FrontController {
     
     public function getAccount(id:String) {
         return model.config.getAccount(id);
+    }
+
+    public function isAccountConfigured(id:String) {
+        return (getAccount(id) != null and getAccount(id).login.trim() != "");
     }
     
     public function saveConfig() {
@@ -298,7 +343,7 @@ public class FrontController {
         }
     }
     */
-    var getFriendsTimelineTimeline = Timeline {
+    var getFriendsTimelineTimeline:Timeline = Timeline {
         keyFrames: [
             KeyFrame { 
                 time: 1ms 
@@ -315,7 +360,7 @@ public class FrontController {
         repeatCount: java.lang.Double.POSITIVE_INFINITY
     };
 
-    var getUserTimelineTimeline = Timeline {
+    var getUserTimelineTimeline:Timeline = Timeline {
         keyFrames: [
             KeyFrame { 
                 time: 1ms 
@@ -332,7 +377,7 @@ public class FrontController {
         repeatCount: java.lang.Double.POSITIVE_INFINITY
     };
 
-    var getRepliesTimeline = Timeline {
+    var getRepliesTimeline:Timeline = Timeline {
         keyFrames: [
             KeyFrame { 
                 time: 1ms 
@@ -367,10 +412,12 @@ public class FrontController {
     };
 
     function startReceiving(): Void {
-        getFriendsTimelineTimeline.play();
-        getUserTimelineTimeline.play();
-        getRepliesTimeline.play();
-        getDirectMessagesTimeline.play();
+        if (isAccountConfigured("twitter")) {
+            getFriendsTimelineTimeline.play();
+            getUserTimelineTimeline.play();
+            getRepliesTimeline.play();
+            getDirectMessagesTimeline.play();
+        }
     }
 
     function stopReceiving(): Void {
