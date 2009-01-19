@@ -294,7 +294,7 @@ public class FrontController {
     }
 
     public function clearAlertMessages(): Void {
-        model.alertMessages = [];
+        if (model.alertMessages != null and sizeof model.alertMessages > 0) delete model.alertMessages;
     }
 
     /*

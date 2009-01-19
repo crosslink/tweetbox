@@ -18,6 +18,8 @@ import javafx.lang.Duration;
 import javafx.scene.text.*;
 import javafx.stage.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.Media;
 
 import java.lang.System;
 import java.awt.Toolkit;
@@ -50,9 +52,17 @@ public class AlertBox {
     
     var stageOpacityValue:Number = 0.0;
 
-    var visible:Boolean = bind (sizeof model.alertMessages > 0) on replace {
+    var visible:Boolean = bind (model.alertMessages != null and sizeof model.alertMessages > 0) on replace {
         if (visible) show() else hide();
     };
+
+    // a media player for playing a short beep when new tweets arrive
+    // but it doesn't work!?
+    var mediaPlayer = MediaPlayer{
+        media: Media {
+            source: "{__DIR__}media/beep1.mp3"
+        }
+    }
     
     var content:Group = Group {
         content: [
@@ -122,6 +132,7 @@ public class AlertBox {
     };
     
     public function show() {
+        mediaPlayer.play();
         stage.visible = true;
         //fadeIn.play();
         autoHide.play();

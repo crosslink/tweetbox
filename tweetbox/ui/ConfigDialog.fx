@@ -14,6 +14,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.ext.swing.SwingComponent;
 import javafx.ext.swing.SwingLabel;
 import javafx.ext.swing.SwingTextField;
+import javafx.stage.Stage;
 
 import javax.swing.JPasswordField;
 
@@ -116,7 +117,7 @@ public class ConfigDialog {
         ]
     }
 
-    var stage:JFXStage = JFXStage {
+    public var stage:JFXStage = JFXStage {
         alwaysOnTop: true
         x: bind (screenSize.width - width) / 2
         y: bind (screenSize.height - height) / 2
@@ -130,6 +131,5 @@ public class ConfigDialog {
         }
 
     };
-
 
 }

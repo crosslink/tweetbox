@@ -17,8 +17,10 @@ import javafx.scene.layout.*;
 import javafx.scene.transform.*;
 import javafx.stage.*;
 import javafx.animation.*;
+import javafx.scene.text.Text;
 
 import org.jfxtras.stage.JFXStage;
+import org.jfxtras.stage.WindowHelper;
 
 import java.lang.Object;
 import java.awt.Toolkit;
@@ -34,37 +36,21 @@ import tweetbox.generic.component.Button;
 import tweetbox.generic.component.Window;
 import tweetbox.generic.layout.FlowBox;
 
-var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
-var nodeStyle = Style.getApplicationStyle();
-var model = Model.getInstance();
-
-var stageWidth = 1000;
-var stageHeight = 800;
-
-var checkUpdates = Timeline {
-    keyFrames: [
-        KeyFrame {
-            time: 10s
-            action: function() {
-                /*
-                if (model.newFriendUpdates + model.newUserUpdates + model.newReplies + model.newDirectMessages > 0) {
-                    alertBox.show(model.newFriendUpdates, model.newUserUpdates, model.newReplies, model.newDirectMessages);
-                }
-                */
-            }
-        }
-    ]
-    repeatCount: java.lang.Double.POSITIVE_INFINITY
-};
-
 function run() {
+    var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
+    var nodeStyle = Style.getApplicationStyle();
+    var model = Model.getInstance();
+
+    var stageWidth = 950;
+    var stageHeight = 800;
+
     var controller = FrontController.getInstance();
     controller.start();
 
     var configDialog = ConfigDialog {
         visible: not controller.isAccountConfigured("twitter")
     }
-
+    //WindowHelper.extractWindow(configDialog.stage).setAlwaysOnTop(true);
 
     var stage:JFXStage = JFXStage {
         title: "TweetBox"
@@ -151,5 +137,5 @@ function run() {
             stage.getWindow().requestFocus();
         }
     }
-    //checkUpdates.play();
+
 }
