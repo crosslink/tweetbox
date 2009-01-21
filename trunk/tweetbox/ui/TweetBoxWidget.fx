@@ -50,6 +50,7 @@ function run() {
     var configDialog = ConfigDialog {
         visible: not controller.isAccountConfigured("twitter")
     }
+    var aboutDialog = AboutDialog {}
     //WindowHelper.extractWindow(configDialog.stage).setAlwaysOnTop(true);
 
     var stage:JFXStage = JFXStage {
@@ -99,6 +100,13 @@ function run() {
                                     action:
                                     function():Void {
                                         configDialog.visible = true;
+                                    }
+                                },
+                                Button {
+                                    label: "About"
+                                    action:
+                                    function():Void {
+                                        aboutDialog.visible = true;
                                     }
                                 }
                             ]
