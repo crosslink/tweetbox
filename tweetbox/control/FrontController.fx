@@ -165,6 +165,7 @@ public class FrontController {
             stopReceiving();
             println("twitter exception: {e}");
         }
+        updated(result as Status);
         return result;
     }
     
