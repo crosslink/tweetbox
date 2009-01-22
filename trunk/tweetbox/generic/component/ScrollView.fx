@@ -32,37 +32,48 @@ public class ScrollView extends CustomNode {
     public var height:Number;
     public var width:Number;
     public var scrollStepSize:Integer = 5;
-    public var content: Node[];
+    public var content:Node;
 
     public var hasVerticalScrollBar:Boolean = true;
     public var hasHorizontalScrollBar:Boolean = true;
 
     var nodeStyle = Style.getApplicationStyle();
 
-    var view:Node;
-
     var vertScrollBar:ScrollBar;
     var horScrollBar:ScrollBar;
+
+    var contentTranslateX:Number = bind if (hasHorizontalScrollBar) horScrollBar.scrollPosition else 0.0 on replace {
+        content.translateX = contentTranslateX;
+    };
+
+    var contentTranslateY:Number = bind if (hasVerticalScrollBar) vertScrollBar.scrollPosition else 0.0on replace {
+        content.translateY = contentTranslateY;
+    };
+
+    var showVerticalScrollBar:Boolean = bind (content.layoutBounds.height > height) on replace {
+        if (not showVerticalScrollBar) {
+            vertScrollBar.scrollTo(0);
+        }
+    };
+
+    var showHorizontalScrollBar:Boolean = bind (content.layoutBounds.width > width)on replace {
+        if (not showHorizontalScrollBar) {
+            horScrollBar.scrollTo(0);
+        }
+    };
 
     public override function create(): Node {
         return Group {
             blocksMouse:true
             content: [
-                view = VBox {
-                    transforms: bind [
-                        Translate.translate(
-                            if (hasHorizontalScrollBar) horScrollBar.scrollPosition else 0.0,
-                            if (hasVerticalScrollBar) vertScrollBar.scrollPosition else 0.0)
-                    ]
-                    content: bind content
-                },
+                content,
                 vertScrollBar =
                     if (hasVerticalScrollBar)
                         ScrollBar {
                             orientation: ScrollBar.ORIENTATION_VERTICAL
-                            view: bind view
+                            view: content
                             height: bind height
-                            visible: bind (view.layoutBounds.height > height)
+                            visible: bind showVerticalScrollBar
                             translateX: bind width
                         }
                     else null,
@@ -70,9 +81,9 @@ public class ScrollView extends CustomNode {
                     if (hasHorizontalScrollBar)
                         ScrollBar {
                             orientation: ScrollBar.ORIENTATION_HORIZONTAL
-                            view: bind view
+                            view: content
                             width: bind width
-                            visible: bind (view.layoutBounds.width > width)
+                            visible: bind showHorizontalScrollBar
                             translateY: bind height
                         }
                     else null
@@ -111,11 +122,13 @@ function run(): Void {
                     translateY: 20
                     width: 300
                     height: 300
-                    content: bind for (i:Integer in [0..19]) {
-                        Text {
-                            translateY: i*25
-                            translateX: i*25
-                            content: "this is line {i}"
+                    content: Group {
+                        content: bind for (i:Integer in [0..19]) {
+                            Text {
+                                translateY: i*25
+                                translateX: i*25
+                                content: "this is line {i}"
+                            }
                         }
                     }
 

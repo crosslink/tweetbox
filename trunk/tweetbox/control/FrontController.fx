@@ -172,16 +172,16 @@ public class FrontController {
     function processReceivedStatuses(statuses:List, group:GroupVO) {
         if (statuses != null) {
             System.out.println("processReceivedStatuses({statuses.size()} statuses, {group.id})");
-            var temp:List = new Vector();
+            var newStatuses:List = new Vector();
             for (i:Integer in [0..statuses.size()-1]) {
                 var s:Status = statuses.get(i) as Status;
                 if (not group.updates.contains(s)) {
-                    temp.add(s);
+                    newStatuses.add(s);
                 }
             }
-            if (group.updates.size() > 0 and temp.size() > 0) addAlertMessage("{temp.size()} new updates in {group.title}");
-            group.updates.addAll(0, temp);
-            group.newUpdates = temp.size();
+            if (group.updates.size() > 0 and newStatuses.size() > 0) addAlertMessage("{newStatuses.size()} new updates in {group.title}");
+            group.updates.addAll(0, newStatuses);
+            group.newUpdates = newStatuses.size();
             model.state = State.READY;
         }
         else {
@@ -192,17 +192,17 @@ public class FrontController {
     function processReceivedDirectMessages(dms:List, group:GroupVO) {
         if (dms != null) {
             System.out.println("processReceivedStatuses({dms.size()} statuses, {group.id})");
-            var temp:List = new Vector();
+            var newStatuses:List = new Vector();
             for (i:Integer in [0..dms.size()-1]) {
                 var dm:DirectMessage = dms.get(i) as DirectMessage;
                 if (not group.updates.contains(dm)) {
-                    temp.add(dm);
+                    newStatuses.add(dm);
                 }
             }
-            if (group.updates.size() > 0 and temp.size() > 0) addAlertMessage("{temp.size()} new direct messages");
-            group.updates.addAll(0, temp);
+            if (group.updates.size() > 0 and newStatuses.size() > 0) addAlertMessage("{newStatuses.size()} new direct messages");
+            group.updates.addAll(0, newStatuses);
             model.state = State.READY;
-            group.newUpdates = temp.size();
+            group.newUpdates = newStatuses.size();
         }
         else {
             System.out.println("processReceivedStatuses(null, {group.id})");
@@ -292,10 +292,14 @@ public class FrontController {
             insert message into model.alertMessages
         else
             model.alertMessages = [message];
+        model.alertMessageCount++;
     }
 
     public function clearAlertMessages(): Void {
-        if (model.alertMessages != null and sizeof model.alertMessages > 0) delete model.alertMessages;
+        if (model.alertMessages != null and sizeof model.alertMessages > 0) {
+            delete model.alertMessages;
+            model.alertMessageCount = 0;
+        }
     }
 
     /*

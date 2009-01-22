@@ -40,8 +40,14 @@ import tweetbox.ui.style.Style;
  */
 public class TweetsView extends CustomNode, Resizable {
 
+    public var group:GroupVO;
     public var minimizedHeight:Number;
     public var minimizedWidth:Number;
+
+    public var minimized:Boolean = false;
+
+    public var onExpand:function(view:TweetsView):Void;
+    public var onMinimize:function(view:TweetsView):Void;
 
     var expandedWidth:Number = width;
     var expandedHeight:Number = height;
@@ -54,20 +60,19 @@ public class TweetsView extends CustomNode, Resizable {
         expandedHeight = height;
     }
 
-    public var tweets:List;
-    
-    public var newTweets:Integer on replace {
+
+    var newTweets:Integer = bind group.newUpdates on replace {
         for (row:Integer in [0..newTweets - 1]) {
             insert TweetNode {
                 width: expandedWidth - 5
                 tweet: TweetVO {
                     status: bind
-                        if (tweets.get(row) instanceof Status)
-                            tweets.get(row) as Status
+                        if (group.updates.get(row) instanceof Status)
+                            group.updates.get(row) as Status
                         else null
                     dm: bind
-                        if (tweets.get(row) instanceof DirectMessage)
-                            tweets.get(row) as DirectMessage
+                        if (group.updates.get(row) instanceof DirectMessage)
+                            group.updates.get(row) as DirectMessage
                         else null
                 }
             } before tweetNodes[row];
@@ -75,12 +80,7 @@ public class TweetsView extends CustomNode, Resizable {
         numRows = sizeof tweetNodes;
     };
 
-    public var minimized:Boolean = false;
-    
-    public var onExpand:function(view:TweetsView):Void;
-    public var onMinimize:function(view:TweetsView):Void;
-
-    public var title:String = "updates";
+    var title:String = bind group.title;
     var scrollViewRef:ScrollView;
                 
     var numRows:Integer;
@@ -122,7 +122,9 @@ public class TweetsView extends CustomNode, Resizable {
                 translateY: 25
                 height: bind expandedHeight - 25
                 width: bind expandedWidth - 20
-                content: bind tweetNodes
+                content: VBox {
+                    content: bind tweetNodes
+                }
             }
         ]
     }
@@ -173,7 +175,7 @@ public class TweetsView extends CustomNode, Resizable {
     var currentView:Node = bind if (minimized) minimizedView else expandedView;
 
     public override function create(): Node {
-        numRows = tweets.size();
+        numRows = group.updates.size();
         return Group {
             content: bind currentView
         };
@@ -184,7 +186,7 @@ public class TweetsView extends CustomNode, Resizable {
     }
 
     bound function profileImageForMostRecentUpdate(): Image {
-        var update:TwitterResponse = tweets.get(0) as TwitterResponse;
+        var update:TwitterResponse = group.updates.get(0) as TwitterResponse;
         
         var user:User = if (update instanceof Status)
             (update as Status).getUser()

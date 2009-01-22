@@ -17,6 +17,7 @@ import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import javafx.animation.Interpolator;
 //import javafx.scene.layout.Container;
+import java.lang.Math;
 
 import tweetbox.ui.style.Style;
 
@@ -34,31 +35,48 @@ public class ScrollBar extends CustomNode {
     public var height:Number = 14;
     public var scrollStepSize:Integer = 5;
     public var orientation:Integer = ORIENTATION_VERTICAL;
-
     var nodeStyle = Style.getApplicationStyle();
 
-  /*
-   * The color or gradient of the vertical scrollbar.
-   */
     var vertScrollbarFill:Paint = nodeStyle.SCROLLBAR_TRACK_FILL;
-
-  /*
-   * The color or gradient of the vertical scrollbar thumb.
-   */
     var vertScrollbarThumbFill:Paint = nodeStyle.SCROLLBAR_THUMB_FILL;
 
-    var scrollButtonWidth:Number = bind if (orientation == ORIENTATION_VERTICAL) width else height;
-    var scrollButtonHeight:Number = bind scrollButtonWidth;
+    var scrollButtonWidth:Number = if (orientation == ORIENTATION_VERTICAL) width else height;
+    var scrollButtonHeight:Number = scrollButtonWidth;
+    var totalWidthOfScrollButtons:Number = 2 * scrollButtonWidth;
 
-    var thumbStartPos = 0.0;
-    var thumbEndPos = 0.0;
+    /** the position ot the scroll thumb on the scroll track */
+    var thumbPos = 0.0;
+
     var scrollValue = 0.0;
     var thumb:Rectangle;
     var track:Rectangle;
     var scrollForwardBtn:Rectangle;
     var scrollBackwardsBtn:Rectangle;
 
-    var arrowPoints:Number[] = bind [
+    var trackLength:Number = bind
+        if (orientation == ORIENTATION_VERTICAL)
+            height - totalWidthOfScrollButtons
+        else
+            width - totalWidthOfScrollButtons;
+
+    var viewTrackRatio:Number = bind
+        if (orientation == ORIENTATION_VERTICAL)
+            view.boundsInLocal.height / trackLength
+        else
+            view.boundsInLocal.width / trackLength;
+
+    var trackViewRation:Number = bind
+        if (orientation == ORIENTATION_VERTICAL)
+            trackLength / view.layoutBounds.height
+        else
+            trackLength / view.layoutBounds.width;
+
+
+    var thumbLength:Number = bind trackViewRation * trackLength - totalWidthOfScrollButtons;
+
+    public-read var scrollPosition:Number = bind 0.0 - (thumbPos * viewTrackRatio);
+
+    var arrowPoints:Number[] = [
         1.0 * scrollButtonWidth / 2, 1.0 * scrollButtonWidth / 4,
         1.0 * scrollButtonWidth / 4, 3.0 * scrollButtonWidth / 4,
         3.0 * scrollButtonWidth / 4, 3.0 * scrollButtonWidth / 4
@@ -67,28 +85,28 @@ public class ScrollBar extends CustomNode {
     var upArrowShape:Polyline = Polyline {
         blocksMouse:false
         fill: bind vertScrollbarFill
-        points: bind arrowPoints
+        points: arrowPoints
     };
 
     var downArrowShape:Polyline = Polyline {
         rotate: 180
         blocksMouse:false
         fill: bind vertScrollbarFill
-        points: bind arrowPoints
+        points: arrowPoints
     }
 
     var leftArrowShape:Polyline = Polyline {
         rotate: -90
         blocksMouse:false
         fill: bind vertScrollbarFill
-        points: bind arrowPoints
+        points: arrowPoints
     }
 
     var rightArrowShape:Polyline = Polyline {
         rotate: 90
         blocksMouse:false
         fill: bind vertScrollbarFill
-        points: bind arrowPoints
+        points: arrowPoints
     }
 
     public override function create(): Node {
@@ -101,10 +119,10 @@ public class ScrollBar extends CustomNode {
                             blocksMouse:true
                             x: 0
                             y: 0
-                            width: bind scrollButtonWidth
-                            height: bind scrollButtonHeight
-                            arcHeight: bind scrollButtonWidth / 2
-                            arcWidth: bind scrollButtonWidth / 2
+                            width: scrollButtonWidth
+                            height: scrollButtonHeight
+                            arcHeight: scrollButtonWidth / 2
+                            arcWidth: scrollButtonWidth / 2
                             fill: bind vertScrollbarThumbFill
 
                             onMousePressed: function(e:MouseEvent):Void {
@@ -134,10 +152,10 @@ public class ScrollBar extends CustomNode {
                             blocksMouse:true
                             x: 0
                             y: 0
-                            width: bind scrollButtonWidth
-                            height: bind scrollButtonHeight
-                            arcHeight: bind scrollButtonWidth / 2
-                            arcWidth: bind scrollButtonWidth / 2
+                            width: scrollButtonWidth
+                            height: scrollButtonHeight
+                            arcHeight: scrollButtonWidth / 2
+                            arcWidth: scrollButtonWidth / 2
                             fill: bind vertScrollbarThumbFill
 
                             onMousePressed: function(e:MouseEvent):Void {
@@ -167,40 +185,40 @@ public class ScrollBar extends CustomNode {
                         track = Rectangle {
                             x: 0
                             y: 0
-                            width: bind if (orientation == ORIENTATION_HORIZONTAL) width - 2 * scrollButtonWidth else width
-                            height: bind if (orientation == ORIENTATION_VERTICAL) height - 2 * scrollButtonHeight else height
-                            arcHeight: bind scrollButtonWidth / 2
-                            arcWidth: bind scrollButtonWidth / 2
+                            width: bind if (orientation == ORIENTATION_HORIZONTAL) trackLength else width
+                            height: bind if (orientation == ORIENTATION_VERTICAL) trackLength else height
+                            arcHeight: scrollButtonWidth / 2
+                            arcWidth: scrollButtonWidth / 2
                             fill: bind vertScrollbarFill
+
+                            onMouseReleased: function(e:MouseEvent):Void {
+                                scrollForward.stop();
+                                scrollBackwards.stop();
+                                if (orientation == ORIENTATION_VERTICAL)
+                                    scrollTo(e.y)
+                                else
+                                    scrollTo(e.x);
+                            }
                         },
                         //Scrollbar thumb
                         thumb = Rectangle {
                             blocksMouse:true
-                            x: bind if (orientation == ORIENTATION_HORIZONTAL) thumbEndPos else 0
-                            y: bind if (orientation == ORIENTATION_VERTICAL) thumbEndPos else 0
-                            
-                            width: bind
-                                if (orientation == ORIENTATION_HORIZONTAL)
-                                    (track.layoutBounds.width / (view.layoutBounds.width) * track.layoutBounds.width) - 2 * scrollButtonWidth
-                                else
-                                    width
-                            
-                            height: bind
-                                if (orientation == ORIENTATION_VERTICAL)
-                                    (track.layoutBounds.height / (view.layoutBounds.height) * track.layoutBounds.height) - 2 * scrollButtonHeight
-                                else
-                                    height
-
+                            x: bind if (orientation == ORIENTATION_HORIZONTAL) thumbPos else 0
+                            y: bind if (orientation == ORIENTATION_VERTICAL) thumbPos else 0
+                            width: bind if (orientation == ORIENTATION_HORIZONTAL) thumbLength else width
+                            height: bind if (orientation == ORIENTATION_VERTICAL) thumbLength else height
                             fill: vertScrollbarThumbFill
-                            arcHeight: bind scrollButtonWidth / 2
-                            arcWidth: bind scrollButtonWidth / 2
+                            arcHeight: scrollButtonWidth / 2
+                            arcWidth: scrollButtonWidth / 2
+
                             onMouseDragged: function(e:MouseEvent):Void {
+                                //println("thumb dragged: {e} dragAnchorY={e.dragAnchorY} dragY={e.dragY}");
                                 scrollForward.stop();
                                 scrollBackwards.stop();
                                 if (orientation == ORIENTATION_VERTICAL)
-                                    scrollTo(e.dragY - thumbStartPos)
+                                    scrollTo(e.y)
                                 else
-                                    scrollTo(e.dragX - thumbStartPos);
+                                    scrollTo(e.x);
                             }
                         }
 
@@ -242,41 +260,33 @@ public class ScrollBar extends CustomNode {
     };
 
     public function scrollBy(pixels:Number) {
-        var tempPos = thumbEndPos + pixels;
-        var thumbLength = if (orientation == ORIENTATION_VERTICAL) thumb.layoutBounds.height else thumb.layoutBounds.width;
-        var trackLength = if (orientation == ORIENTATION_VERTICAL) track.layoutBounds.height else track.layoutBounds.width;
+        var newPos = thumbPos + pixels;
         // Keep the scroll thumb within the bounds of the scrollbar
-        if (tempPos >= 0 and tempPos + thumbLength <= trackLength) {
-            thumbEndPos = tempPos;
+        if (newPos >= 0 and newPos + thumbLength <= trackLength) {
+            thumbPos = newPos;
         }
-        else if (tempPos < 0) {
-            thumbEndPos = 0;
+        else if (newPos < 0) {
+            // keep thumb below the top of the track
+            thumbPos = 0;
         }
         else {
-            thumbEndPos = trackLength - thumbLength;
+            // keep thumb above the bottom of the track
+            thumbPos = Math.max(trackLength - thumbLength, 0.0);
         }
     }
 
     public function scrollTo(pos:Number) {
-        var tempPos = pos;
-        var thumbLength = if (orientation == ORIENTATION_VERTICAL) thumb.layoutBounds.height else thumb.layoutBounds.width;
-        var trackLength = if (orientation == ORIENTATION_VERTICAL) track.layoutBounds.height else track.layoutBounds.width;
         // Keep the scroll thumb within the bounds of the scrollbar
-        if (tempPos >= 0 and tempPos + thumbLength <= trackLength) {
-            thumbEndPos = tempPos;
+        if (pos >= 0 and pos + thumbLength <= trackLength) {
+            thumbPos = pos;
         }
-        else if (tempPos < 0) {
-            thumbEndPos = 0;
+        else if (pos < 0) {
+            thumbPos = 0;
         }
         else {
-            thumbEndPos = trackLength - thumbLength;
+            thumbPos = Math.max(trackLength - thumbLength, 0.0);
         }
     }
 
-    public-read var scrollPosition:Number = bind
-        if (orientation == ORIENTATION_VERTICAL)
-            -1.0 * thumbEndPos * view.boundsInLocal.height / track.layoutBounds.height
-        else
-            -1.0 * thumbEndPos * view.boundsInLocal.width / track.layoutBounds.width
 
 }

@@ -60,7 +60,7 @@ public class AboutDialog {
                 content: [
                     t1 = Text {
                         translateX: bind ((width - t1.layoutBounds.width) / 2)
-                        content: "TweetBox 0.1"
+                        content: "TweetBox 0.1.5"
                     },
                     t2 = Text {
                         translateX: bind ((width - t2.layoutBounds.width) / 2)
