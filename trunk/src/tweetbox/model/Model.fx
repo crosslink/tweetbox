@@ -1,8 +1,6 @@
 /*
- *  TableNodeExampleModel.fx - 
- *  The model behind the TableNode example
- *
- *  Developed 2008 by James L. Weaver (jim.weaver at lat-inc.com)
+ *  Model.fx - 
+ *  The model behind TweetBox
  */
 package tweetbox.model;
 
@@ -16,7 +14,7 @@ import javafx.scene.text.*;
 import tweetbox.valueobject.*;
 
 /**
- * The model behind the TableNode example
+ * The model behind TweetBox
  */
 public class Model {
 
