@@ -52,8 +52,8 @@ public class AlertBox {
     
     var stageOpacityValue:Number = 0.0;
 
-    var visible:Boolean = bind (model.alertMessages != null and sizeof model.alertMessages > 0) on replace {
-        if (visible) show() else hide();
+    var messageCount:Integer = bind model.alertMessageCount on replace {
+        if (messageCount>0) show() else hide();
     };
 
     // a media player for playing a short beep when new tweets arrive

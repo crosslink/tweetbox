@@ -37,15 +37,13 @@ public class HomeView extends CustomNode {
     var minimizedTweetsViewWidth:Integer = 130;
 
     var expandedTweetsViewMinimalWidth:Integer = 300;
-    var expandedTweetsViewHeight:Number = bind height - 50;
+    var expandedTweetsViewHeight:Number = bind height - 30;
     var expandedTweetsViewWidth:Number = 360;
 
     var tweetsViews:TweetsView[] = for (group:GroupVO in model.groups) {
         TweetsView {
             minimized: not group.expanded
-            title: bind group.title
-            tweets: bind group.updates
-            newTweets: bind group.newUpdates
+            group: bind group
             height: bind expandedTweetsViewHeight
             width: bind expandedTweetsViewWidth
             minimizedHeight: bind minimizedTweetsViewHeight
@@ -54,41 +52,26 @@ public class HomeView extends CustomNode {
             onMinimize: onTweetsViewMinimize
         }
     };
-
+    
     public override function create(): Node {
         return Group {
             content: [
-                VBox {
-                    var updateRef:UpdateNode;
-                    spacing: 4
-                    content: [
-                        updateRef = UpdateNode {
-                            translateY: 0
-                            text: bind model.updateText
-                            translateX: 10
-                        },
-                        ScrollView {
-                            width: bind width 
-                            height: bind height - 20
-                            content: [
-                                SortingFlowBox {
-                                    orientation: FlowBox.FLOWORIENTATION_VERTICAL
-                                    width: bind width
-                                    height: bind height - 20
-                                    spacing: 10
-                                    translateX: 10
-                                    translateY: 20
-                                    content: tweetsViews
-                                    compareNodes: function(node1:Object, node2:Object): Integer {
-                                        return compareTweetsViews(node1 as TweetsView, node2 as TweetsView);
-                                    }
-                                }
-                            ]
-
+                ScrollView {
+                    width: bind width
+                    height: bind height - 20
+                    content: SortingFlowBox {
+                        orientation: FlowBox.FLOWORIENTATION_VERTICAL
+                        width: bind width
+                        height: bind height - 20
+                        spacing: 10
+                        translateX: 10
+                        translateY: 20
+                        content: tweetsViews
+                        compareNodes: function(node1:Object, node2:Object): Integer {
+                            return compareTweetsViews(node1 as TweetsView, node2 as TweetsView);
                         }
-                        
-                    ]
-                }
+                    }
+                },
             ]
         };
     }

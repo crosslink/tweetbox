@@ -60,6 +60,7 @@ public class Model {
     ];
 
     public var alertMessages:String[] = [];
+    public var alertMessageCount:Integer = 0;
     
 }
 
