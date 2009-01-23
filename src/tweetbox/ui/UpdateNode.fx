@@ -42,6 +42,7 @@ def MAX_TWEET_LENGTH:Integer = 140;
 public class UpdateNode extends CustomNode {
     public var text:String on replace {
         updateTextArea.setText(text);
+        textLength = updateTextArea.getDocument().getLength();
     }
 
     public var width:Number on replace {
@@ -120,6 +121,8 @@ public class UpdateNode extends CustomNode {
 
     function sendUpdate(): Void {
         FrontController.getInstance().sendUpdate(updateTextArea.getText());
+        updateTextArea.setText("");
+        textLength = 0;
     }
 }
 

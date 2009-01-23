@@ -156,19 +156,42 @@ public class FrontController {
     }
     
     public function sendUpdate(update:String) {
-        var result:Object = null;
-        var twitterAccount = getAccount("twitter");
         try {
-            result = twitter.update(update);
+            if (update.startsWith("d") or update.startsWith("D")) {
+                sendDirectMessage(update);
+            }
+            else {
+//                var result:Object = null;
+//                result = twitter.update(update);
+//                updated(result as Status);
+            }
         }
         catch (e:TwitterException) {
             stopReceiving();
             println("twitter exception: {e}");
         }
-        updated(result as Status);
-        return result;
     }
     
+    function sendDirectMessage(update:String) {
+        var tokens:String[] = update.split(" ");
+        var userId:String = tokens[1]; // extract the user id of theuser that the DM is sent to
+        var messageText:String = "";
+        for (i in [2..sizeof tokens]) {
+            messageText = "{messageText}{tokens[i]} "
+        }
+
+        println("sending direct message [{messageText.trim()}] to [{userId}]");
+        try {
+            var result:Object = null;
+            result = twitter.sendDirectMessage(messageText.trim(), userId);
+            sentDirectMessage(result as DirectMessage);
+        }
+        catch (e:TwitterException) {
+            stopReceiving();
+            println("twitter exception: {e}");
+        }
+    }
+
     function processReceivedStatuses(statuses:List, group:GroupVO) {
         if (statuses != null) {
             System.out.println("processReceivedStatuses({statuses.size()} statuses, {group.id})");
