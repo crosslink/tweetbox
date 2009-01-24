@@ -19,7 +19,9 @@ import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.shape.Rectangle;
-
+import javafx.geometry.Point2D;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 import tweetbox.generic.component.Button;
 
@@ -46,12 +48,13 @@ public class UpdateNode extends CustomNode {
     }
 
     public var width:Number on replace {
-        updateTextArea.setColumns(Math.max(width/10, 40));
+        //updateTextArea.setColumns(Math.max(width/10, 40));
     }
+    var model = Model.getInstance();
 
     var nodeStyle = Style.getApplicationStyle();
     
-    var updateTextArea = new JTextArea(text, 2, Math.max(width/10, 40));
+    var updateTextArea = new JTextArea(text, 5, 30);
     var textLength:Integer = updateTextArea.getDocument().getLength();
     var maxLengthExceeded:Boolean = bind textLength > MAX_TWEET_LENGTH;
 
@@ -73,6 +76,7 @@ public class UpdateNode extends CustomNode {
         }
 
     var updateBox:Node;
+    var counterLabel:Node;
     
     public override function create(): Node {
         updateTextArea.setText(text);
@@ -81,37 +85,66 @@ public class UpdateNode extends CustomNode {
         updateTextArea.addKeyListener(keyListener);
     
         return Group {
+            blocksMouse:true;
             content: [
                 Rectangle {
+                    opacity: 0.8
                     stroke: nodeStyle.MESH_BLUE
                     strokeWidth: 3
                     width: bind updateBox.layoutBounds.width + 10
                     height: bind updateBox.layoutBounds.height + 10
-                    fill:nodeStyle.MESH_BLUE
+                    fill:nodeStyle.UPDATEBOX_FILL
+                    stroke:nodeStyle.UPDATEBOX_STROKE
                 },
                 updateBox = VBox {
                     translateX: 5
                     translateY: 5
                     content: [
-                        HBox {
-                            spacing: 10
+                        Group {
+                            visible: bind model.directMessageMode
                             content: [
-                                SwingComponent.wrap(updateTextArea),
-                                SwingLabel {
-                                    text: bind "{MAX_TWEET_LENGTH - textLength}"
+                                Rectangle {
+                                    width: 329
+                                    height: 18
+                                    fill: nodeStyle.UPDATEBOX_DMTO_TEXT_BG_FILL
+                                }
+                                Text {
+                                    translateY: 12
+                                    translateX: 2
+                                    fill: nodeStyle.UPDATEBOX_DMTO_TEXT_FILL
+                                    content: bind "dm to: {model.directMessageReceiver.user.getName()} ({model.directMessageReceiver.screenName})"
+                                }
+                            ]
+                        },
+                        SwingComponent.wrap(updateTextArea),
+                        HBox {
+                            spacing: 5
+                            content: [
+                                Button {
+                                    translateY: 5
+                                    label: "update"
+                                    imageURL: "{__DIR__}icons/accept.png"
+                                    action: sendUpdate
+                                },
+                                Button {
+                                    translateY: 5
+                                    label: "cancel"
+                                    imageURL: "{__DIR__}icons/cancel.png"
+                                    action: cancel
+                                },
+                                counterLabel = Text {
+                                    translateX: 150
+                                    translateY: 20
+                                    textAlignment: TextAlignment.RIGHT;
+                                    content: bind "{MAX_TWEET_LENGTH - textLength}"
                                     font: Font {
                                         name: "Sans serif"
                                         size: 20
                                     }
-                                    foreground: bind if (maxLengthExceeded) Color.RED else Color.BLACK
+                                    fill: bind if (maxLengthExceeded) Color.RED else Color.BLACK
                                 }
+
                             ]
-                        },
-                        Button {
-                            translateY: 5
-                            label: "update"
-                            imageURL: "{__DIR__}icons/accept.png"
-                            action: sendUpdate
                         }
                     ]
                 }
@@ -123,6 +156,12 @@ public class UpdateNode extends CustomNode {
         FrontController.getInstance().sendUpdate(updateTextArea.getText());
         updateTextArea.setText("");
         textLength = 0;
+    }
+
+    function cancel(): Void {
+        updateTextArea.setText("");
+        textLength = 0;
+        FrontController.getInstance().cancelUpdate();
     }
 }
 

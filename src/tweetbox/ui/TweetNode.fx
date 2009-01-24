@@ -38,6 +38,7 @@ import javafx.scene.effect.*;
 import javafx.scene.transform.*;
 import javafx.scene.Cursor;
 import javafx.scene.paint.Color;
+import javafx.geometry.Point2D;
 
 def replyIcon = Image {url: "{__DIR__}icons/reply.png"};
 def dmIcon = Image {url: "{__DIR__}icons/email.png"};
@@ -144,26 +145,33 @@ public class TweetNode extends CustomNode {
                         translateX: 5
                         translateY: 5
                         image: bind replyIcon
-                        onMouseClicked:
-                        function(me:MouseEvent):Void {
-                            controller.reply(user.screenName);
+                        onMouseClicked: function(me:MouseEvent):Void {
+                            controller.reply(
+                                tweet,
+                                Point2D{
+                                    x: tweetContentBox.boundsInScene.minX
+                                    y: tweetContentBox.boundsInScene.minY+tweetContentBox.boundsInLocal.height
+                                });
                         }
                     },
                     ImageView {
                         translateX: 25
                         translateY: 5
                         image: bind dmIcon
-                        onMouseClicked:
-                        function(me:MouseEvent):Void {
-                            controller.direct(user.screenName);
+                        onMouseClicked: function(me:MouseEvent):Void {
+                            controller.direct(
+                                user,
+                                Point2D{
+                                    x: tweetContentBox.boundsInScene.minX
+                                    y: tweetContentBox.boundsInScene.minY+tweetContentBox.boundsInLocal.height
+                                });
                         }
                     },
                     ImageView {
                         translateX: 5
                         translateY: 25
                         image: bind followIcon
-                        onMouseClicked:
-                        function(me:MouseEvent):Void {
+                        onMouseClicked: function(me:MouseEvent):Void {
                             controller.follow(user.screenName);
                         }
                     },
@@ -171,9 +179,13 @@ public class TweetNode extends CustomNode {
                         translateX: 25
                         translateY: 25
                         image: bind rtIcon
-                        onMouseClicked:
-                        function(me:MouseEvent):Void {
-                            controller.retweet(user.screenName, tweet.text);
+                        onMouseClicked: function(me:MouseEvent):Void {
+                            controller.retweet(
+                                tweet,
+                                Point2D{
+                                    x: tweetContentBox.boundsInScene.minX
+                                    y: tweetContentBox.boundsInScene.minY+tweetContentBox.boundsInLocal.height
+                                });
                         }
                     },
                 ]

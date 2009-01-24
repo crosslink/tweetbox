@@ -18,6 +18,7 @@ import javafx.scene.transform.*;
 import javafx.stage.*;
 import javafx.animation.*;
 import javafx.scene.text.Text;
+import javafx.geometry.Point2D;
 
 import org.jfxtras.stage.JFXStage;
 import org.jfxtras.stage.WindowHelper;
@@ -96,17 +97,29 @@ function run() {
                             translateY: 5
                             content: [
                                 Button {
+                                    label: "Tweet"
+                                    imageURL: "{__DIR__}icons/textfield.png"
+                                    action: function():Void {
+                                        if (not model.updateNodeVisible) {
+                                            model.updateNodeVisible = true;
+                                            model.directMessageMode = false;
+                                            model.updateNodePosition = Point2D {
+                                                x: menuRef.layoutBounds.minX + menuRef.layoutBounds.width + 10
+                                                y: menuRef.layoutBounds.minY + 5
+                                            }
+                                        }
+                                    }
+                                },
+                                Button {
                                     label: "Config"
                                     imageURL: "{__DIR__}icons/config.png"
-                                    action:
-                                    function():Void {
+                                    action: function():Void {
                                         configDialog.visible = true;
                                     }
                                 },
                                 Button {
                                     label: "About"
-                                    action:
-                                    function():Void {
+                                    action: function():Void {
                                         aboutDialog.visible = true;
                                     }
                                 }
@@ -116,11 +129,14 @@ function run() {
                             translateX: 5
                             translateY: menuRef.layoutBounds.height + 10
                             width: bind stage.scene.width - 20
-                            height: bind stage.scene.height - 120
+                            height: bind stage.scene.height - 25
                         },
                         updateRef = UpdateNode {
-                            translateY: bind stage.scene.height - updateRef.layoutBounds.height - 10
-                            translateX: bind (stage.scene.width - updateRef.layoutBounds.width)/2
+                            //translateY: bind stage.scene.height - updateRef.layoutBounds.height - 10
+                            //translateX: bind (stage.scene.width - updateRef.layoutBounds.width)/2
+                            translateX: bind model.updateNodePosition.x;
+                            translateY: bind model.updateNodePosition.y;
+                            visible: bind model.updateNodeVisible;
                             text: bind model.updateText
                         },
                         statusBarRef = StatusBar {

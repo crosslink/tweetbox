@@ -63,10 +63,11 @@ public class MeshStyle {
     }
     
     // update styles
+    public var UPDATEBOX_FILL: Paint = Color.rgb(41,170,210, 0.8);
+    public var UPDATEBOX_STROKE: Paint = MESH_RED;
     public var UPDATE_FILL: Paint = Color.rgb(255,255,255);
-    public var REPLY_FILL: Paint = Color.rgb(255,200,200);
-    public var DIRECTMESSAGE_FILL: Paint = Color.rgb(200,255,200);
-    public var MYUPDATE_FILL: Paint = Color.rgb(200,200,255);
+    public var UPDATEBOX_DMTO_TEXT_BG_FILL: Paint = MESH_RED;
+    public var UPDATEBOX_DMTO_TEXT_FILL: Paint = Color.WHITE;
     public var UPDATE_TEXT_FILL: Paint = Color.BLACK;
     public var UPDATE_TEXT_FONT: Font = Font {
         name: "Sans serif"

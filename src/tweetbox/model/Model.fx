@@ -12,6 +12,7 @@ import javafx.scene.*;
 import javafx.scene.image.*;
 import javafx.scene.text.*;
 import tweetbox.valueobject.*;
+import javafx.geometry.Point2D;
 
 /**
  * The model behind TweetBox
@@ -23,6 +24,13 @@ public class Model {
    public var state:Integer;
    
    public var updateText:String;
+   public var updateNodeVisible:Boolean = false;
+   public var updateNodePosition:Point2D = Point2D {
+       x: 0
+       y: 0
+   };
+   public var directMessageMode:Boolean = false;
+   public var directMessageReceiver:UserVO;
 
    public var friendUpdates:GroupVO = GroupVO {
         expanded: true
