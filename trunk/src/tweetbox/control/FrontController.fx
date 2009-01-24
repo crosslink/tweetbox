@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javafx.animation.*;
+import javafx.geometry.Point2D;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterAdapter;
@@ -157,7 +158,7 @@ public class FrontController {
     
     public function sendUpdate(update:String) {
         try {
-            if (update.startsWith("d") or update.startsWith("D")) {
+            if (model.directMessageMode) {
                 sendDirectMessage(update);
             }
             else {
@@ -173,17 +174,11 @@ public class FrontController {
     }
     
     function sendDirectMessage(update:String) {
-        var tokens:String[] = update.split(" ");
-        var userId:String = tokens[1]; // extract the user id of theuser that the DM is sent to
-        var messageText:String = "";
-        for (i in [2..sizeof tokens]) {
-            messageText = "{messageText}{tokens[i]} "
-        }
 
-        println("sending direct message [{messageText.trim()}] to [{userId}]");
+        println("sending direct message [{update}] to [{model.directMessageReceiver.screenName}]");
         try {
             var result:Object = null;
-            result = twitter.sendDirectMessage(messageText.trim(), userId);
+            result = model.directMessageReceiver.user.sendDirectMessage(update);
             sentDirectMessage(result as DirectMessage);
         }
         catch (e:TwitterException) {
@@ -264,17 +259,32 @@ public class FrontController {
 
     public function search(query:String) {
     }
-    
-    public function reply(to:String) {
-        model.updateText = "{model.updateText}@{to} " 
+
+    public function cancelUpdate():Void {
+        model.updateNodeVisible = false;
+        model.updateText = ""
     }
     
-    public function direct(to:String) {
-        model.updateText = "d {to} " 
+    public function reply(tweet:TweetVO, pos:Point2D) {
+        model.updateNodeVisible = true;
+        model.updateNodePosition = pos;
+        model.directMessageMode = false;
+        model.updateText = "{model.updateText}@{tweet.user.screenName} "
     }
     
-    public function retweet(user:String, text:String) {
-        model.updateText = "RT @{user}: {text}" 
+    public function direct(user:UserVO, pos:Point2D) {
+        model.updateNodeVisible = true;
+        model.updateNodePosition = pos;
+        model.directMessageMode = true;
+        model.directMessageReceiver = user;
+        model.updateText = "" 
+    }
+    
+    public function retweet(tweet:TweetVO, pos:Point2D) {
+        model.updateNodeVisible = true;
+        model.updateNodePosition = pos;
+        model.directMessageMode = false;
+        model.updateText = "RT @{tweet.user.screenName}: {tweet.text}"
     }
     
     public function follow(user:String) {
