@@ -24,6 +24,7 @@ public class ImageCache  {
         }
         else {
             var newImage:Image = Image {
+
                 backgroundLoading: true
                 url: url
             }

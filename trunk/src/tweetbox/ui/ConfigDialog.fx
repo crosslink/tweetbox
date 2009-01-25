@@ -14,7 +14,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.ext.swing.SwingComponent;
 import javafx.ext.swing.SwingLabel;
 import javafx.ext.swing.SwingTextField;
-import javafx.stage.Stage;
+import javafx.stage.*;
+import javafx.scene.text.Text;
 
 import javax.swing.JPasswordField;
 
@@ -29,6 +30,7 @@ import tweetbox.generic.component.Button;
 import tweetbox.generic.layout.FlowBox;
 import tweetbox.ui.style.Style;
 import tweetbox.valueobject.AccountVO;
+
 /**
  * @author mnankman
  */
@@ -56,63 +58,91 @@ public class ConfigDialog {
     var content = Group {
         content: [
             Rectangle {
+                translateX:0
+                translateY:0
                 stroke: nodeStyle.APPLICATION_BACKGROUND_STROKE
-                x:0 y:0
-                width: bind width
-                height: bind height
+                strokeWidth: 3
+                x:0
+                y:0
+                width: bind width - 2
+                height: bind height - 2
                 fill:nodeStyle.APPLICATION_BACKGROUND_FILL
-            },
-            SwingLabel {
-                translateX: 10
-                translateY: 10
-                text: "login: "
-            },
-            loginField = SwingTextField {
-                translateX: 100
-                translateY: 10
-                columns: 20
-                text: twitterAccount.login
-            },
-            SwingLabel {
-                translateX: 10
-                translateY: 40
-                text: "password: "
+
             },
             Group {
-                translateX: 100
-                translateY: 40
-                content: SwingComponent.wrap(passwordField)
-
-            },
-            FlowBox {
-                width: bind width - 20
-                translateX: 10
-                translateY: 80
                 content: [
-                    Button {
-                        label: "Save"
-                        imageURL: "{__DIR__}icons/accept.png"
-                        action: function():Void {
-                            controller.updateAccount(
-                                AccountVO {
-                                    id: "twitter"
-                                    login: loginField.text
-                                    password: new String(passwordField.getPassword())
-                                }
-                            );
-                            visible = false;
-                        }
+                    Rectangle {
+                        x:3
+                        y:3
+                        width: bind width - 6
+                        height: bind 20
+                        fill:nodeStyle.APPLICATION_TITLEBAR_FILL
                     },
-
-                    Button {
-                        label: "Cancel"
-                        imageURL: "{__DIR__}icons/cancel.png"
-                        action: function():Void {
-                            visible = false;
-                        }
-                    },
+                    Text {
+                        translateY: 15
+                        translateX: 10
+                        content: "TweetBox configuration"
+                        fill: nodeStyle.APPLICATION_TITLEBAR_TEXT_FILL
+                        font: nodeStyle.APPLICATION_TITLEBAR_TEXT_FONT
+                    }
                 ]
+            },
+            Group {
+                translateY: 40
+                content: [
+                    SwingLabel {
+                        translateX: 10
+                        translateY: 10
+                        text: "login: "
+                    },
+                    loginField = SwingTextField {
+                        translateX: 100
+                        translateY: 10
+                        columns: 20
+                        text: twitterAccount.login
+                    },
+                    SwingLabel {
+                        translateX: 10
+                        translateY: 40
+                        text: "password: "
+                    },
+                    Group {
+                        translateX: 100
+                        translateY: 40
+                        content: SwingComponent.wrap(passwordField)
 
+                    },
+                    FlowBox {
+                        width: bind width - 20
+                        translateX: 10
+                        translateY: 80
+                        content: [
+                            Button {
+                                label: "Save"
+                                imageURL: "{__DIR__}icons/accept.png"
+                                action: function():Void {
+                                    controller.updateAccount(
+                                    AccountVO {
+                                        id: "twitter"
+                                        login: loginField.text
+                                        password: new String(passwordField.getPassword())
+                                    }
+                                    );
+                                    visible = false;
+                                }
+                            },
+
+                            Button {
+                                label: "Cancel"
+                                imageURL: "{__DIR__}icons/cancel.png"
+                                action: function():Void {
+                                    visible = false;
+                                }
+                            },
+                        ]
+
+                    }
+                ]
             }
         ]
     }
@@ -124,6 +154,7 @@ public class ConfigDialog {
         title: "TweetBox Alert"
         width: width
         height: height
+        style: StageStyle.TRANSPARENT
         resizable: false
         visible: bind visible;
         scene: Scene {
@@ -133,3 +164,25 @@ public class ConfigDialog {
     };
 
 }
+
+public function run() {
+    var config = ConfigDialog {}
+    Stage {
+        x:100 y:300 width:500 height:300
+        scene:Scene {
+            content: [
+                Button {
+                    translateX: 100
+                    translateY: 100
+                    width: 100
+                    label: "Configure TweetBox"
+                    action: function() {
+                         config.visible = true
+                    }
+                }
+            ]
+
+        }
+    }
+}
+

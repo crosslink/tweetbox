@@ -89,7 +89,8 @@ public class TweetNode extends CustomNode {
                             imageViewRef = ImageView {
                                 //translateX: 5
                                 //translateY: 4
-
+                                fitHeight: 50
+                                fitWidth: 50
                                 image: bind
                                     if (profileImageUrl == null)
                                         buddyImage
