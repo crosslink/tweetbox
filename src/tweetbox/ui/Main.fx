@@ -24,6 +24,7 @@ import org.jfxtras.stage.JFXStage;
 import org.jfxtras.stage.WindowHelper;
 
 import java.lang.Object;
+import java.lang.Math;
 import java.awt.Toolkit;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -134,8 +135,8 @@ function run() {
                         updateRef = UpdateNode {
                             //translateY: bind stage.scene.height - updateRef.layoutBounds.height - 10
                             //translateX: bind (stage.scene.width - updateRef.layoutBounds.width)/2
-                            translateX: bind model.updateNodePosition.x;
-                            translateY: bind model.updateNodePosition.y;
+                            translateX: bind Math.min(model.updateNodePosition.x, stage.scene.width - updateRef.layoutBounds.width);
+                            translateY: bind Math.min(model.updateNodePosition.y, stage.scene.height - updateRef.layoutBounds.height);
                             visible: bind model.updateNodeVisible;
                             text: bind model.updateText
                         },

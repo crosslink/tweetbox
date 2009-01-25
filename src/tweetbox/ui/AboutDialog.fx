@@ -11,7 +11,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
+import javafx.stage.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -32,7 +32,7 @@ import tweetbox.generic.component.HTMLNode;
 public class AboutDialog {
     
     public var title = "TweetBox configuration";
-    public var width = 320;
+    public var width = 400;
     public var height = 180;
     public var visible = false;
     public var modal = false;
@@ -44,15 +44,38 @@ public class AboutDialog {
     var closeButton:Button;
     var t1:Text;
     var t2:Text;
+    var t3:Text;
     
     var content = Group {
         content: [
             Rectangle {
+                translateX:0
+                translateY:0
                 stroke: nodeStyle.APPLICATION_BACKGROUND_STROKE
+                strokeWidth: 3
                 x:0 y:0
-                width: bind width
-                height: bind height
+                width: bind width - 2
+                height: bind height - 2
                 fill:nodeStyle.APPLICATION_BACKGROUND_FILL
+
+            },
+            Group {
+                content: [
+                    Rectangle {
+                        x:3
+                        y:3
+                        width: bind width - 6
+                        height: bind 20
+                        fill:nodeStyle.APPLICATION_TITLEBAR_FILL
+                    },
+                    Text {
+                        translateY: 15
+                        translateX: 10
+                        content: "About TweetBox"
+                        fill: nodeStyle.APPLICATION_TITLEBAR_TEXT_FILL
+                        font: nodeStyle.APPLICATION_TITLEBAR_TEXT_FONT
+                    }
+                ]
             },
             VBox {
                 translateX: 0
@@ -60,12 +83,17 @@ public class AboutDialog {
                 content: [
                     t1 = Text {
                         translateX: bind ((width - t1.layoutBounds.width) / 2)
-                        content: "TweetBox 0.1.5"
+                        content: "TweetBox {model.appInfo.major}.{model.appInfo.minor}.{model.appInfo.build} {model.appInfo.info}"
                     },
                     t2 = Text {
                         translateX: bind ((width - t2.layoutBounds.width) / 2)
                         translateY: 20
-                        content: "powered by JavaFX 1.0, Twitter4J 1.1.2 & JFXtras 0.1.1b"
+                        content: "powered by: {model.appInfo.javafx}, {model.appInfo.libraries}"
+                    },
+                    t3 = Text {
+                        translateX: bind ((width - t3.layoutBounds.width) / 2)
+                        translateY: 20
+                        content: "licence: {model.appInfo.licence}"
                     },
                     closeButton = Button {
                         translateY: 40
@@ -89,6 +117,7 @@ public class AboutDialog {
         title: "About TweetBox"
         width: width
         height: height
+        style: StageStyle.TRANSPARENT
         resizable: false
         visible: bind visible;
         scene: Scene {

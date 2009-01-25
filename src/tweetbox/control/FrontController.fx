@@ -162,9 +162,9 @@ public class FrontController {
                 sendDirectMessage(update);
             }
             else {
-//                var result:Object = null;
-//                result = twitter.update(update);
-//                updated(result as Status);
+                var result:Object = null;
+                result = twitter.update(update);
+                updated(result as Status);
             }
         }
         catch (e:TwitterException) {
@@ -233,7 +233,8 @@ public class FrontController {
         model.userUpdates.newUpdates = 1;
         model.updateText = "";
         model.state = State.READY;
-        addAlertMessage("update was sent succesfully");
+        model.updateNodeVisible = false;
+        //addAlertMessage("update was sent succesfully");
     }
 
     function sentDirectMessage(message:DirectMessage) {
@@ -242,7 +243,8 @@ public class FrontController {
         model.directMessages.newUpdates = 1;
         model.updateText = "";
         model.state = State.READY;
-        addAlertMessage("direct message was sent succesfully");
+        model.updateNodeVisible = false;
+        //addAlertMessage("direct message was sent succesfully");
     }
 
     function getSinceDate(statuses:List): Date {

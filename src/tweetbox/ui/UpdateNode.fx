@@ -128,7 +128,7 @@ public class UpdateNode extends CustomNode {
                                 },
                                 Button {
                                     translateY: 5
-                                    label: "cancel"
+                                    label: "hide"
                                     imageURL: "{__DIR__}icons/cancel.png"
                                     action: cancel
                                 },
