@@ -169,6 +169,9 @@ public function run() {
     var config = ConfigDialog {}
     Stage {
         x:100 y:300 width:500 height:300
+        onClose: function() {
+            java.lang.System.exit(0);
+        }
         scene:Scene {
             content: [
                 Button {

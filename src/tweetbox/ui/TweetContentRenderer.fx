@@ -76,7 +76,7 @@ public class TweetContentRenderer extends CustomNode {
         });
     }
 
-    function creatLinkNode(content:String): Void {
+    function creatLinkNode(content:String, url:String): Void {
         addToTweetContent(Text {
             content: content
             font: nodeStyle.UPDATE_TEXT_FONT
@@ -84,7 +84,7 @@ public class TweetContentRenderer extends CustomNode {
             fill: Color.BLUE
             cursor: Cursor.HAND
             onMouseClicked: function(e:MouseEvent) {
-                linkClicked(content);
+                linkClicked(url);
             }
         });
     }
@@ -93,7 +93,11 @@ public class TweetContentRenderer extends CustomNode {
         var tokens:String[] = content.split("\\s");
         for (t:String in tokens) {
             if (t.startsWith("http") or t.startsWith("ftp"))
-                creatLinkNode(t)
+                creatLinkNode(t, t)
+            else if (t.startsWith("@"))
+                creatLinkNode(t, "http://twitter.com/{t.substring(1)}")
+            else if (t.startsWith("#"))
+                creatLinkNode(t, "http://www.hashtags.org/tag/{t.substring(1)}")
             else
                 createTextNode(t)
         }
