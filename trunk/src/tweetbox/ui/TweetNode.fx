@@ -113,18 +113,6 @@ public class TweetNode extends CustomNode {
                         ]
                     },
 
-                    // renders the content of the tweet
-                    // TODO: currently, the HTML node is noninteractive. Needs to become interactive of course.
-                    /*
-                    HTMLNode {
-                        translateY: 5
-                        translateX: 7
-                        html: "<strong>{user.screenName}</strong>: {tweet.text} <br>{DateUtil.formatAsTweetDisplayDate(tweet.createdAt)} with {tweet.source}"
-                        width: bind width - imageViewRef.layoutBounds.width - 100
-                        height: 50
-                        font: nodeStyle.UPDATE_TEXT_FONT
-                    }
-                    */
                     Group {
                         translateX: 7
                         translateY: 8

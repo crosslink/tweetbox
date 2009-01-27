@@ -28,6 +28,7 @@ import twitter4j.User;
 
 import tweetbox.model.*;
 import tweetbox.generic.component.ScrollView;
+import tweetbox.generic.component.Button;
 import tweetbox.generic.util.ImageCache;
 import tweetbox.control.FrontController;
 import tweetbox.valueobject.TweetListVO;
@@ -84,7 +85,6 @@ public class TweetsView extends CustomNode, Resizable {
     var scrollViewRef:ScrollView;
                 
     var numRows:Integer;
-    var groupButtonsBoxRef:VBox;
             
     var nodeStyle = Style.getApplicationStyle();
 
@@ -96,6 +96,7 @@ public class TweetsView extends CustomNode, Resizable {
 
     var expandedView:Group = Group {
         opacity: bind expandedViewOpacityValue
+        visible: bind not minimized
         content: [
             Rectangle {
                 stroke: nodeStyle.TWEETSVIEW_STROKE
@@ -111,10 +112,18 @@ public class TweetsView extends CustomNode, Resizable {
                 title: bind "{title} ({numRows})"
                 width: bind expandedWidth - 1
 
-                onMouseClicked: function(me:MouseEvent):Void {
-                     minimized = true;
-                     onMinimize(this);
-                }
+                buttons: [
+                    Button {
+                        label: "-"
+                        width: 10
+                        height: 10
+                        action: function() {
+                            minimized = true;
+                            onMinimize(this);
+                        }
+                    }
+                ]
+
             },
             scrollViewRef = ScrollView {
                 hasHorizontalScrollBar: false
@@ -131,6 +140,7 @@ public class TweetsView extends CustomNode, Resizable {
 
     var minimizedView:Group = Group {
         opacity: bind minimizedViewOpacityValue
+        visible: bind minimized
         content: bind [
             Rectangle {
                 fill: null
@@ -139,11 +149,6 @@ public class TweetsView extends CustomNode, Resizable {
                 y:0
                 width: bind minimizedWidth
                 height: bind minimizedHeight
-
-                onMouseClicked: function(me:MouseEvent):Void {
-                     minimized = false;
-                     onExpand(this);
-                }
             },
             TitleBar {
                 translateX: 2
@@ -155,6 +160,17 @@ public class TweetsView extends CustomNode, Resizable {
                      minimized = false;
                      onExpand(this);
                 }
+                buttons: [
+                    Button {
+                        label: "+"
+                        width: 10
+                        height: 10
+                        action: function() {
+                            minimized = false;
+                            onExpand(this);
+                        }
+                    }
+                ]
             },
             if (numRows>0) {
                 ImageView {
@@ -172,12 +188,10 @@ public class TweetsView extends CustomNode, Resizable {
         ]
     }
 
-    var currentView:Node = bind if (minimized) minimizedView else expandedView;
-
-    public override function create(): Node {
+   public override function create(): Node {
         numRows = group.updates.size();
         return Group {
-            content: bind currentView
+            content: [minimizedView, expandedView]
         };
     }
     

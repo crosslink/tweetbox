@@ -56,7 +56,7 @@ function run() {
     //WindowHelper.extractWindow(configDialog.stage).setAlwaysOnTop(true);
 
     var stage:JFXStage = JFXStage {
-        title: "TweetBox"
+        title: "{model.appInfo.name} {model.appInfo.versionString}"
         width: bind stageWidth
         height: bind stageHeight
         x: (screenSize.width - stageWidth) / 2

@@ -26,10 +26,10 @@ public class ConfigVO {
     public var numAccounts = bind accounts.size();
     
     public var twitterAPISettings = TwitterAPISettingsVO {
-        getDirectMessagesInterval: 1m
-        getFriendTimelineInterval: 1m
-        getUserTimelineInterval: 1m
-        getRepliesInterval: 1m
+        getDirectMessagesInterval: 5m
+        getFriendTimelineInterval: 5m
+        getUserTimelineInterval: 1h
+        getRepliesInterval: 5m
     };
     
     public function addAccount(account:AccountVO) {

@@ -11,6 +11,9 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.scene.layout.HBox;
+
+import tweetbox.generic.component.Button;
 
 import tweetbox.ui.style.Style;
 
@@ -23,7 +26,17 @@ public class TitleBar extends CustomNode {
     public var width:Number;
     public var title:String;
 
+    public var buttons:Button[];
+
     var nodeStyle = Style.getApplicationStyle();
+
+    var buttonBox:HBox = HBox {
+        translateY: 5
+        translateX: bind (width - buttonBox.layoutBounds.width - 2)
+        content: for (btn:Button in buttons) {
+            btn
+        }
+    }
 
     public override function create(): Node {
         return Group {
@@ -41,7 +54,8 @@ public class TitleBar extends CustomNode {
                     content: bind title
                     fill: nodeStyle.APPLICATION_TITLEBAR_TEXT_FILL
                     font: nodeStyle.APPLICATION_TITLEBAR_TEXT_FONT
-                }
+                },
+                buttonBox
             ]
         };
     }

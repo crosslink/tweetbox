@@ -29,10 +29,6 @@ public class MeshStyle {
     
     public var APPLICATION_BACKGROUND_STROKE: Paint = MESH_BLUE;
     
-    // scroll bar styles
-    public var SCROLLBAR_TRACK_FILL: Paint = Color.WHITE;
-    public var SCROLLBAR_THUMB_FILL: Paint = MESH_RED;
-
     // tweetsview styles
     public var TWEETSVIEW_TITLEBAR_FILL: Paint = MESH_RED;
     public var TWEETSVIEW_STROKE: Paint = MESH_RED;
@@ -105,5 +101,9 @@ public class MeshStyle {
         name: "Sans serif"
         size: 11
     }
+    // scroll bar styles
+    public var SCROLLBAR_TRACK_FILL: Paint = Color.WHITE;
+    public var SCROLLBAR_THUMB_FILL: Paint = MESH_RED;
+
     
 }

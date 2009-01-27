@@ -33,7 +33,7 @@ public class AboutDialog {
     
     public var title = "TweetBox configuration";
     public var width = 400;
-    public var height = 180;
+    public var height = 240;
     public var visible = false;
     public var modal = false;
 
@@ -45,6 +45,7 @@ public class AboutDialog {
     var t1:Text;
     var t2:Text;
     var t3:Text;
+    var t4:Text;
     
     var content = Group {
         content: [
@@ -95,8 +96,14 @@ public class AboutDialog {
                         translateY: 20
                         content: "licence: {model.appInfo.licence}"
                     },
+                    t4 = Text {
+                        translateX: bind ((width - t4.layoutBounds.width) / 2)
+                        translateY: 30
+                        wrappingWidth: width - 10
+                        content: "Running on {model.appInfo.osName} {model.appInfo.osVersion}, Java Runtime {model.appInfo.javaVersion}, {model.appInfo.vmVendor} {model.appInfo.vmName} {model.appInfo.vmVersion}"
+                    },
                     closeButton = Button {
-                        translateY: 40
+                        translateY: 50
                         translateX: bind (width - closeButton.layoutBounds.width) / 2
                         label: "Close"
                         imageURL: "{__DIR__}icons/cancel.png"
@@ -132,6 +139,9 @@ public function run() {
     var about = AboutDialog {}
     Stage {
         x:100 y:300 width:500 height:300
+        onClose: function() {
+            java.lang.System.exit(0);
+        }
         scene:Scene {
             content: [
                 Button {
