@@ -1,12 +1,19 @@
- * receive friends timeline
- * receive replies
+ * periodic retrieval of friends timeline, replies and direct messages
+ * view friends timeline
+ * view replies
+ * view direct messages
+ * view user updates
+ * view multiple groups of updates next to eachother
  * send update
- * switch between groups of tweets
- * very crude configuration function for setting userid and password
+ * remembers userid and password
+ * send reply
+ * retweet
 
 NOT IMPLEMENTED (OR WORKING) YET:
- * send reply
  * send direct messages
  * follow
  * block
  * unfollow
+ * add/remove favorites
+ * view followers
+ * view favorites
