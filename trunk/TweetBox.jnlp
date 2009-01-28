@@ -5,6 +5,7 @@
         <vendor>mnankman</vendor>
         <homepage href="http://www.xs4all.nl/~mnankman/tweetbox/"/>
         <description>TweetBox</description>
+        <icon kind="splash" href="splash.gif"/>
         <offline-allowed/>
         <shortcut>
             <desktop/>
