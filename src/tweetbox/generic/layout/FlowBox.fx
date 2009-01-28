@@ -19,9 +19,14 @@ public var FLOWORIENTATION_HORIZONTAL:Integer = 0;
 public var FLOWORIENTATION_VERTICAL:Integer = 1;
 
 public class FlowBox extends Container {
+    var c = 0;
 
     public var orientation:Integer = FLOWORIENTATION_HORIZONTAL;
     public var spacing:Integer = 5;
+
+    public var invalidLayout:Boolean = false on replace {
+        if (invalidLayout) impl_requestLayout();
+    }
 
     override var content;/* on replace {
         impl_requestLayout();
@@ -48,12 +53,14 @@ public class FlowBox extends Container {
     }
 
     function doFlowLayout(g:Group):Void {
+        println("FlowBox.doFlowLayout({c}) FlowBox.invalidLayout = {invalidLayout}"); c++;
         if (orientation == FLOWORIENTATION_HORIZONTAL) then {
             doHorizontalFlowLayout(g);
         }
         else if (orientation == FLOWORIENTATION_VERTICAL) then {
             doVerticalFlowLayout(g);
         }
+        invalidLayout = false;
     }
 
     function doHorizontalFlowLayout(g:Group):Void {
@@ -87,9 +94,14 @@ public class FlowBox extends Container {
         var x:Number = 0;
         var y:Number = 0;
         var columnWidth:Number = 0;
-        var nodes:Node[] = getContent();
-        for (node:Node in nodes) {
-            if (y+node.boundsInLocal.height+spacing >= maximumHeight) {
+        var w:Number = 0;
+        var h:Number = 0;
+        var bounds;
+        for (node:Node in getContent()) {
+            bounds = node.layoutBounds;
+            w = bounds.width;
+            h = bounds.height;
+            if (y+h+spacing >= maximumHeight) {
                 x += columnWidth + spacing;
                 y = 0;
                 columnWidth = 0;
@@ -98,9 +110,9 @@ public class FlowBox extends Container {
             node.impl_layoutY = y;
 
             // update the width of the current column
-            if (node.boundsInLocal.width > columnWidth) columnWidth = node.boundsInLocal.width;
+            if (w > columnWidth) columnWidth = w;
 
-            y += node.boundsInLocal.height + spacing;
+            y += h + spacing;
         }
     }
 }

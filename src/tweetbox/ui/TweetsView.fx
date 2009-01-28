@@ -45,11 +45,11 @@ public class TweetsView extends CustomNode, Resizable {
     public var minimizedHeight:Number;
     public var minimizedWidth:Number;
 
-    public var minimized:Boolean = false;
+    var expanded:Boolean = bind group.expanded;
 
-    public var onExpand:function(view:TweetsView):Void;
-    public var onMinimize:function(view:TweetsView):Void;
 
+    public var onHide:function(view:TweetsView):Void;
+    
     var expandedWidth:Number = width;
     var expandedHeight:Number = height;
 
@@ -60,7 +60,6 @@ public class TweetsView extends CustomNode, Resizable {
     override var height on replace {
         expandedHeight = height;
     }
-
 
     var newTweets:Integer = bind group.newUpdates on replace {
         for (row:Integer in [0..newTweets - 1]) {
@@ -88,23 +87,18 @@ public class TweetsView extends CustomNode, Resizable {
             
     var nodeStyle = Style.getApplicationStyle();
 
-    var minimizedViewOpacityValue:Number = 1.0;
-    var expandedViewOpacityValue:Number = 1.0;
-
     var tweetNodes:TweetNode[] = [];
 
-
-    var expandedView:Group = Group {
-        opacity: bind expandedViewOpacityValue
-        visible: bind not minimized
+    var view:Group = Group {
+        visible: bind expanded
         content: [
             Rectangle {
                 stroke: nodeStyle.TWEETSVIEW_STROKE
                 fill: null;
                 x:0
                 y:0
-                width: bind expandedWidth
-                height: bind expandedHeight
+                width: bind if (expanded) expandedWidth else minimizedWidth
+                height: bind if (expanded) expandedHeight else minimizedHeight
             },
             TitleBar {
                 translateX: 2
@@ -118,8 +112,8 @@ public class TweetsView extends CustomNode, Resizable {
                         width: 10
                         height: 10
                         action: function() {
-                            minimized = true;
-                            onMinimize(this);
+                            group.expanded = false;
+                            onHide(this);
                         }
                     }
                 ]
@@ -138,79 +132,14 @@ public class TweetsView extends CustomNode, Resizable {
         ]
     }
 
-    var minimizedView:Group = Group {
-        opacity: bind minimizedViewOpacityValue
-        visible: bind minimized
-        content: bind [
-            Rectangle {
-                fill: null
-                stroke: nodeStyle.TWEETSVIEW_STROKE
-                x:0
-                y:0
-                width: bind minimizedWidth
-                height: bind minimizedHeight
-            },
-            TitleBar {
-                translateX: 2
-                translateY: 2
-                title: bind "{title} ({numRows})"
-                width: bind minimizedWidth-1
 
-                onMouseClicked: function(me:MouseEvent):Void {
-                     minimized = false;
-                     onExpand(this);
-                }
-                buttons: [
-                    Button {
-                        label: "+"
-                        width: 10
-                        height: 10
-                        action: function() {
-                            minimized = false;
-                            onExpand(this);
-                        }
-                    }
-                ]
-            },
-            if (numRows>0) {
-                ImageView {
-                    translateX: 10
-                    translateY: 40
-                
-                    image: bind profileImageForMostRecentUpdate()
-                
-                    clip: Rectangle {
-                        width: 50
-                        height: 50
-                    }
-                }
-            } else null
-        ]
-    }
-
-   public override function create(): Node {
+    public override function create(): Node {
         numRows = group.updates.size();
-        return Group {
-            content: [minimizedView, expandedView]
-        };
+        return view;
     }
-    
+
     public override function toString():String {
-        return "TweetsView[title = {title}, newTweets = {newTweets}, minimized = {minimized}] ";
+        return "TweetsView[title = {title}, newTweets = {newTweets}, expanded = {expanded}] ";
     }
 
-    bound function profileImageForMostRecentUpdate(): Image {
-        var update:TwitterResponse = group.updates.get(0) as TwitterResponse;
-        
-        var user:User = if (update instanceof Status)
-            (update as Status).getUser()
-        else if (update instanceof DirectMessage)
-            (update as DirectMessage).getSender()
-        else null;
-
-        return if (user != null)
-            ImageCache.getInstance().getImage(user.getProfileImageURL().toString())
-        else
-            null
-    }
 }
