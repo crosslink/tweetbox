@@ -8,12 +8,19 @@
  * remembers userid and password
  * send reply
  * retweet
+ * launch browser and show link wen clicking on a link in a tweet
+ * launch browser and show user profile page on twitter.com when clicking on @userid in a tweet
+ * launch browser and show hashtags page when clicking on #hash in a tweet
+ 
 
 NOT IMPLEMENTED (OR WORKING) YET:
  * send direct messages
  * follow
  * block
  * unfollow
+ * remove update
+ * remove direct message
  * add/remove favorites
  * view followers
  * view favorites
+* launch browser and show twitter source id page when clicking on source link in a tweet (the link after "with")
