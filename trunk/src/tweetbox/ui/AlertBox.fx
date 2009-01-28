@@ -134,7 +134,7 @@ public class AlertBox {
     };
     
     public function show() {
-        mediaPlayer.play();
+        //mediaPlayer.play();
         stage.visible = true;
         //fadeIn.play();
         autoHide.play();

@@ -19,6 +19,7 @@ import javafx.stage.*;
 import javafx.animation.*;
 import javafx.scene.text.Text;
 import javafx.geometry.Point2D;
+import javafx.scene.layout.HBox;
 
 import org.jfxtras.stage.JFXStage;
 import org.jfxtras.stage.WindowHelper;
@@ -43,8 +44,8 @@ function run() {
     var nodeStyle = Style.getApplicationStyle();
     var model = Model.getInstance();
 
-    var stageWidth = 950;
-    var stageHeight = 800;
+    var stageWidth:Number = 950;
+    var stageHeight:Number = 800;
 
     var controller = FrontController.getInstance();
     controller.start();
@@ -57,8 +58,8 @@ function run() {
 
     var stage:JFXStage = JFXStage {
         title: "{model.appInfo.name} {model.appInfo.versionString}"
-        width: bind stageWidth
-        height: bind stageHeight
+        width: stageWidth
+        height: stageHeight
         x: (screenSize.width - stageWidth) / 2
         y: (screenSize.height - stageHeight) / 2
         resizable: true
@@ -91,9 +92,7 @@ function run() {
                             fill:nodeStyle.APPLICATION_BACKGROUND_FILL
 
                         },
-                        menuRef = FlowBox {
-                            orientation: FlowBox.FLOWORIENTATION_HORIZONTAL
-                            width: bind stage.scene.width * 0.8
+                        menuRef = HBox {
                             translateX: 5
                             translateY: 5
                             content: [
