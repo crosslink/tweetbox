@@ -4,10 +4,12 @@
         <title>TweetBox</title>
         <vendor>mnankman</vendor>
         <homepage href="http://www.xs4all.nl/~mnankman/tweetbox/dev"/>
-        <description>TweetBox</description>
+        <icon kind="splash" href="splash.gif"/>
+	  <description>TweetBox</description>
         <offline-allowed/>
         <shortcut>
             <desktop/>
+            <menu submenu="TweetBox"/>
         </shortcut>
     </information>
     <security>
