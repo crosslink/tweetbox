@@ -33,7 +33,8 @@ public class GroupNode extends CustomNode {
     public var height:Number;
     public var width:Number;
 
-    public var onOpenTweetsView:function(group:GroupVO):Void;
+    public var onShowGroup:function(group:GroupVO):Void;
+    public var onHideGroup:function(group:GroupVO):Void;
 
     var newTweets:Integer = bind group.newUpdates on replace {
         numRows += newTweets;
@@ -64,12 +65,24 @@ public class GroupNode extends CustomNode {
 
                 buttons: [
                     Button {
-                        label: "+"
+                        label: "r"
+                        width: 10
+                        height: 10
+                        action: group.refresh;
+                    },
+                    Button {
+                        label: bind if (group.expanded) "-" else "+"
                         width: 10
                         height: 10
                         action: function() {
-                            group.expanded = true;
-                            onOpenTweetsView(group);
+                            if (group.expanded) {
+                                group.expanded = false;
+                                onHideGroup(group);
+                            }
+                            else {
+                                group.expanded = true;
+                                onShowGroup(group);
+                            }
                         }
                     }
                 ]
@@ -86,10 +99,6 @@ public class GroupNode extends CustomNode {
                         height: 50
                     }
 
-                    onMouseClicked: function(me:MouseEvent) {
-                        group.expanded = true;
-                        onOpenTweetsView(group);
-                    }
                 }
             } else null
         ]
@@ -102,15 +111,14 @@ public class GroupNode extends CustomNode {
     bound function profileImageForMostRecentUpdate(): Image {
         var update:TwitterResponse = group.updates.get(0) as TwitterResponse;
 
-        var user:User = if (update instanceof Status)
-            (update as Status).getUser()
-        else if (update instanceof DirectMessage)
-            (update as DirectMessage).getSender()
-        else null;
+        var user:User = 
+            if (update instanceof Status) (update as Status).getUser()
+            else if (update instanceof DirectMessage) (update as DirectMessage).getSender()
+            else if (update instanceof User) update as User
+            else null;
 
-        return if (user != null)
-            ImageCache.getInstance().getImage(user.getProfileImageURL().toString())
-        else
-            null
+        return
+            if (user != null) ImageCache.getInstance().getImage(user.getProfileImageURL().toString())
+            else null;
     }
 }

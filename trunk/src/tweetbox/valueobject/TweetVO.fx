@@ -10,6 +10,7 @@ import java.util.Date;
 import tweetbox.util.DateUtil;
 import twitter4j.Status;
 import twitter4j.DirectMessage;
+import twitter4j.TwitterResponse;
 import twitter4j.User;
 
 /**
@@ -17,8 +18,10 @@ import twitter4j.User;
  */
 
 public class TweetVO {
-    public var status:Status;
-    public var dm:DirectMessage;
+    public var response:TwitterResponse;
+
+    var status:Status = if (response instanceof Status) response as Status else null;
+    var dm:DirectMessage  = if (response instanceof DirectMessage) response as DirectMessage else null;
 
     public var user:UserVO = UserVO {
         user: bind
@@ -26,7 +29,8 @@ public class TweetVO {
                 status.getUser()
             else if (dm != null)
                 dm.getSender()
-            else null
+            else if (response instanceof User) response as User 
+            else null;
     }
 
     public var text:String = bind
@@ -34,6 +38,7 @@ public class TweetVO {
                 status.getText()
             else if (dm != null)
                 dm.getText()
+            else if (response instanceof User) "{user.description}, {user.followersCount} followers, location: {user.location}"
             else null;
 
     public var createdAt:Date = bind

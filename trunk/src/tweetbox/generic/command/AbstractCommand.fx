@@ -5,12 +5,27 @@
  */
 
 package tweetbox.generic.command;
+import org.jfxtras.async.JFXWorker;
 
 /**
  * @author mnankman
  */
 
 public abstract class AbstractCommand {
-    public abstract function onSuccess(result): Void;
-    public abstract function onFailure(error): Void;
+    public-init var onDone:function(result:Object): Void;
+    public-init var onFailure:function(error:Object): Void;
+
+    public function run(): Void {
+        var worker:JFXWorker = JFXWorker {
+            inBackground: execute
+            onDone: function(result:Object): Void {
+                onDone(result);
+            }
+            onFailure: function(error:Object): Void {
+                onFailure(error);
+            }
+        }
+    }
+
+    public abstract function execute(): Object;
 }

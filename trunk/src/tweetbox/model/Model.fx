@@ -19,6 +19,7 @@ import tweetbox.valueobject.*;
  * The model behind TweetBox
  */
 public class Model {
+
     public var appInfo = AppInfoVO {};
 
     public var config:ConfigVO = ConfigVO{}
@@ -56,14 +57,23 @@ public class Model {
 
     public var userUpdates:GroupVO = GroupVO {
         id: "user"
-        title:"User"
+        title:"You"
         imageURL: "{__DIR__}../ui/icons/user.png"
+        showAlerts:false
     }
-  
+
+    public var favorites:GroupVO = GroupVO {
+        id: "favorites"
+        title:"Favorites"
+        imageURL: "{__DIR__}../ui/icons/heart.png"
+        showAlerts:false
+    }
+
     public var groups:GroupVO[] = [
         friendUpdates,
         replies,
         directMessages,
+        favorites,
         userUpdates
     ];
 

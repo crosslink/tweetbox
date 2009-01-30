@@ -28,8 +28,13 @@ import twitter4j.Twitter;
 import twitter4j.TwitterAdapter;
 import twitter4j.TwitterListener;
 import twitter4j.Status;
+import twitter4j.User;
 import twitter4j.DirectMessage;
 import twitter4j.TwitterException;
+import twitter4j.TwitterResponse;
+
+import tweetbox.twitter.TwitterHelper;
+import tweetbox.command.*;
 
 import org.jfxtras.async.JFXWorker;
 /**
@@ -41,10 +46,44 @@ public class FrontController {
     
     var since:Calendar = Calendar.getInstance();
     
-    var twitter:Twitter;
+    var twitter:Twitter = new Twitter();
+
+    var getFriendsTimelineCommand = GetFriendsTimelineCommand {
+        twitter: twitter
+        onDone: processReceivedTwitterResponse
+        onFailure: processFailure
+        group: model.friendUpdates
+    };
+
+    var getRepliesCommand = GetRepliesCommand {
+        twitter: twitter
+        onDone: processReceivedTwitterResponse
+        onFailure: processFailure
+        group: model.replies
+    };
+
+    var getDirectMessagesCommand = GetDirectMessagesCommand {
+        twitter: twitter
+        onDone: processReceivedTwitterResponse
+        onFailure: processFailure
+        group: model.directMessages
+    };
+
+    var getUserTimelineCommand = GetUserTimelineCommand {
+        twitter: twitter
+        onDone: processReceivedTwitterResponse
+        onFailure: processFailure
+        group: model.userUpdates
+    };
+
+    var getFavoritesCommand = GetFavoritesCommand {
+        twitter: twitter
+        onDone: processReceivedTwitterResponse
+        onFailure: processFailure
+        group: model.favorites
+    };
 
     public function start() {
-        twitter = new Twitter();
         twitter.setSource("TweetBox");
 
         loadConfig();
@@ -56,6 +95,12 @@ public class FrontController {
             twitter.setPassword(twitterAccount.password);
         }
 
+        model.friendUpdates.refresh = getFriendsTimelineCommand.run;
+        model.replies.refresh = getRepliesCommand.run;
+        model.directMessages.refresh = getDirectMessagesCommand.run;
+        model.userUpdates.refresh = getUserTimelineCommand.run;
+        model.favorites.refresh = getFavoritesCommand.run;
+
         startReceiving();
     }
     
@@ -66,96 +111,7 @@ public class FrontController {
         //saveToCache();
         System.exit(0);
     }
-    
-    public function getFriendsTimelineInBackground():Void {
-        var worker:JFXWorker = JFXWorker {
-            inBackground: getFriendsTimeline
-            onDone: function(result): Void {
-                processReceivedStatuses(result as List, model.friendUpdates);
-            }
-        }
-    }
 
-    public function getFriendsTimeline(): Object {
-        var result:Object = null;
-        System.out.println("get friends timeline");
-        try {
-            result = twitter.getFriendsTimeline(getSinceDate(model.friendUpdates.updates));
-        }
-        catch (e:TwitterException) {
-            stopReceiving();
-            println("twitter exception: {e}");
-        }
-        return result;
-    }
-
-    public function getUserTimelineInBackground():Void {
-        var worker:JFXWorker = JFXWorker {
-            inBackground: getUserTimeline
-            onDone: function(result): Void {
-                processReceivedStatuses(result as List, model.userUpdates);
-            }
-        }
-    }
-
-    public function getUserTimeline() {
-        var result:Object = null;
-        System.out.println("get user timeline");
-        try {
-            result = twitter.getUserTimeline();
-        }
-        catch (e:TwitterException) {
-            stopReceiving();
-            println("twitter exception: {e}");
-        }
-        return result;
-    }
-
-    public function getRepliesInBackground():Void {
-        var worker:JFXWorker = JFXWorker {
-            inBackground: getReplies
-            onDone: function(result): Void {
-                processReceivedStatuses(result as List, model.replies);
-            }
-        }
-    }
-
-    public function getReplies() {
-        var result:Object = null;
-        System.out.println("get replies");
-        try {
-            result = twitter.getReplies();
-        }
-        catch (e:TwitterException) {
-            stopReceiving();
-            println("twitter exception: {e}");
-        }
-        return result;
-    }
-
-    public function getDirectMessagesInBackground():Void {
-        var worker:JFXWorker = JFXWorker {
-            inBackground: getDirectMessages
-            onDone: function(result): Void {
-                processReceivedDirectMessages(result as List, model.directMessages);
-            }
-        }
-    }
-
-    public function getDirectMessages() {
-        var result:Object = null;
-        System.out.println("get direct messages");
-        //result = twitter.getDirectMessages(getSinceDate(model.directMessages.updates));
-        try {
-            result = twitter.getDirectMessages();
-        }
-        catch (e:TwitterException) {
-            stopReceiving();
-            println("twitter exception: {e}");
-        }
-        return result;
-    }
-    
     public function sendUpdate(update:String) {
         try {
             if (model.directMessageMode) {
@@ -169,12 +125,13 @@ public class FrontController {
         }
         catch (e:TwitterException) {
             stopReceiving();
+            model.updateText = "";
+            model.updateNodeVisible = false;
             println("twitter exception: {e}");
         }
     }
     
     function sendDirectMessage(update:String) {
-
         println("sending direct message [{update}] to [{model.directMessageReceiver.screenName}]");
         try {
             var result:Object = null;
@@ -183,47 +140,42 @@ public class FrontController {
         }
         catch (e:TwitterException) {
             stopReceiving();
+            model.updateText = "";
+            model.updateNodeVisible = false;
             println("twitter exception: {e}");
         }
     }
 
-    function processReceivedStatuses(statuses:List, group:GroupVO) {
-        if (statuses != null) {
-            System.out.println("processReceivedStatuses({statuses.size()} statuses, {group.id})");
-            var newStatuses:List = new Vector();
-            for (i:Integer in [0..statuses.size()-1]) {
-                var s:Status = statuses.get(i) as Status;
-                if (not group.updates.contains(s)) {
-                    newStatuses.add(s);
-                }
-            }
-            if (group.updates.size() > 0 and newStatuses.size() > 0) addAlertMessage("{newStatuses.size()} new updates in {group.title}");
-            group.updates.addAll(0, newStatuses);
-            group.newUpdates = newStatuses.size();
-            model.state = State.READY;
-        }
-        else {
-            System.out.println("processReceivedStatuses(null, {group.id})");
+    function processFailure(error:Object) {
+        println(error);
+    }
+
+    function processReceivedTwitterResponse(response:Object): Void {
+        println("processReceivedTwitterResponse({response})");
+        if (response instanceof TwitterResponseVO) {
+            var tr = response as TwitterResponseVO;
+            processReceivedUpdates(tr.result as List, tr.group);
         }
     }
 
-    function processReceivedDirectMessages(dms:List, group:GroupVO) {
-        if (dms != null) {
-            System.out.println("processReceivedStatuses({dms.size()} statuses, {group.id})");
-            var newStatuses:List = new Vector();
-            for (i:Integer in [0..dms.size()-1]) {
-                var dm:DirectMessage = dms.get(i) as DirectMessage;
-                if (not group.updates.contains(dm)) {
-                    newStatuses.add(dm);
+    function processReceivedUpdates(updates:List, group:GroupVO): Void {
+        if (updates != null) {
+            println("processReceivedUpdates({updates.size()} updates, {group.id})");
+            var newUpdates:List = new Vector();
+            for (i:Integer in [0..updates.size()-1]) {
+                var r:TwitterResponse = updates.get(i) as TwitterResponse;
+                if (not group.updates.contains(r)) {
+                    newUpdates.add(r);
                 }
             }
-            if (group.updates.size() > 0 and newStatuses.size() > 0) addAlertMessage("{newStatuses.size()} new direct messages");
-            group.updates.addAll(0, newStatuses);
-            model.state = State.READY;
-            group.newUpdates = newStatuses.size();
+            if (group.showAlerts and group.updates.size() > 0 and newUpdates.size() > 0) {
+                addAlertMessage("{newUpdates.size()} new updates in {group.title}");
+            }
+            group.updates.addAll(0, newUpdates);
+            group.newUpdates = newUpdates.size();
         }
         else {
-            System.out.println("processReceivedStatuses(null, {group.id})");
+            println("processReceivedUpdates(null, {group.id})");
         }
     }
 
@@ -231,6 +183,8 @@ public class FrontController {
         System.out.println("update was successfully sent");
         model.userUpdates.updates.add(0, status);
         model.userUpdates.newUpdates = 1;
+        model.friendUpdates.updates.add(0, status);
+        model.friendUpdates.newUpdates = 1;
         model.updateText = "";
         model.state = State.READY;
         model.updateNodeVisible = false;
@@ -245,18 +199,6 @@ public class FrontController {
         model.state = State.READY;
         model.updateNodeVisible = false;
         //addAlertMessage("direct message was sent succesfully");
-    }
-
-    function getSinceDate(statuses:List): Date {
-        var cal:Calendar = Calendar.getInstance();
-        if (statuses != null and statuses.size() > 0) {
-            var status:Status = statuses.get(0) as Status;
-            cal.setTime(status.getCreatedAt());
-        }
-        else {
-            cal.add(Calendar.HOUR_OF_DAY, -24);
-        }
-        return cal.getTime();
     }
 
     public function search(query:String) {
@@ -387,8 +329,8 @@ public class FrontController {
         keyFrames: [
             KeyFrame { 
                 time: 1ms 
-                action: function() { 
-                    getFriendsTimelineInBackground();
+                action: function() {
+                    getFriendsTimelineCommand.run();
                 }
             },
             KeyFrame { 
@@ -405,7 +347,7 @@ public class FrontController {
             KeyFrame { 
                 time: 1ms 
                 action: function() { 
-                    getUserTimelineInBackground();
+                    getUserTimelineCommand.run();
                 }
             },
             KeyFrame { 
@@ -422,7 +364,7 @@ public class FrontController {
             KeyFrame { 
                 time: 1ms 
                 action: function() { 
-                    getRepliesInBackground();
+                    getRepliesCommand.run();
                 }
             },
             KeyFrame { 
@@ -439,7 +381,7 @@ public class FrontController {
             KeyFrame { 
                 time: 1ms 
                 action: function() { 
-                    getDirectMessagesInBackground();
+                    getDirectMessagesCommand.run();
                 }
             },
             KeyFrame { 
@@ -457,6 +399,8 @@ public class FrontController {
             getUserTimelineTimeline.play();
             getRepliesTimeline.play();
             getDirectMessagesTimeline.play();
+
+            getFavoritesCommand.run();
         }
     }
 

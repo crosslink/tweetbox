@@ -56,7 +56,7 @@ public class TweetNode extends CustomNode {
     public var height:Number;
     public var width:Number;
 
-    var user:UserVO = bind tweet.user;
+    var user:UserVO = tweet.user;
 
     var tweetContentWidth:Number = width - 150;
     
@@ -68,7 +68,7 @@ public class TweetNode extends CustomNode {
     public override function create(): Node {
         var model = Model.getInstance();
 
-        var profileImageUrl:String = bind user.profileImageUrl;
+        var profileImageUrl:String = user.profileImageUrl;
         var imageViewRef:ImageView;
 
         var tweetContentBox:HBox = HBox {
@@ -91,7 +91,7 @@ public class TweetNode extends CustomNode {
                                 //translateY: 4
                                 fitHeight: 50
                                 fitWidth: 50
-                                image: bind
+                                image: 
                                     if (profileImageUrl == null)
                                         buddyImage
                                     else
