@@ -33,6 +33,7 @@ import tweetbox.generic.util.ImageCache;
 import tweetbox.control.FrontController;
 import tweetbox.valueobject.TweetListVO;
 import tweetbox.valueobject.TweetVO;
+import tweetbox.valueobject.UserVO;
 import tweetbox.valueobject.GroupVO;
 import tweetbox.ui.style.Style;
 
@@ -48,7 +49,7 @@ public class TweetsView extends CustomNode, Resizable {
     var expanded:Boolean = bind group.expanded;
 
 
-    public var onHide:function(view:TweetsView):Void;
+    public var onHide:function(group:GroupVO):Void;
     
     var expandedWidth:Number = width;
     var expandedHeight:Number = height;
@@ -61,19 +62,12 @@ public class TweetsView extends CustomNode, Resizable {
         expandedHeight = height;
     }
 
-    var newTweets:Integer = bind group.newUpdates on replace {
-        for (row:Integer in [0..newTweets - 1]) {
+    var newTweets = bind group.newUpdates on replace {
+        for (row in [0..newTweets - 1]) {
             insert TweetNode {
                 width: expandedWidth - 5
                 tweet: TweetVO {
-                    status: bind
-                        if (group.updates.get(row) instanceof Status)
-                            group.updates.get(row) as Status
-                        else null
-                    dm: bind
-                        if (group.updates.get(row) instanceof DirectMessage)
-                            group.updates.get(row) as DirectMessage
-                        else null
+                    response: group.updates.get(row) as TwitterResponse
                 }
             } before tweetNodes[row];
         } 
@@ -108,12 +102,18 @@ public class TweetsView extends CustomNode, Resizable {
 
                 buttons: [
                     Button {
+                        label: "r"
+                        width: 10
+                        height: 10
+                        action: group.refresh;
+                    },
+                    Button {
                         label: "-"
                         width: 10
                         height: 10
                         action: function() {
                             group.expanded = false;
-                            onHide(this);
+                            onHide(group);
                         }
                     }
                 ]
@@ -134,7 +134,6 @@ public class TweetsView extends CustomNode, Resizable {
 
 
     public override function create(): Node {
-        numRows = group.updates.size();
         return view;
     }
 

@@ -32,7 +32,7 @@ public class TweetContentRenderer extends CustomNode {
 
     public var maxWidth:Number;
 
-    var user:UserVO = bind tweet.user;
+    var user:UserVO = tweet.user;
 
     var nodeStyle = Style.getApplicationStyle();
 
@@ -106,8 +106,8 @@ public class TweetContentRenderer extends CustomNode {
     function createTweetContent(): Node[] {
         tweetContent = [];
         createTextNode("{user.screenName}: ");
-        createTextNodes(tweet.text);
-        createTextNodes("{DateUtil.formatAsTweetDisplayDate(tweet.createdAt)} with ");
+        if (tweet.text != null) createTextNodes(tweet.text);
+        if (tweet.createdAt != null) createTextNodes("{DateUtil.formatAsTweetDisplayDate(tweet.createdAt)} with ");
         addToTweetContent(HTMLNode {html: tweet.source font: nodeStyle.UPDATE_TEXT_FONT onLinkClicked:linkClicked});
         return tweetContent;
     }

@@ -54,7 +54,8 @@ public class HomeView extends CustomNode {
             group: bind group
             height: bind groupButtonHeight
             width: bind groupButtonWidth
-            onOpenTweetsView: onShowTweetsView
+            onShowGroup: onShowTweetsView
+            onHideGroup: onHideTweetsView
         }
     };
 
@@ -89,7 +90,7 @@ public class HomeView extends CustomNode {
     }
 
 
-    function onHideTweetsView(view:TweetsView):Void {
+    function onHideTweetsView(group:GroupVO):Void {
     }
 
     function onShowTweetsView(group:GroupVO):Void {

@@ -12,7 +12,7 @@ package tweetbox.valueobject;
 
 public class AppInfoVO {
     public-init var name = "TweetBox";
-    public-init var build = 12;
+    public-init var build = 13;
     public-init var major = 0;
     public-init var minor = 1;
     public-init var revision = 0;

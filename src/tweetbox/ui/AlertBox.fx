@@ -58,13 +58,13 @@ public class AlertBox {
 
     // a media player for playing a short beep when new tweets arrive
     // but it doesn't work!?
-    var mediaPlayer = MediaPlayer{
-        startTime: 0ms
-        stopTime: 500ms
-        media: Media {
-            source: "{__DIR__}media/beep1.mp3"
-        }
-    }
+//    var mediaPlayer = MediaPlayer{
+//        startTime: 0ms
+//        stopTime: 500ms
+//        media: Media {
+//            source: "{__DIR__}media/beep1.mp3"
+//        }
+//    }
     
     var content:Group = Group {
         content: [

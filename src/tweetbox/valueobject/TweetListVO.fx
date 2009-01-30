@@ -22,7 +22,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 
-import twitter4j.Status;
+import twitter4j.TwitterResponse;
 
 /**
  * @author mnankman
@@ -66,7 +66,7 @@ public class TweetListVO {
             if (n > statusList.size()) n = statusList.size();
             
             for (i:Integer in [0..n - 1]) {
-                newTweets.add(TweetVO {status: statusList.get(i) as Status})                                                
+                newTweets.add(TweetVO {response: statusList.get(i) as TwitterResponse})
             }
             tweets.addAll(0, newTweets);
             //newTweets.addAll(tweets);
