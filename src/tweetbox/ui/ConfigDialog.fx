@@ -47,7 +47,6 @@ public class ConfigDialog {
     };
     public var modal = false;
 
-    var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
     var nodeStyle = Style.getApplicationStyle();
     var controller = FrontController.getInstance();
     var model = Model.getInstance();
@@ -128,7 +127,7 @@ public class ConfigDialog {
                                         password: new String(passwordField.getPassword())
                                     }
                                     );
-                                    visible = false;
+                                    controller.hideConfigDialog();
                                 }
                             },
 
@@ -136,7 +135,7 @@ public class ConfigDialog {
                                 label: "Cancel"
                                 imageURL: "{__DIR__}icons/cancel.png"
                                 action: function():Void {
-                                    visible = false;
+                                    controller.hideConfigDialog();
                                 }
                             },
                         ]
@@ -149,8 +148,8 @@ public class ConfigDialog {
 
     public var stage:JFXStage = JFXStage {
         alwaysOnTop: true
-        x: bind (screenSize.width - width) / 2
-        y: bind (screenSize.height - height) / 2
+        x: bind (model.config.applicationStage.width - width) / 2
+        y: bind (model.config.applicationStage.height - height) / 2
         title: "TweetBox Alert"
         width: width
         height: height
@@ -180,7 +179,7 @@ public function run() {
                     width: 100
                     label: "Configure TweetBox"
                     action: function() {
-                         config.visible = true
+                         FrontController.getInstance().showConfigDialog();
                     }
                 }
             ]

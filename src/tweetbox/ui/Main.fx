@@ -48,12 +48,10 @@ function run() {
     var stageHeight:Number = 800;
 
     var controller = FrontController.getInstance();
-    controller.start();
 
-    var configDialog = ConfigDialog {
-        visible: not controller.isAccountConfigured("twitter")
-    }
-    var aboutDialog = AboutDialog {}
+    var configDialogVisible:Boolean = false;
+    var aboutDialogVisible:Boolean = false;
+
     //WindowHelper.extractWindow(configDialog.stage).setAlwaysOnTop(true);
 
     var stage:JFXStage = JFXStage {
@@ -70,7 +68,7 @@ function run() {
             Image {url: "{__DIR__}images/tweetboxlogo100.gif"},
         ]
 
-        visible: true
+        visible: false
 
         onClose: function():Void {
             controller.exit();
@@ -114,13 +112,13 @@ function run() {
                                     label: "Config"
                                     imageURL: "{__DIR__}icons/config.png"
                                     action: function():Void {
-                                        configDialog.visible = true;
+                                        controller.showConfigDialog();
                                     }
                                 },
                                 Button {
                                     label: "About"
                                     action: function():Void {
-                                        aboutDialog.visible = true;
+                                        controller.showAboutDialog();
                                     }
                                 }
                             ]
@@ -154,8 +152,17 @@ function run() {
         }
     };
 
+    controller.start(stage);
+
     var windowFrame:Frame = stage.getWindow().getOwner() as Frame;
     
+    var configDialog = ConfigDialog {
+        visible: bind model.configDialogVisible
+    }
+    var aboutDialog = AboutDialog {
+        visible: bind model.aboutDialogVisible
+    }
+
     var alertBox = AlertBox {
         width: 200
         height: 120
@@ -168,4 +175,5 @@ function run() {
         }
     }
 
+    stage.visible = true;
 }

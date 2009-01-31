@@ -14,16 +14,12 @@ import javafx.scene.text.*;
 import javafx.geometry.Point2D;
 
 import tweetbox.valueobject.*;
-
+import tweetbox.configuration.Configuration;
 /**
  * The model behind TweetBox
  */
 public class Model {
 
-    public var appInfo = AppInfoVO {};
-
-    public var config:ConfigVO = ConfigVO{}
-   
     public var state:Integer;
    
     public var updateText:String;
@@ -31,9 +27,12 @@ public class Model {
     public var updateNodePosition:Point2D = Point2D {
         x: 0
         y: 0
-   };
+    };
     public var directMessageMode:Boolean = false;
     public var directMessageReceiver:UserVO;
+
+    public var configDialogVisible:Boolean = false;
+    public var aboutDialogVisible:Boolean = false;
 
     public var friendUpdates:GroupVO = GroupVO {
         expanded: true
@@ -76,6 +75,13 @@ public class Model {
         favorites,
         userUpdates
     ];
+
+    public-read var appInfo = AppInfoVO {};
+
+    public-read var config:Configuration = Configuration {
+        groups: bind groups
+    }
+
 
     public var alertMessages:String[] = [];
     public var alertMessageCount:Integer = 0;
