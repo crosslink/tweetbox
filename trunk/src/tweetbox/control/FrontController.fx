@@ -37,17 +37,25 @@ import tweetbox.twitter.TwitterHelper;
 import tweetbox.command.*;
 
 import org.jfxtras.async.JFXWorker;
+
 /**
+ * The main (front) controller of this application.
+ * It provides a centralized entry point for handling requests to external services and handling the responses
+ * This class  is a singleton (only a single instance is allowed)
  * @author mnankman
  */
-
 public class FrontController {
+
+ /*
+  * --------------------------------------------------------------------------
+  * private class variables
+  * --------------------------------------------------------------------------
+  */
+
     var model = Model.getInstance();
-    
-    var since:Calendar = Calendar.getInstance();
-    
     var twitter:Twitter = new Twitter();
 
+    /** the command responsible for getting the friends timeline */
     var getFriendsTimelineCommand = GetFriendsTimelineCommand {
         twitter: twitter
         onDone: processReceivedTwitterResponse
@@ -55,6 +63,7 @@ public class FrontController {
         group: model.friendUpdates
     };
 
+    /** the command responsible for getting replies */
     var getRepliesCommand = GetRepliesCommand {
         twitter: twitter
         onDone: processReceivedTwitterResponse
@@ -62,6 +71,7 @@ public class FrontController {
         group: model.replies
     };
 
+    /** the command responsible for getting direct messages */
     var getDirectMessagesCommand = GetDirectMessagesCommand {
         twitter: twitter
         onDone: processReceivedTwitterResponse
@@ -69,6 +79,7 @@ public class FrontController {
         group: model.directMessages
     };
 
+    /** the command responsible for getting the user timeline */
     var getUserTimelineCommand = GetUserTimelineCommand {
         twitter: twitter
         onDone: processReceivedTwitterResponse
@@ -76,6 +87,7 @@ public class FrontController {
         group: model.userUpdates
     };
 
+    /** the command responsible for getting the favorites */
     var getFavoritesCommand = GetFavoritesCommand {
         twitter: twitter
         onDone: processReceivedTwitterResponse
@@ -83,8 +95,92 @@ public class FrontController {
         group: model.favorites
     };
 
-    public function start() {
+    /** the timeline for scheduling the retreival of the friends timeline */
+    var getFriendsTimelineTimeline:Timeline = Timeline {
+        keyFrames: [
+            KeyFrame {
+                time: 1ms
+                action: function() {
+                    getFriendsTimelineCommand.run();
+                }
+            },
+            KeyFrame {
+                time: bind model.config.twitterAPISettings.getFriendTimelineInterval
+                action: function() {}
+            }
+
+        ]
+        repeatCount: java.lang.Double.POSITIVE_INFINITY
+    };
+
+    /** the timeline for scheduling the retreival of the user timeline */
+    var getUserTimelineTimeline:Timeline = Timeline {
+        keyFrames: [
+            KeyFrame {
+                time: 1ms
+                action: function() {
+                    getUserTimelineCommand.run();
+                }
+            },
+            KeyFrame {
+                time: bind model.config.twitterAPISettings.getUserTimelineInterval
+                action: function() {}
+            }
+
+        ]
+        repeatCount: java.lang.Double.POSITIVE_INFINITY
+    };
+
+    /** the timeline for scheduling the retreival of the replies */
+    var getRepliesTimeline:Timeline = Timeline {
+        keyFrames: [
+            KeyFrame {
+                time: 1ms
+                action: function() {
+                    getRepliesCommand.run();
+                }
+            },
+            KeyFrame {
+                time: bind model.config.twitterAPISettings.getRepliesInterval
+                action: function() {}
+            }
+
+        ]
+        repeatCount: java.lang.Double.POSITIVE_INFINITY
+    };
+
+    /** the timeline for scheduling the retreival of the direct messages */
+    var getDirectMessagesTimeline = Timeline {
+        keyFrames: [
+            KeyFrame {
+                time: 1ms
+                action: function() {
+                    getDirectMessagesCommand.run();
+                }
+            },
+            KeyFrame {
+                time: bind model.config.twitterAPISettings.getDirectMessagesInterval
+                action: function() {}
+            }
+
+        ]
+        repeatCount: java.lang.Double.POSITIVE_INFINITY
+    };
+
+ /*
+  * --------------------------------------------------------------------------
+  * public class functions
+  * --------------------------------------------------------------------------
+  */
+
+    /**
+     * Initializes the connectioon with the Twitter API and starts the
+     * timelines that periodically get new updates for the various groups
+     */
+    public function start(stage:javafx.stage.Stage) {
         twitter.setSource("TweetBox");
+
+        model.config.applicationStage = stage;
 
         loadConfig();
         //loadFromCache();
@@ -93,6 +189,8 @@ public class FrontController {
             var twitterAccount = getAccount("twitter");
             twitter.setUserId(twitterAccount.login);
             twitter.setPassword(twitterAccount.password);
+        } else {
+            model.configDialogVisible = true;
         }
 
         model.friendUpdates.refresh = getFriendsTimelineCommand.run;
@@ -103,7 +201,10 @@ public class FrontController {
 
         startReceiving();
     }
-    
+
+    /**
+     * Stops all timelines, saves the configuration and exits the application
+     */
     public function exit() {
         model.state = State.EXITING;
         stopReceiving();
@@ -112,6 +213,10 @@ public class FrontController {
         System.exit(0);
     }
 
+    /**
+     * Sends an update
+     * @param update - a String containing the text of the update
+     */
     public function sendUpdate(update:String) {
         try {
             if (model.directMessageMode) {
@@ -131,76 +236,6 @@ public class FrontController {
         }
     }
     
-    function sendDirectMessage(update:String) {
-        println("sending direct message [{update}] to [{model.directMessageReceiver.screenName}]");
-        try {
-            var result:Object = null;
-            result = model.directMessageReceiver.user.sendDirectMessage(update);
-            sentDirectMessage(result as DirectMessage);
-        }
-        catch (e:TwitterException) {
-            stopReceiving();
-            model.updateText = "";
-            model.updateNodeVisible = false;
-            println("twitter exception: {e}");
-        }
-    }
-
-    function processFailure(error:Object) {
-        println(error);
-    }
-
-    function processReceivedTwitterResponse(response:Object): Void {
-        println("processReceivedTwitterResponse({response})");
-        if (response instanceof TwitterResponseVO) {
-            var tr = response as TwitterResponseVO;
-            processReceivedUpdates(tr.result as List, tr.group);
-        }
-    }
-
-    function processReceivedUpdates(updates:List, group:GroupVO): Void {
-        if (updates != null) {
-            println("processReceivedUpdates({updates.size()} updates, {group.id})");
-            var newUpdates:List = new Vector();
-            for (i:Integer in [0..updates.size()-1]) {
-                var r:TwitterResponse = updates.get(i) as TwitterResponse;
-                if (not group.updates.contains(r)) {
-                    newUpdates.add(r);
-                }
-            }
-            if (group.showAlerts and group.updates.size() > 0 and newUpdates.size() > 0) {
-                addAlertMessage("{newUpdates.size()} new updates in {group.title}");
-            }
-            group.updates.addAll(0, newUpdates);
-            group.newUpdates = newUpdates.size();
-        }
-        else {
-            println("processReceivedUpdates(null, {group.id})");
-        }
-    }
-
-    function updated(status:Status) {
-        System.out.println("update was successfully sent");
-        model.userUpdates.updates.add(0, status);
-        model.userUpdates.newUpdates = 1;
-        model.friendUpdates.updates.add(0, status);
-        model.friendUpdates.newUpdates = 1;
-        model.updateText = "";
-        model.state = State.READY;
-        model.updateNodeVisible = false;
-        //addAlertMessage("update was sent succesfully");
-    }
-
-    function sentDirectMessage(message:DirectMessage) {
-        System.out.println("direct message was successfully sent");
-        model.directMessages.updates.add(0, message);
-        model.directMessages.newUpdates = 1;
-        model.updateText = "";
-        model.state = State.READY;
-        model.updateNodeVisible = false;
-        //addAlertMessage("direct message was sent succesfully");
-    }
-
     public function search(query:String) {
     }
 
@@ -279,6 +314,22 @@ public class FrontController {
         }
     }
 
+    public function showConfigDialog(): Void {
+        model.configDialogVisible = true;
+    }
+
+    public function hideConfigDialog(): Void {
+        model.configDialogVisible = false;
+    }
+
+    public function showAboutDialog(): Void {
+        model.aboutDialogVisible = true;
+    }
+
+    public function hideAboutDialog(): Void {
+        model.aboutDialogVisible = false;
+    }
+
     /*
     public function loadFromCache() {
         var cacheFile = new File("{System.getProperty("user.home")}/tweetbox.cache");
@@ -325,73 +376,82 @@ public class FrontController {
         }
     }
     */
-    var getFriendsTimelineTimeline:Timeline = Timeline {
-        keyFrames: [
-            KeyFrame { 
-                time: 1ms 
-                action: function() {
-                    getFriendsTimelineCommand.run();
-                }
-            },
-            KeyFrame { 
-                time: bind model.config.twitterAPISettings.getFriendTimelineInterval 
-                action: function() {}
-            }
-            
-        ]
-        repeatCount: java.lang.Double.POSITIVE_INFINITY
-    };
 
-    var getUserTimelineTimeline:Timeline = Timeline {
-        keyFrames: [
-            KeyFrame { 
-                time: 1ms 
-                action: function() { 
-                    getUserTimelineCommand.run();
-                }
-            },
-            KeyFrame { 
-                time: bind model.config.twitterAPISettings.getUserTimelineInterval 
-                action: function() {}
-            }
-            
-        ]
-        repeatCount: java.lang.Double.POSITIVE_INFINITY
-    };
+ /*
+  * --------------------------------------------------------------------------
+  * private class functions
+  * --------------------------------------------------------------------------
+  */
 
-    var getRepliesTimeline:Timeline = Timeline {
-        keyFrames: [
-            KeyFrame { 
-                time: 1ms 
-                action: function() { 
-                    getRepliesCommand.run();
-                }
-            },
-            KeyFrame { 
-                time: bind model.config.twitterAPISettings.getRepliesInterval 
-                action: function() {}
-            }
-            
-        ]
-        repeatCount: java.lang.Double.POSITIVE_INFINITY
-    };
+    function sendDirectMessage(update:String) {
+        println("sending direct message [{update}] to [{model.directMessageReceiver.screenName}]");
+        try {
+            var result:Object = null;
+            result = model.directMessageReceiver.user.sendDirectMessage(update);
+            sentDirectMessage(result as DirectMessage);
+        }
+        catch (e:TwitterException) {
+            stopReceiving();
+            model.updateText = "";
+            model.updateNodeVisible = false;
+            println("twitter exception: {e}");
+        }
+    }
 
-    var getDirectMessagesTimeline = Timeline {
-        keyFrames: [
-            KeyFrame { 
-                time: 1ms 
-                action: function() { 
-                    getDirectMessagesCommand.run();
+    function processFailure(error:Object) {
+        println(error);
+    }
+
+    function processReceivedTwitterResponse(response:Object): Void {
+        println("processReceivedTwitterResponse({response})");
+        if (response instanceof TwitterResponseVO) {
+            var tr = response as TwitterResponseVO;
+            processReceivedUpdates(tr.result as List, tr.group);
+        }
+    }
+
+    function processReceivedUpdates(updates:List, group:GroupVO): Void {
+        if (updates != null) {
+            println("processReceivedUpdates({updates.size()} updates, {group.id})");
+            var newUpdates:List = new Vector();
+            for (i:Integer in [0..updates.size()-1]) {
+                var r:TwitterResponse = updates.get(i) as TwitterResponse;
+                if (not group.updates.contains(r)) {
+                    newUpdates.add(r);
                 }
-            },
-            KeyFrame { 
-                time: bind model.config.twitterAPISettings.getDirectMessagesInterval 
-                action: function() {}
             }
-            
-        ]
-        repeatCount: java.lang.Double.POSITIVE_INFINITY
-    };
+            if (group.showAlerts and group.updates.size() > 0 and newUpdates.size() > 0) {
+                addAlertMessage("{newUpdates.size()} new updates in {group.title}");
+            }
+            group.updates.addAll(0, newUpdates);
+            group.newUpdates = newUpdates.size();
+        }
+        else {
+            println("processReceivedUpdates(null, {group.id})");
+        }
+    }
+
+    function updated(status:Status) {
+        System.out.println("update was successfully sent");
+        model.userUpdates.updates.add(0, status);
+        model.userUpdates.newUpdates = 1;
+        model.friendUpdates.updates.add(0, status);
+        model.friendUpdates.newUpdates = 1;
+        model.updateText = "";
+        model.state = State.READY;
+        model.updateNodeVisible = false;
+        //addAlertMessage("update was sent succesfully");
+    }
+
+    function sentDirectMessage(message:DirectMessage) {
+        System.out.println("direct message was successfully sent");
+        model.directMessages.updates.add(0, message);
+        model.directMessages.newUpdates = 1;
+        model.updateText = "";
+        model.state = State.READY;
+        model.updateNodeVisible = false;
+        //addAlertMessage("direct message was sent succesfully");
+    }
 
     function startReceiving(): Void {
         if (isAccountConfigured("twitter")) {

@@ -37,7 +37,6 @@ public class AboutDialog {
     public var visible = false;
     public var modal = false;
 
-    var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
     var nodeStyle = Style.getApplicationStyle();
     var controller = FrontController.getInstance();
     var model = Model.getInstance();
@@ -108,7 +107,7 @@ public class AboutDialog {
                         label: "Close"
                         imageURL: "{__DIR__}icons/cancel.png"
                         action: function():Void {
-                            visible = false;
+                            controller.hideAboutDialog();
                         }
                     },
                 ]
@@ -119,8 +118,8 @@ public class AboutDialog {
 
     public var stage:JFXStage = JFXStage {
         alwaysOnTop: true
-        x: bind (screenSize.width - width) / 2
-        y: bind (screenSize.height - height) / 2
+        x: bind (model.config.applicationStage.width - width) / 2
+        y: bind (model.config.applicationStage.height - height) / 2
         title: "About TweetBox"
         width: width
         height: height
