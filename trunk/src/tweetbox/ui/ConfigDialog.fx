@@ -11,13 +11,8 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
-import javafx.ext.swing.SwingComponent;
-import javafx.ext.swing.SwingLabel;
-import javafx.ext.swing.SwingTextField;
 import javafx.stage.*;
 import javafx.scene.text.Text;
-
-import javax.swing.JPasswordField;
 
 import java.awt.Toolkit;
 import java.awt.Dimension;
@@ -27,9 +22,13 @@ import org.jfxtras.stage.JFXStage;
 import tweetbox.model.Model;
 import tweetbox.control.FrontController;
 import tweetbox.generic.component.Button;
-import tweetbox.generic.layout.FlowBox;
+import tweetbox.generic.component.TabNavigator;
+import tweetbox.generic.component.Tab;
 import tweetbox.ui.style.Style;
 import tweetbox.valueobject.AccountVO;
+import tweetbox.generic.component.Button;
+import tweetbox.generic.layout.FlowBox;
+import tweetbox.configuration.CustomConfigNode;
 
 /**
  * @author mnankman
@@ -39,20 +38,29 @@ public class ConfigDialog {
     public var title = "TweetBox configuration";
     public var width = 400;
     public var height = 300;
-    public var visible = false on replace {
-        if (visible) {
-            loginField.text = twitterAccount.login;
-            passwordField.setText(twitterAccount.password);
-        }
-    };
+    public var visible = false;
     public var modal = false;
 
+    var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
     var nodeStyle = Style.getApplicationStyle();
     var controller = FrontController.getInstance();
     var model = Model.getInstance();
-    var twitterAccount:AccountVO = controller.getAccount("twitter");
-    var loginField:SwingTextField;
-    var passwordField:JPasswordField = new JPasswordField(twitterAccount.password, 20);
+
+    var tabs:Tab[] = [
+        Tab {
+            label: "Login"
+            node: LoginCredentialsConfigView {
+                width: bind width - 30
+                height: bind height - 25
+                visible:true
+            }
+
+        },
+        Tab {
+            label: "Twitter API"
+            node: TwitterAPISettingsView {}
+        }
+    ];
     
     var content = Group {
         content: [
@@ -80,77 +88,56 @@ public class ConfigDialog {
                     Text {
                         translateY: 15
                         translateX: 10
-                        content: "TweetBox configuration"
+                        content: title
                         fill: nodeStyle.APPLICATION_TITLEBAR_TEXT_FILL
                         font: nodeStyle.APPLICATION_TITLEBAR_TEXT_FONT
                     }
                 ]
             },
-            Group {
-                translateY: 40
+            TabNavigator {
+                translateX: 10
+                translateY: 30
+                width: bind width - 20
+                height: bind height - 100
+                tabs: tabs
+            },
+            FlowBox {
+                width: bind width - 20
+                translateX: 10
+                translateY: height - 30
                 content: [
-                    SwingLabel {
-                        translateX: 10
-                        translateY: 10
-                        text: "login: "
+                    Button {
+                        label: "OK"
+                        imageURL: "{__DIR__}icons/accept.png"
+                        action: function():Void {
+                           controller.hideConfigDialog();
+                           for (t in tabs) {
+                               if (t.node instanceof CustomConfigNode) {
+                                   var configNode = t.node as CustomConfigNode;
+                                   configNode.apply();
+                               }
+                           }
+                        }
                     },
-                    loginField = SwingTextField {
-                        translateX: 100
-                        translateY: 10
-                        columns: 20
-                        text: twitterAccount.login
-                    },
-                    SwingLabel {
-                        translateX: 10
-                        translateY: 40
-                        text: "password: "
-                    },
-                    Group {
-                        translateX: 100
-                        translateY: 40
-                        content: SwingComponent.wrap(passwordField)
 
+                    Button {
+                        label: "Cancel"
+                        imageURL: "{__DIR__}icons/cancel.png"
+                        action: function():Void {
+                            controller.hideConfigDialog();
+                        }
                     },
-                    FlowBox {
-                        width: bind width - 20
-                        translateX: 10
-                        translateY: 80
-                        content: [
-                            Button {
-                                label: "Save"
-                                imageURL: "{__DIR__}icons/accept.png"
-                                action: function():Void {
-                                    controller.updateAccount(
-                                    AccountVO {
-                                        id: "twitter"
-                                        login: loginField.text
-                                        password: new String(passwordField.getPassword())
-                                    }
-                                    );
-                                    controller.hideConfigDialog();
-                                }
-                            },
-
-                            Button {
-                                label: "Cancel"
-                                imageURL: "{__DIR__}icons/cancel.png"
-                                action: function():Void {
-                                    controller.hideConfigDialog();
-                                }
-                            },
-                        ]
-
-                    }
                 ]
+
             }
         ]
     }
 
     public var stage:JFXStage = JFXStage {
         alwaysOnTop: true
-        x: bind (model.config.applicationStage.width - width) / 2
-        y: bind (model.config.applicationStage.height - height) / 2
-        title: "TweetBox Alert"
+        x: (screenSize.width - width) / 2
+        y: (screenSize.height - height) / 2
+        title: title
         width: width
         height: height
         style: StageStyle.TRANSPARENT
