@@ -101,9 +101,17 @@ public class MeshStyle {
         name: "Sans serif"
         size: 11
     }
+
     // scroll bar styles
     public var SCROLLBAR_TRACK_FILL: Paint = Color.WHITE;
     public var SCROLLBAR_THUMB_FILL: Paint = MESH_RED;
+
+    // tab navigator styles
+    public var TAB_TEXT_FILL = BUTTON_TEXT_FILL;
+    public var TAB_TEXT_FONT = BUTTON_TEXT_FONT;
+    public var TAB_FILL = BUTTON_FILL;
+    public var TAB_STROKE = BUTTON_STROKE;
+    public var TABVIEW_STROKE = MESH_RED;
 
     
 }
