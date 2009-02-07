@@ -244,13 +244,20 @@ public class FrontController {
         model.updateText = ""
     }
     
+    public function reply(user:UserVO, pos:Point2D) {
+        model.updateNodeVisible = true;
+        model.updateNodePosition = pos;
+        model.directMessageMode = false;
+        model.updateText = "{model.updateText}@{user.screenName} "
+    }
+
     public function reply(tweet:TweetVO, pos:Point2D) {
         model.updateNodeVisible = true;
         model.updateNodePosition = pos;
         model.directMessageMode = false;
         model.updateText = "{model.updateText}@{tweet.user.screenName} "
     }
-    
+
     public function direct(user:UserVO, pos:Point2D) {
         model.updateNodeVisible = true;
         model.updateNodePosition = pos;
