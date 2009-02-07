@@ -8,12 +8,11 @@ package tweetbox.ui;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.text.Text;
 
 import tweetbox.ui.style.Style;
 import tweetbox.model.Model;
 import tweetbox.control.FrontController;
-import tweetbox.generic.component.Button;
-import tweetbox.generic.layout.FlowBox;
 import tweetbox.configuration.CustomConfigNode;
 
 
@@ -32,7 +31,13 @@ public class TwitterAPISettingsView extends CustomConfigNode {
 
     public override function create(): Node {
         return Group {
-            content: []
+            content: [
+                Text {
+                    translateX: 20
+                    translateY: 40
+                    content: "under construction"
+                }
+            ]
         };
     }
 }
