@@ -40,13 +40,6 @@ import javafx.scene.Cursor;
 import javafx.scene.paint.Color;
 import javafx.geometry.Point2D;
 
-def replyIcon = Image {url: "{__DIR__}icons/reply.png"};
-def dmIcon = Image {url: "{__DIR__}icons/email.png"};
-def followIcon = Image {url: "{__DIR__}icons/follow.png"};
-def rtIcon = Image {url: "{__DIR__}icons/control_fastforward.png"};
-def buddyImage = Image {url: "{__DIR__}images/buddy.png"};
-
-
 /**
  * @author mnankman
  */
@@ -56,131 +49,34 @@ public class TweetNode extends CustomNode {
     public var height:Number;
     public var width:Number;
 
-    var user:UserVO = tweet.user;
-
     var tweetContentWidth:Number = width - 150;
     
     var nodeStyle = Style.getApplicationStyle();
-   
     var controller = FrontController.getInstance();
-    var imageCache = ImageCache.getInstance();
+    var model = Model.getInstance();
 
-    public override function create(): Node {
-        var model = Model.getInstance();
-
-        var profileImageUrl:String = user.profileImageUrl;
-        var imageViewRef:ImageView;
-
-        var tweetContentBox:HBox = HBox {
-                translateY: 7
-                //verticalAlignment: VerticalAlignment.TOP
-                content: [
-
-                    Group {
-                        translateX: 5
-                        content: [
-                            Rectangle {
-                                width: 50
-                                height: 50
-                                fill: Color.TRANSPARENT
-                            },
-                            // renders the profile image
-                            // TODO: create generic component for this
-                            imageViewRef = ImageView {
-                                //translateX: 5
-                                //translateY: 4
-                                fitHeight: 50
-                                fitWidth: 50
-                                image: 
-                                    if (profileImageUrl == null)
-                                        buddyImage
-                                    else
-                                        imageCache.getImage("{user.profileImageUrl}")
-
-                                onMouseEntered: function(me:MouseEvent):Void {
-                                    tweetActionButtonGroup.visible = true;
-                                }
-
-                                onMouseExited: function(me:MouseEvent):Void {
-                                    tweetActionButtonGroup.visible = false;
-                                }
-
-                                clip: Rectangle {
-                                    width: 50
-                                    height: 50
-                                }
-                            }
-                        ]
-                    },
-
-                    Group {
-                        translateX: 7
-                        translateY: 8
-                        content: TweetContentRenderer {
-                            maxWidth: tweetContentWidth
-                            tweet: tweet
-                        }
-                    }
-                ]
-            };
-
-        var tweetActionButtonGroup: Group = Group {
+    var tweetContentBox:HBox = HBox {
+        translateY: 7
+        //verticalAlignment: VerticalAlignment.TOP
+        content: [
+            UserNode {
                 translateX: 5
                 translateY: 5
-                visible: false
-                //opacity: bind buttonOpacityValue
-                content: [
-                    ImageView {
-                        translateX: 5
-                        translateY: 5
-                        image: bind replyIcon
-                        onMouseClicked: function(me:MouseEvent):Void {
-                            controller.reply(
-                                tweet,
-                                Point2D{
-                                    x: tweetContentBox.boundsInScene.minX
-                                    y: tweetContentBox.boundsInScene.minY+tweetContentBox.boundsInLocal.height
-                                });
-                        }
-                    },
-                    ImageView {
-                        translateX: 25
-                        translateY: 5
-                        image: bind dmIcon
-                        onMouseClicked: function(me:MouseEvent):Void {
-                            controller.direct(
-                                user,
-                                Point2D{
-                                    x: tweetContentBox.boundsInScene.minX
-                                    y: tweetContentBox.boundsInScene.minY+tweetContentBox.boundsInLocal.height
-                                });
-                        }
-                    },
-                    ImageView {
-                        translateX: 5
-                        translateY: 25
-                        image: bind followIcon
-                        onMouseClicked: function(me:MouseEvent):Void {
-                            controller.follow(user.screenName);
-                        }
-                    },
-                    ImageView {
-                        translateX: 25
-                        translateY: 25
-                        image: bind rtIcon
-                        onMouseClicked: function(me:MouseEvent):Void {
-                            controller.retweet(
-                                tweet,
-                                Point2D{
-                                    x: tweetContentBox.boundsInScene.minX
-                                    y: tweetContentBox.boundsInScene.minY+tweetContentBox.boundsInLocal.height
-                                });
-                        }
-                    },
-                ]
+                user: tweet.user;
+                tweet: tweet;
+            }
+            Group {
+                translateX: 7
+                translateY: 8
+                content: TweetContentRenderer {
+                    maxWidth: tweetContentWidth
+                    tweet: tweet
+                }
+            }
+        ]
+    };
 
-            };
-            
+    public override function create(): Node {
         return Group {
             content: bind [
 
@@ -199,11 +95,8 @@ public class TweetNode extends CustomNode {
                     arcHeight:10
                     fill: nodeStyle.UPDATE_FILL
                 },
-                
-                tweetContentBox,
-
-                tweetActionButtonGroup
-                
+           
+                tweetContentBox,                
             ]
         };
     }

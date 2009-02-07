@@ -12,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 
 import twitter4j.TwitterResponse;
 import twitter4j.Status;
@@ -20,9 +21,10 @@ import twitter4j.User;
 
 import tweetbox.generic.component.Button;
 import tweetbox.valueobject.GroupVO;
+import tweetbox.valueobject.UserVO;
 import tweetbox.ui.style.Style;
 import tweetbox.generic.util.ImageCache;
-
+import tweetbox.generic.layout.FlowBox;
 /**
  * @author mnankman
  */
@@ -88,19 +90,12 @@ public class GroupNode extends CustomNode {
                 ]
             },
             if (numRows>0) {
-                ImageView {
+                UserNode {
                     translateX: 10
                     translateY: 40
-
-                    image: bind profileImageForMostRecentUpdate()
-
-                    clip: Rectangle {
-                        width: 50
-                        height: 50
-                    }
-
+                    user: bind userOfMostRecentUpdate()
                 }
-            } else null
+            } else null,
         ]
     }
 
@@ -108,7 +103,7 @@ public class GroupNode extends CustomNode {
         return view;
     }
 
-    bound function profileImageForMostRecentUpdate(): Image {
+    bound function userOfMostRecentUpdate(): UserVO {
         var update:TwitterResponse = group.updates.get(0) as TwitterResponse;
 
         var user:User = 
@@ -118,7 +113,7 @@ public class GroupNode extends CustomNode {
             else null;
 
         return
-            if (user != null) ImageCache.getInstance().getImage(user.getProfileImageURL().toString())
+            if (user != null) UserVO {user: user}
             else null;
     }
 }
