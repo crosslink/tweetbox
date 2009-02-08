@@ -115,6 +115,7 @@ public class TweetContentRenderer extends CustomNode {
 
     public override function create(): Node {
         return Group {
+            cache:true
             content: createTweetContent()
         };
     }

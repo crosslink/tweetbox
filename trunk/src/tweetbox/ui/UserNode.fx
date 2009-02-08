@@ -29,12 +29,13 @@ import javafx.scene.Cursor;
 import javafx.scene.paint.Color;
 import javafx.geometry.Point2D;
 
-def replyIcon = Image {url: "{__DIR__}icons/reply.png"};
+def replyIcon = Image {url: "{__DIR__}icons/comment.png"};
 def dmIcon = Image {url: "{__DIR__}icons/email.png"};
-def followIcon = Image {url: "{__DIR__}icons/follow.png"};
+def addFavIcon = Image {url: "{__DIR__}icons/heart_add.png"};
+def delFavIcon = Image {url: "{__DIR__}icons/heart_delete.png"};
 def rtIcon = Image {url: "{__DIR__}icons/control_fastforward.png"};
 def buddyImage = Image {url: "{__DIR__}images/buddy.png"};
-
+def placeholderImage = Image {url: "{__DIR__}images/piph.png"};
 
 /**
  * @author mnankman
@@ -49,7 +50,7 @@ public class UserNode extends CustomNode {
 
     var replyIconVisible:Boolean = true;
     var rtIconVisible:Boolean = tweet != null;
-    var followIconVisible:Boolean = true;
+    var addFavIconVisible:Boolean = tweet != null;
     var dmIconVisible:Boolean = true;
 
     var nodeStyle = Style.getApplicationStyle();
@@ -62,6 +63,8 @@ public class UserNode extends CustomNode {
     var profileImageUrl:String = user.profileImageUrl;
     var imageViewRef:ImageView;
 
+
+
     var imageView:Node = ImageView {
         fitHeight: 50
         fitWidth: 50
@@ -69,7 +72,7 @@ public class UserNode extends CustomNode {
             if (profileImageUrl == null)
                 buddyImage
             else
-                imageCache.getImage("{user.profileImageUrl}")
+                imageCache.getImage("{user.profileImageUrl}", placeholderImage)
 
         onMouseEntered: function(me:MouseEvent):Void {
             tweetActionButtonGroup.visible = true;
@@ -134,12 +137,12 @@ public class UserNode extends CustomNode {
                 }
             },
             ImageView {
-                visible: bind followIconVisible
+                visible: bind addFavIconVisible
                 translateX: 25
                 translateY: 25
-                image: bind followIcon
+                image: bind addFavIcon
                 onMouseClicked: function(me:MouseEvent):Void {
-                    controller.follow(user.screenName);
+                    controller.favorite(tweet);
                 }
             }
         ]

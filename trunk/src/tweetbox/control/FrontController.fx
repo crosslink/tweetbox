@@ -235,6 +235,9 @@ public class FrontController {
             println("twitter exception: {e}");
         }
     }
+
+    public function addToFavorites(tweet:TweetVO) {
+    }
     
     public function search(query:String) {
     }
@@ -271,6 +274,9 @@ public class FrontController {
         model.updateNodePosition = pos;
         model.directMessageMode = false;
         model.updateText = "RT @{tweet.user.screenName}: {tweet.text}"
+    }
+
+    public function favorite(tweet:TweetVO) {
     }
     
     public function follow(user:String) {

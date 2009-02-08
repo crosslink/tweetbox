@@ -49,6 +49,7 @@ public class AboutDialog {
     var content = Group {
         content: [
             Rectangle {
+                cache: true
                 translateX:0
                 translateY:0
                 stroke: nodeStyle.APPLICATION_BACKGROUND_STROKE
@@ -78,6 +79,7 @@ public class AboutDialog {
                 ]
             },
             VBox {
+                cache: true
                 translateX: 0
                 translateY: 40
                 content: [

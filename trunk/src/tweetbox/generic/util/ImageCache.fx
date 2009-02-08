@@ -19,12 +19,16 @@ public class ImageCache  {
     var cachedImagesMap:Map = new java.util.HashMap();
 
     public function getImage(url:String): Image {
+        return getImage(url, null);
+    }
+
+    public function getImage(url:String, placeholder:Image): Image {
         if (cachedImagesMap.containsKey(url)) {
             return cachedImagesMap.get(url) as Image
         }
         else {
             var newImage:Image = Image {
-
+                placeholder: placeholder
                 backgroundLoading: true
                 url: url
             }
