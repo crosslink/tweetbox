@@ -15,6 +15,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.animation.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
 
 import tweetbox.ui.style.Style;
 
@@ -22,7 +24,7 @@ import tweetbox.ui.style.Style;
      * @author mnankman
      */
     public def defaultHeight:Number = 16;
-    public def defaultWidth:Number = 60;
+    public def defaultWidth:Number = 70;
 
 public class Button extends CustomNode {
 
@@ -51,9 +53,11 @@ public class Button extends CustomNode {
 
     public override function create(): Node {
         var textRef:Text;
+        var imageRef:ImageView;
         return Group {
             content: [
                 Rectangle {
+                    cache:true
                     width: bind width
                     height: bind height
                     arcHeight: bind height / 2
@@ -75,6 +79,21 @@ public class Button extends CustomNode {
                         action();
                     }
                 },
+                imageRef = ImageView {
+                    blocksMouse: false;
+                    translateX: 2
+                    translateY: bind (height-imageRef.layoutBounds.height)/2
+                    image: Image {
+                        url: imageURL
+                    }
+                },
+                textRef = Text {
+                    translateX: bind (width - textRef.layoutBounds.width + imageRef.layoutBounds.width) / 2
+                    translateY: bind height / 2 + 5
+                    font: bind nodeStyle.BUTTON_TEXT_FONT
+                    fill: bind nodeStyle.BUTTON_TEXT_FILL
+                    content: bind label
+                },
                 Rectangle {
                     blocksMouse: false;
                     width: bind width
@@ -83,14 +102,7 @@ public class Button extends CustomNode {
                     arcWidth: bind height / 2
                     fill: Color.WHITE
                     opacity: bind opacityValue
-                }
-                textRef = Text {
-                    translateX: bind (width - textRef.layoutBounds.width) / 2
-                    translateY: bind height / 2 + 5
-                    font: bind nodeStyle.BUTTON_TEXT_FONT
-                    fill: bind nodeStyle.BUTTON_TEXT_FILL
-                    content: bind label
-                }
+                },
 
             ]
 
@@ -110,6 +122,7 @@ function run(): Void {
                     translateX: 50
                     translateY: 100
                     label: "Click me!"
+                    imageURL: "{__DIR__}accept.png"
                     action: function() {
                         countClicks++;
                     }

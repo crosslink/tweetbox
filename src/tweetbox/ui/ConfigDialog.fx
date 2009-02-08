@@ -65,6 +65,7 @@ public class ConfigDialog {
     var content = Group {
         content: [
             Rectangle {
+                cache:true
                 translateX:0
                 translateY:0
                 stroke: nodeStyle.APPLICATION_BACKGROUND_STROKE

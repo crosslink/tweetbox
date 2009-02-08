@@ -54,6 +54,11 @@ function run() {
 
     //WindowHelper.extractWindow(configDialog.stage).setAlwaysOnTop(true);
 
+    var stageRef:Rectangle;
+    var menuRef:Node;
+    var statusBarRef:StatusBar;
+    var updateRef:Node;
+
     var stage:JFXStage = JFXStage {
         title: "{model.appInfo.name} {model.appInfo.versionString}"
         width: stageWidth
@@ -77,10 +82,7 @@ function run() {
         scene: Scene {
             content: [
                 Group {
-                    var stageRef:Rectangle;
-                    var menuRef:Node;
-                    var statusBarRef:StatusBar;
-                    var updateRef:Node;
+                    cache: true
                     content: [
                         Rectangle {
                             stroke: nodeStyle.APPLICATION_BACKGROUND_STROKE
@@ -96,7 +98,7 @@ function run() {
                             content: [
                                 Button {
                                     label: "Tweet"
-                                    imageURL: "{__DIR__}icons/textfield.png"
+                                    imageURL: "{__DIR__}icons/comment.png"
                                     action: function():Void {
                                         if (not model.updateNodeVisible) {
                                             model.updateNodeVisible = true;
@@ -110,7 +112,7 @@ function run() {
                                 },
                                 Button {
                                     label: "Config"
-                                    imageURL: "{__DIR__}icons/config.png"
+                                    imageURL: "{__DIR__}icons/bullet_wrench.png"
                                     action: function():Void {
                                         controller.showConfigDialog();
                                     }
