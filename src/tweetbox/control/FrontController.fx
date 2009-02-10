@@ -11,7 +11,7 @@ import tweetbox.valueobject.*;
 import java.lang.System;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Vector;
+import java.util.Set;
 import java.util.Date;
 import java.util.ConcurrentModificationException;
 import java.io.FileOutputStream;
@@ -25,15 +25,13 @@ import javafx.animation.*;
 import javafx.geometry.Point2D;
 
 import twitter4j.Twitter;
-import twitter4j.TwitterAdapter;
-import twitter4j.TwitterListener;
 import twitter4j.Status;
 import twitter4j.User;
 import twitter4j.DirectMessage;
 import twitter4j.TwitterException;
 import twitter4j.TwitterResponse;
 
-import tweetbox.twitter.TwitterHelper;
+import tweetbox.twitter.TwitterUtil;
 import tweetbox.command.*;
 
 import org.jfxtras.async.JFXWorker;
@@ -95,7 +93,7 @@ public class FrontController {
         group: model.favorites
     };
 
-    /** the timeline for scheduling the retreival of the friends timeline */
+    /** the timeline for scheduling the retrieval of the friends timeline */
     var getFriendsTimelineTimeline:Timeline = Timeline {
         keyFrames: [
             KeyFrame {
@@ -113,7 +111,7 @@ public class FrontController {
         repeatCount: java.lang.Double.POSITIVE_INFINITY
     };
 
-    /** the timeline for scheduling the retreival of the user timeline */
+    /** the timeline for scheduling the retrieval of the user timeline */
     var getUserTimelineTimeline:Timeline = Timeline {
         keyFrames: [
             KeyFrame {
@@ -131,7 +129,7 @@ public class FrontController {
         repeatCount: java.lang.Double.POSITIVE_INFINITY
     };
 
-    /** the timeline for scheduling the retreival of the replies */
+    /** the timeline for scheduling the retrieval of the replies */
     var getRepliesTimeline:Timeline = Timeline {
         keyFrames: [
             KeyFrame {
@@ -149,7 +147,7 @@ public class FrontController {
         repeatCount: java.lang.Double.POSITIVE_INFINITY
     };
 
-    /** the timeline for scheduling the retreival of the direct messages */
+    /** the timeline for scheduling the retrieval of the direct messages */
     var getDirectMessagesTimeline = Timeline {
         keyFrames: [
             KeyFrame {
@@ -166,6 +164,45 @@ public class FrontController {
         ]
         repeatCount: java.lang.Double.POSITIVE_INFINITY
     };
+
+    var wait:Duration = 10s;
+    /** the timeline for scheduling the retrieval of the replies */
+    var startReceivingTimeline:Timeline = Timeline {
+        keyFrames: [
+            KeyFrame {
+                time: 0s
+                action: function() {
+                    getFriendsTimelineTimeline.play();
+                }
+            },
+            KeyFrame {
+                time: wait
+                action: function() {
+                    getRepliesTimeline.play();
+                }
+            },
+            KeyFrame {
+                time: wait*2
+                action: function() {
+                    getDirectMessagesTimeline.play();
+                }
+            },
+            KeyFrame {
+                time: wait*3
+                action: function() {
+                    getUserTimelineTimeline.play();
+                }
+            },
+            KeyFrame {
+                time: wait*4
+                action: function() {
+                    getFavoritesCommand.run();
+                }
+            }
+
+        ]
+    };
+
 
  /*
   * --------------------------------------------------------------------------
@@ -426,17 +463,11 @@ public class FrontController {
     function processReceivedUpdates(updates:List, group:GroupVO): Void {
         if (updates != null) {
             println("processReceivedUpdates({updates.size()} updates, {group.id})");
-            var newUpdates:List = new Vector();
-            for (i:Integer in [0..updates.size()-1]) {
-                var r:TwitterResponse = updates.get(i) as TwitterResponse;
-                if (not group.updates.contains(r)) {
-                    newUpdates.add(r);
-                }
-            }
+            var newUpdates:Set = TwitterUtil.getNewUpdates(updates, group.updates);
             if (group.showAlerts and group.updates.size() > 0 and newUpdates.size() > 0) {
                 addAlertMessage("{newUpdates.size()} new updates in {group.title}");
             }
-            group.updates.addAll(0, newUpdates);
+            group.updates.addAll(newUpdates);
             group.newUpdates = newUpdates.size();
         }
         else {
@@ -446,9 +477,9 @@ public class FrontController {
 
     function updated(status:Status) {
         System.out.println("update was successfully sent");
-        model.userUpdates.updates.add(0, status);
+        model.userUpdates.updates.add(status);
         model.userUpdates.newUpdates = 1;
-        model.friendUpdates.updates.add(0, status);
+        model.friendUpdates.updates.add(status);
         model.friendUpdates.newUpdates = 1;
         model.updateText = "";
         model.state = State.READY;
@@ -458,7 +489,7 @@ public class FrontController {
 
     function sentDirectMessage(message:DirectMessage) {
         System.out.println("direct message was successfully sent");
-        model.directMessages.updates.add(0, message);
+        model.directMessages.updates.add(message);
         model.directMessages.newUpdates = 1;
         model.updateText = "";
         model.state = State.READY;
@@ -468,12 +499,7 @@ public class FrontController {
 
     function startReceiving(): Void {
         if (isAccountConfigured("twitter")) {
-            getFriendsTimelineTimeline.play();
-            getUserTimelineTimeline.play();
-            getRepliesTimeline.play();
-            getDirectMessagesTimeline.play();
-
-            getFavoritesCommand.run();
+            startReceivingTimeline.play();
         }
     }
 
