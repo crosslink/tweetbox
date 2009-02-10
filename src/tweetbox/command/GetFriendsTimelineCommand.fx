@@ -15,7 +15,7 @@ import twitter4j.TwitterResponse;
 import tweetbox.generic.command.AbstractCommand;
 import tweetbox.valueobject.TwitterResponseVO;
 import tweetbox.valueobject.GroupVO;
-import tweetbox.twitter.TwitterHelper;
+import tweetbox.twitter.TwitterUtil;
 /**
  * @author mnankman
  */
@@ -24,7 +24,7 @@ public class GetFriendsTimelineCommand extends AbstractCommand {
     public-init var twitter:Twitter;
     public-init var group:GroupVO;
 
-    var since:Date = TwitterHelper.getSinceDate(group.updates);
+    var since:Date = TwitterUtil.getSinceDate(group.updates);
 
     public override function execute() {
         println("GetFriendsTimelineCommand.execute()");

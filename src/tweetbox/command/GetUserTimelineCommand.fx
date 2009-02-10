@@ -15,7 +15,7 @@ import twitter4j.TwitterResponse;
 import tweetbox.generic.command.AbstractCommand;
 import tweetbox.valueobject.TwitterResponseVO;
 import tweetbox.valueobject.GroupVO;
-import tweetbox.twitter.TwitterHelper;
+
 /**
  * @author mnankman
  */
