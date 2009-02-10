@@ -62,20 +62,21 @@ public class GroupNode extends CustomNode {
             TitleBar {
                 translateX: 2
                 translateY: 2
-                title: bind "{title} ({numRows})"
+                title: bind "{title}"
                 width: bind width-1
 
                 buttons: [
                     Button {
-                        label: "r"
-                        width: 10
-                        height: 10
+                        imageURL: "{__DIR__}icons/refresh.png"
+                        width: 14
+                        height: 14
                         action: group.refresh;
                     },
                     Button {
+                        //imageURL: bind if (group.expanded) "{__DIR__}icons/down.png" else "{__DIR__}icons/up.png"
                         label: bind if (group.expanded) "-" else "+"
-                        width: 10
-                        height: 10
+                        width: 14
+                        height: 14
                         action: function() {
                             if (group.expanded) {
                                 group.expanded = false;
@@ -89,10 +90,31 @@ public class GroupNode extends CustomNode {
                     }
                 ]
             },
+
+            // the background of the group
+            Rectangle {
+                translateY: 25
+                translateX: 5
+                width: bind width - 9
+                height: bind height - 29
+                arcWidth:10
+                arcHeight:10
+                fill: nodeStyle.UPDATE_FILL
+            },
+
+            Text {
+                translateX: width * 0.6
+                translateY: height * 0.7
+                content: "{numRows}"
+                font: nodeStyle.GROUPNODE_TEXT_FONT
+                fill: nodeStyle.GROUPNODE_TEXT_FILL
+            }
+
             if (numRows>0) {
                 UserNode {
-                    translateX: 10
-                    translateY: 40
+                    scale: 0.8
+                    translateX: 15
+                    translateY: 30
                     user: bind userOfMostRecentUpdate()
                 }
             } else null,
@@ -115,5 +137,32 @@ public class GroupNode extends CustomNode {
         return
             if (user != null) UserVO {user: user}
             else null;
+    }
+}
+
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import tweetbox.model.Model;
+
+public function run() {
+    var model:Model = Model.getInstance();
+    Stage {
+        x:100 y:300 width:500 height:300
+        onClose: function() {
+            java.lang.System.exit(0);
+        }
+        scene:Scene {
+            content: [
+                GroupNode {
+                    translateX: 50
+                    translateY: 50
+                    width: 150
+                    height: 90
+                    group: model.friendUpdates
+                }
+
+            ]
+
+        }
     }
 }

@@ -36,6 +36,8 @@ public class TwitterAPISettingsView extends CustomConfigNode {
                     translateX: 20
                     translateY: 40
                     content: "under construction"
+                    fill: nodeStyle.DIALOG_TEXT_FILL
+                    font: nodeStyle.DIALOG_TEXT_FONT
                 }
             ]
         };

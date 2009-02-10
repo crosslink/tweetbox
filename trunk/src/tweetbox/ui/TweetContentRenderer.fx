@@ -72,6 +72,7 @@ public class TweetContentRenderer extends CustomNode {
     function createTextNode(content:String): Void {
         addToTweetContent(Text {
             content: content
+            fill: nodeStyle.UPDATE_TEXT_FILL
             font: nodeStyle.UPDATE_TEXT_FONT
         });
     }
@@ -81,7 +82,7 @@ public class TweetContentRenderer extends CustomNode {
             content: content
             font: nodeStyle.UPDATE_TEXT_FONT
             underline: true
-            fill: Color.BLUE
+            fill: nodeStyle.UPDATE_LINK_FILL
             cursor: Cursor.HAND
             onMouseClicked: function(e:MouseEvent) {
                 linkClicked(url);

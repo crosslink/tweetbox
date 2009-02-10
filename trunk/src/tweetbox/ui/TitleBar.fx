@@ -31,7 +31,7 @@ public class TitleBar extends CustomNode {
     var nodeStyle = Style.getApplicationStyle();
 
     var buttonBox:HBox = HBox {
-        translateY: 5
+        translateY: 2
         translateX: bind (width - buttonBox.layoutBounds.width - 2)
         content: for (btn:Button in buttons) {
             btn
@@ -50,7 +50,7 @@ public class TitleBar extends CustomNode {
                 },
                 Text {
                     translateY: 15
-                    translateX: 10
+                    translateX: 5
                     content: bind title
                     fill: nodeStyle.APPLICATION_TITLEBAR_TEXT_FILL
                     font: nodeStyle.APPLICATION_TITLEBAR_TEXT_FONT

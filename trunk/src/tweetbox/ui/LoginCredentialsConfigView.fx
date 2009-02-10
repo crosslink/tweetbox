@@ -59,10 +59,12 @@ public class LoginCredentialsConfigView extends CustomConfigNode {
         return Group {
             translateY: 40
             content: [
-                SwingLabel {
+                Text {
                     translateX: 10
                     translateY: 10
-                    text: "login: "
+                    fill: nodeStyle.DIALOG_TEXT_FILL
+                    font: nodeStyle.DIALOG_TEXT_FONT
+                    content: "login: "
                 },
                 loginField = SwingTextField {
                     translateX: 100
@@ -70,10 +72,12 @@ public class LoginCredentialsConfigView extends CustomConfigNode {
                     columns: 20
                     text: twitterAccount.login
                 },
-                SwingLabel {
+                Text {
                     translateX: 10
                     translateY: 40
-                    text: "password: "
+                    fill: nodeStyle.DIALOG_TEXT_FILL
+                    font: nodeStyle.DIALOG_TEXT_FONT
+                    content: "password: "
                 },
                 Group {
                     translateX: 100

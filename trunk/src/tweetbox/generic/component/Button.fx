@@ -31,7 +31,7 @@ public class Button extends CustomNode {
     public var height:Number = defaultHeight;
     public var width:Number = defaultWidth;
 
-    public var label:String = "button";
+    public var label:String = "";
     public var imageURL:String;
 
     public var action:function();
@@ -83,6 +83,8 @@ public class Button extends CustomNode {
                     blocksMouse: false;
                     translateX: 2
                     translateY: bind (height-imageRef.layoutBounds.height)/2
+                    fitHeight: height*0.9
+                    preserveRatio: true
                     image: Image {
                         url: imageURL
                     }

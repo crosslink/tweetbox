@@ -46,6 +46,8 @@ public class UserNode extends CustomNode {
     public var width:Number;
     public var user:UserVO;
 
+    public var scale:Number;
+
     public var tweet:TweetVO; // this is the context of this user node is associated with. can be null.
 
     var replyIconVisible:Boolean = true;
@@ -66,8 +68,8 @@ public class UserNode extends CustomNode {
 
 
     var imageView:Node = ImageView {
-        fitHeight: 50
-        fitWidth: 50
+        fitHeight: 50*scale
+        fitWidth: 50*scale
         image:
             if (profileImageUrl == null)
                 buddyImage
@@ -81,14 +83,11 @@ public class UserNode extends CustomNode {
         onMouseExited: function(me:MouseEvent):Void {
             tweetActionButtonGroup.visible = false;
         }
-
-        clip: Rectangle {
-            width: 50
-            height: 50
-        }
     };
 
     var tweetActionButtonGroup: Group = Group {
+        scaleX: scale
+        scaleY: scale
         translateX: 0
         translateY: 0
         visible: false
@@ -156,8 +155,8 @@ public class UserNode extends CustomNode {
                 tweetActionButtonGroup,
                 if (tweet==null) {
                     Text {
-                        translateY: 30
-                        translateX: 55
+                        translateY: imageView.layoutBounds.height + 10
+                        translateX: 0
                         content: user.screenName
                         font: nodeStyle.UPDATE_TEXT_FONT
                         fill: nodeStyle.UPDATE_TEXT_FILL
