@@ -33,7 +33,7 @@ public class HomeView extends CustomNode {
 
     var expandedTweetsView:TweetsView = null;
 
-    var groupButtonHeight:Integer = 100;
+    var groupButtonHeight:Integer = 90;
     var groupButtonWidth:Integer = 130;
 
     var expandedTweetsViewMinimalWidth:Integer = 300;

@@ -102,15 +102,15 @@ public class TweetsView extends CustomNode, Resizable {
 
                 buttons: [
                     Button {
-                        label: "r"
-                        width: 10
-                        height: 10
+                        imageURL: "{__DIR__}icons/refresh.png"
+                        width: 14
+                        height: 14
                         action: group.refresh;
                     },
                     Button {
                         label: "-"
-                        width: 10
-                        height: 10
+                        width: 14
+                        height: 14
                         action: function() {
                             group.expanded = false;
                             onHide(group);

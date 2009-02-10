@@ -88,8 +88,6 @@ public class UpdateNode extends CustomNode {
             blocksMouse:true;
             content: [
                 Rectangle {
-                    opacity: 0.8
-                    stroke: nodeStyle.MESH_BLUE
                     strokeWidth: 3
                     width: bind updateBox.layoutBounds.width + 10
                     height: bind updateBox.layoutBounds.height + 10
@@ -137,11 +135,12 @@ public class UpdateNode extends CustomNode {
                                     translateY: 20
                                     textAlignment: TextAlignment.RIGHT;
                                     content: bind "{MAX_TWEET_LENGTH - textLength}"
-                                    font: Font {
-                                        name: "Sans serif"
-                                        size: 20
-                                    }
-                                    fill: bind if (maxLengthExceeded) Color.RED else Color.BLACK
+                                    font: nodeStyle.UPDATECOUNTER_TEXT_FONT
+                                    fill: bind 
+                                        if (maxLengthExceeded)
+                                            nodeStyle.UPDATECOUNTER_TOOMUCH_TEXT_FILL
+                                        else
+                                            nodeStyle.UPDATECOUNTER_TEXT_FILL
                                 }
 
                             ]
