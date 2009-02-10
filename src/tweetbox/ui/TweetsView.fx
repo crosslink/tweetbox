@@ -19,8 +19,6 @@ import javafx.scene.image.*;
 import javafx.ext.swing.*;
 
 import java.lang.System;
-import java.util.List;
-
 import twitter4j.TwitterResponse;
 import twitter4j.Status;
 import twitter4j.DirectMessage;
@@ -31,7 +29,6 @@ import tweetbox.generic.component.ScrollView;
 import tweetbox.generic.component.Button;
 import tweetbox.generic.util.ImageCache;
 import tweetbox.control.FrontController;
-import tweetbox.valueobject.TweetListVO;
 import tweetbox.valueobject.TweetVO;
 import tweetbox.valueobject.UserVO;
 import tweetbox.valueobject.GroupVO;
@@ -48,26 +45,15 @@ public class TweetsView extends CustomNode, Resizable {
 
     var expanded:Boolean = bind group.expanded;
 
-
     public var onHide:function(group:GroupVO):Void;
     
-    var expandedWidth:Number = width;
-    var expandedHeight:Number = height;
-
-    override var width on replace {
-        expandedWidth = width;
-    }
-
-    override var height on replace {
-        expandedHeight = height;
-    }
-
     var newTweets = bind group.newUpdates on replace {
+        var updateArray:Object[] = group.updates.toArray();
         for (row in [0..newTweets - 1]) {
             insert TweetNode {
-                width: expandedWidth - 5
+                width: width - 5
                 tweet: TweetVO {
-                    response: group.updates.get(row) as TwitterResponse
+                    response: updateArray[row] as TwitterResponse
                 }
             } before tweetNodes[row];
         } 
@@ -91,14 +77,14 @@ public class TweetsView extends CustomNode, Resizable {
                 fill: null;
                 x:0
                 y:0
-                width: bind if (expanded) expandedWidth else minimizedWidth
-                height: bind if (expanded) expandedHeight else minimizedHeight
+                width: width
+                height: bind height
             },
             TitleBar {
                 translateX: 2
                 translateY:2
                 title: bind "{title} ({numRows})"
-                width: bind expandedWidth - 1
+                width: width - 1
 
                 buttons: [
                     Button {
@@ -123,8 +109,8 @@ public class TweetsView extends CustomNode, Resizable {
                 hasHorizontalScrollBar: false
                 translateX: 5
                 translateY: 25
-                height: bind expandedHeight - 25
-                width: bind expandedWidth - 20
+                height: bind height - 25
+                width: width - 20
                 content: VBox {
                     content: bind tweetNodes
                 }
