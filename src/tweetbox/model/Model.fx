@@ -6,8 +6,6 @@ package tweetbox.model;
 
 import java.lang.Object;
 import java.util.Date;
-import java.util.List;
-import java.util.Vector;
 import javafx.scene.*;
 import javafx.scene.image.*;
 import javafx.scene.text.*;
