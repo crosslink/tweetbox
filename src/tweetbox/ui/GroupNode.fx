@@ -126,7 +126,8 @@ public class GroupNode extends CustomNode {
     }
 
     bound function userOfMostRecentUpdate(): UserVO {
-        var update:TwitterResponse = group.updates.get(0) as TwitterResponse;
+        var iterator = group.updates.iterator();
+        var update:TwitterResponse = iterator.next() as TwitterResponse;
 
         var user:User = 
             if (update instanceof Status) (update as Status).getUser()
