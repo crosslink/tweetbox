@@ -23,7 +23,7 @@ public class TwitterUtil {
     public static Set<TwitterResponse> getNewUpdates(List<TwitterResponse> received, Set<TwitterResponse> target) {
         TwitterResponse update = null;
         if (received != null) {
-            Set newUpdates = new TreeSet<TwitterResponse>();
+            Set newUpdates = new TreeSet<TwitterResponse>(new TwitterResponseComparator());
             for (int i=0; i<received.size(); i++) {
                 update = received.get(i);
                 if (!target.contains(update)) {

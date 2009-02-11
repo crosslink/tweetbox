@@ -22,7 +22,6 @@
         <extension name="JavaFX Runtime" href="http://dl.javafx.com/javafx-rt.jnlp"/>
         <jar href="TweetBox.jar" main="true"/>
         <jar href="lib/JFXtras-0.1.1b.jar"/>
-        <jar href="lib/twitter4j-1.1.4.jar"/>
     </resources>
     <application-desc main-class="tweetbox.ui.Main"/>
 </jnlp>
