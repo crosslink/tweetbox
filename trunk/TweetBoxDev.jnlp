@@ -4,12 +4,11 @@
         <title>TweetBox</title>
         <vendor>mnankman</vendor>
         <homepage href="http://www.xs4all.nl/~mnankman/tweetbox/dev"/>
+        <description>TweetBox</description>
         <icon kind="splash" href="splash.gif"/>
-	  <description>TweetBox</description>
         <offline-allowed/>
         <shortcut>
             <desktop/>
-            <menu submenu="TweetBox"/>
         </shortcut>
     </information>
     <security>
@@ -22,6 +21,7 @@
         <extension name="JavaFX Runtime" href="http://dl.javafx.com/javafx-rt.jnlp"/>
         <jar href="TweetBox.jar" main="true"/>
         <jar href="lib/JFXtras-0.1.1b.jar"/>
+        <jar href="lib/twitter4j-1.1.4.jar"/>
     </resources>
     <application-desc main-class="tweetbox.ui.Main"/>
 </jnlp>
