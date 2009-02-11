@@ -32,6 +32,8 @@ import tweetbox.ui.style.Style;
 import javax.swing.JTextArea;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.DocumentEvent;
 
 import java.lang.Math;
 
@@ -59,21 +61,30 @@ public class UpdateNode extends CustomNode {
     var maxLengthExceeded:Boolean = bind textLength > MAX_TWEET_LENGTH;
 
     var keyListener:KeyListener = KeyListener {
-            public override function keyTyped(keyEvent:KeyEvent) {
-                textLength = updateTextArea.getDocument().getLength();
-
+        public override function keyPressed(ke:KeyEvent) {
+            if (ke.VK_ENTER == ke.getKeyCode() and updateTextArea.hasFocus()) {
+                ke.consume();
+                sendUpdate();
             }
-
-            public override function keyPressed(keyEvent:KeyEvent) {
-                if (keyEvent.VK_ENTER == keyEvent.getKeyCode() and updateTextArea.hasFocus()) {
-                    keyEvent.consume();
-                    sendUpdate();
-                }
-            }
-
-            public override function keyReleased( keyEvent:KeyEvent) {}
-
         }
+        public override function keyTyped(ke:KeyEvent) {}
+        public override function keyReleased(ke:KeyEvent) {}
+    }
+
+    var documentListener:DocumentListener = DocumentListener {
+        public override function changedUpdate(de:DocumentEvent) {
+            textLength = de.getDocument().getLength();
+        }
+
+        public override function insertUpdate(de:DocumentEvent) {
+            textLength += de.getLength();
+        }
+
+        public override function removeUpdate(de:DocumentEvent) {
+            textLength -= de.getLength();
+        }
+    }
+
 
     var updateBox:Node;
     var counterLabel:Node;
@@ -83,6 +94,7 @@ public class UpdateNode extends CustomNode {
         updateTextArea.setLineWrap(true);
         updateTextArea.setWrapStyleWord(true);
         updateTextArea.addKeyListener(keyListener);
+        updateTextArea.getDocument().addDocumentListener(documentListener);
     
         return Group {
             blocksMouse:true;
