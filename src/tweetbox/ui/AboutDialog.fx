@@ -32,7 +32,7 @@ import tweetbox.generic.component.HTMLNode;
 public class AboutDialog {
     
     public var title = "TweetBox configuration";
-    public var width = 400;
+    public var width = 500;
     public var height = 240;
     public var visible = false;
     public var modal = false;
