@@ -36,8 +36,6 @@ public class ScrollView extends CustomNode {
     public var hasVerticalScrollBar:Boolean = true;
     public var hasHorizontalScrollBar:Boolean = true;
 
-    var nodeStyle = Style.getApplicationStyle();
-
     var vertScrollBar:ScrollBar;
     var horScrollBar:ScrollBar;
 
@@ -68,8 +66,7 @@ public class ScrollView extends CustomNode {
                 content,
                 vertScrollBar =
                     if (hasVerticalScrollBar)
-                        ScrollBar {
-                            orientation: ScrollBar.ORIENTATION_VERTICAL
+                        VerticalScrollBar {
                             view: content
                             height: bind height
                             visible: bind showVerticalScrollBar
@@ -78,8 +75,7 @@ public class ScrollView extends CustomNode {
                     else null,
                 horScrollBar = 
                     if (hasHorizontalScrollBar)
-                        ScrollBar {
-                            orientation: ScrollBar.ORIENTATION_HORIZONTAL
+                        HorizontalScrollBar {
                             view: content
                             width: bind width
                             visible: bind showHorizontalScrollBar
@@ -117,6 +113,8 @@ function run(): Void {
             fill: Color.WHITE
             content: [
                 ScrollView {
+                    hasVerticalScrollBar:true
+                    hasHorizontalScrollBar:true
                     translateX: 20
                     translateY: 20
                     width: 300
