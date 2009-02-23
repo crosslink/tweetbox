@@ -86,7 +86,8 @@ function run() {
                     content: [
                         Rectangle {
                             stroke: nodeStyle.APPLICATION_BACKGROUND_STROKE
-                            x:0 y:0
+                            x:0.0
+                            y:0.0
                             width: bind stage.scene.width - 2
                             height: bind stage.scene.height - 2
                             fill:nodeStyle.APPLICATION_BACKGROUND_FILL
@@ -132,8 +133,6 @@ function run() {
                             height: bind stage.scene.height - 25
                         },
                         updateRef = UpdateNode {
-                            //translateY: bind stage.scene.height - updateRef.layoutBounds.height - 10
-                            //translateX: bind (stage.scene.width - updateRef.layoutBounds.width)/2
                             translateX: bind Math.min(model.updateNodePosition.x, stage.scene.width - updateRef.layoutBounds.width);
                             translateY: bind Math.min(model.updateNodePosition.y, stage.scene.height - updateRef.layoutBounds.height);
                             visible: bind model.updateNodeVisible;
@@ -142,7 +141,7 @@ function run() {
                         statusBarRef = StatusBar {
                             translateY: bind stage.scene.height - statusBarRef.layoutBounds.height - 10
                             width: bind stage.scene.width - 2
-                            height: bind 20
+                            height: 20
                             state: bind model.state;
                         }
 
