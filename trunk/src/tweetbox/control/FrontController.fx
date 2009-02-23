@@ -165,7 +165,7 @@ public class FrontController {
         repeatCount: java.lang.Double.POSITIVE_INFINITY
     };
 
-    var wait:Duration = 10s;
+    var waitDur:Duration = 10s;
     /** the timeline for scheduling the retrieval of the replies */
     var startReceivingTimeline:Timeline = Timeline {
         keyFrames: [
@@ -176,25 +176,25 @@ public class FrontController {
                 }
             },
             KeyFrame {
-                time: wait
+                time: waitDur
                 action: function() {
                     getRepliesTimeline.play();
                 }
             },
             KeyFrame {
-                time: wait*2
+                time: waitDur*2
                 action: function() {
                     getDirectMessagesTimeline.play();
                 }
             },
             KeyFrame {
-                time: wait*3
+                time: waitDur*3
                 action: function() {
                     getUserTimelineTimeline.play();
                 }
             },
             KeyFrame {
-                time: wait*4
+                time: waitDur*4
                 action: function() {
                     getFavoritesCommand.run();
                 }
@@ -215,7 +215,7 @@ public class FrontController {
      * timelines that periodically get new updates for the various groups
      */
     public function start(stage:javafx.stage.Stage) {
-        twitter.setSource("tweetbox");
+        twitter.setSource("tweetbox.org");
 
         model.config.applicationStage = stage;
 
