@@ -46,7 +46,7 @@ public class UserNode extends CustomNode {
     public var width:Number;
     public var user:UserVO;
 
-    public var scale:Number;
+    public var scale:Number=1.0;
 
     public var tweet:TweetVO; // this is the context of this user node is associated with. can be null.
 
