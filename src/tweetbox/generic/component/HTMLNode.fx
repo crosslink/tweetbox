@@ -17,6 +17,7 @@ import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
+import javafx.scene.input.MouseEvent;
 
 import javafx.scene.text.Text;
 import javafx.scene.layout.HBox;
@@ -34,35 +35,28 @@ public def htmlParser = new HTMLParser();
 public class HTMLNode extends CustomNode {
     
     /** the html content that this node must render. surrounding <html> tag can be omited */
-    public var html:String on replace {
-        //htmlLabel.setText("<html><p width=\"{width}\">{html}</p></html>");
-    }
+    public var html:String;
     
     /** the base font to be used for this node */
-    public var font:Font on replace {
-        //htmlLabel.setFont(new java.awt.Font(font.name, java.awt.Font.PLAIN, font.size))
-    }
-    
+    public var font:Font = Font {
+        name: "Verdana"
+        size: 11
+    };
+
+    public var textColor:Color = Color.BLACK;
+    public var linkColor:Color = Color.BLUE;
+
     /** the width of this node in pixels */
-    public var width:Number on replace {
-        //htmlLabel.setSize(width, height)
-    }
+    public var width:Number;
     
     /** the height of this node in pixels */
-    public var height:Number on replace {
-        //htmlLabel.setSize(width, height)
-    }
+    public var height:Number;
 
     public var onLinkClicked:function(url:String);
 
-    //var htmlLabel:JLabel = new JLabel();
-    
     var content:Node[] = [];
 
     public override function create(): Node {
-        //htmlLabel.setText("<html><p width=\"{width}\">{html}</p></html>");
-        //htmlLabel.setFont(new java.awt.Font(font.name, java.awt.Font.PLAIN, font.size));
-        //htmlLabel.setSize(width, height);
         return HBox {
             spacing: 0
             content: parseHtml()
@@ -70,6 +64,18 @@ public class HTMLNode extends CustomNode {
     }
 
     
+    function createLinkNode(content:String, url:String): Text {
+        return Text {
+            content: content
+            font: font
+            underline: true
+            cursor: javafx.scene.Cursor.HAND
+            fill: linkColor
+            onMouseClicked: function(e:MouseEvent) {
+                onLinkClicked(url);
+            }
+        };
+    }
     
     public function parseHtml(): Node[] {
         var currentElement:Text = null;
@@ -80,35 +86,19 @@ public class HTMLNode extends CustomNode {
                 if (tagStr=="strong") {
                     currentElement = Text {
                         font: Font {
-                            name: "Sans serif"
-                            size: 11
+                            name: font.name
+                            size: font.size
                             embolden: true
                         }
                     }
                 }
                 else if (tagStr=="a") {
-                    currentElement = Text {
-                        font: Font {
-                            name: "Sans serif"
-                            size: 11
-                            embolden: true
-                        }
-                        underline: true
-                        fill: Color.BLUE
-                        cursor: javafx.scene.Cursor.HAND
-                        onMouseReleased: function(e) {
-                            onLinkClicked(attributes.toString());
-                        }
-                    }
+                    currentElement = createLinkNode("", attributes.toString().substring(5)); //the substring op is required to skip "href="
                 }
                 else {
                     currentElement = Text {
-                        font: Font {
-                            name: "Sans serif"
-                            size: 11
-                            embolden: false
-                        }
-                        fill: Color.BLACK
+                        font: font
+                        fill: textColor
                     }
                 }
             }
@@ -121,12 +111,8 @@ public class HTMLNode extends CustomNode {
             override function handleText(text, position): Void {
                 if (currentElement == null) {
                     insert Text {
-                        font: Font {
-                            name: "Sans serif"
-                            size: 11
-                            embolden: false
-                        }
-                        fill: Color.BLACK
+                        font: font
+                        fill: textColor
                         content: new String(text)
                     }
                     into elements;
@@ -160,8 +146,10 @@ function run(): Void {
             name: "Sans serif"
             size: 11
         }
+        onLinkClicked: function(url:String) {
+            println("url = {url}");
+        }
     };
-    //htmlNode.parseHtml();
 
     Stage {
         width: 800

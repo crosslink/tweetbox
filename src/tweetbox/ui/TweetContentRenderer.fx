@@ -44,7 +44,7 @@ public class TweetContentRenderer extends CustomNode {
 
     function linkClicked(url:String) {
         println("link: {url} clicked");
-        BrowserLauncher.openURL(url);
+        BrowserLauncher.openURL(url.trim());
     }
 
     function addToTweetContent(node:Node) {
