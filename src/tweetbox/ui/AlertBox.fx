@@ -58,13 +58,11 @@ public class AlertBox {
 
     // a media player for playing a short beep when new tweets arrive
     // but it doesn't work!?
-//    var mediaPlayer = MediaPlayer{
-//        startTime: 0ms
-//        stopTime: 500ms
-//        media: Media {
-//            source: "{__DIR__}media/beep1.mp3"
-//        }
-//    }
+    var mediaPlayer = MediaPlayer{
+        media: Media {
+            source: "http://www.xs4all.nl/~mnankman/tweetbox/beep.mp3"
+        }
+    }
     
     var content:Group = Group {
         content: [
@@ -119,8 +117,8 @@ public class AlertBox {
 
     var stage:JFXStage = JFXStage {
         alwaysOnTop: true
-        x: bind screenSize.width - width - 25
-        y: bind screenSize.height - height - 50
+        x: screenSize.width - width - 25
+        y: screenSize.height - height - 50
         title: "TweetBox Alert"
         opacity: bind stageOpacityValue
         width: width
@@ -135,20 +133,22 @@ public class AlertBox {
     };
     
     public function show() {
-        //mediaPlayer.play();
         stage.visible = true;
-        //fadeIn.play();
+        fade.rate = 1.0;
+        mediaPlayer.play();
+        fade.play();
         autoHide.play();
     }
     
     public function hide() {
         System.out.println("hiding alertBox");
-        stage.visible = false;
         controller.clearAlertMessages();
-        //fadeOut.play();
+        fade.rate = -1.0;
+        fade.play();
+        stage.visible = false;
     }    
     
-    var fadeIn = Timeline {
+    var fade = Timeline {
         keyFrames: [
             KeyFrame { 
                 time:300ms 
@@ -158,17 +158,6 @@ public class AlertBox {
         ]
     };
     
-    var fadeOut = Timeline {
-        keyFrames: [
-            KeyFrame { 
-                time:300ms 
-                values:stageOpacityValue => 0.0 tween Interpolator.LINEAR
-                action: function() {
-                    stage.visible = false;
-                }
-            }
-        ]
-    };
 
     var autoHide = Timeline {
         keyFrames: [
@@ -184,6 +173,9 @@ public class AlertBox {
 }
 
 public function run(): Void {
+    var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
+    println("screensize: {screenSize.width} x {screenSize.height}");
+    
     var ab = AlertBox {
         width: 300
         height: 300
