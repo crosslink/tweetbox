@@ -215,7 +215,7 @@ public class FrontController {
      * timelines that periodically get new updates for the various groups
      */
     public function start(stage:javafx.stage.Stage) {
-        twitter.setSource("tweetbox.fx");
+        twitter.setSource("tweetboxfx");
 
         model.config.applicationStage = stage;
 
