@@ -32,22 +32,22 @@ public class TweetContentRenderer extends CustomNode {
 
     public var maxWidth:Number;
 
-    var user:UserVO = tweet.user;
+    public var user:UserVO = tweet.user;
 
     var nodeStyle = Style.getApplicationStyle();
 
-    var tweetContent: Node[] = [];
+    protected var tweetContent: Node[] = [];
     var tcCurrentRow:Number = 0;
     var tcX:Number = 0;
     var tcY:Number = 0;
     var tcRowHeight:Number = 0;
 
-    function linkClicked(url:String) {
+    protected function linkClicked(url:String) {
         println("link: {url} clicked");
         BrowserLauncher.openURL(url.trim());
     }
 
-    function addToTweetContent(node:Node) {
+    protected function addToTweetContent(node:Node) {
         var w:Number = 0;
         var h:Number = 0;
         var bounds = node.layoutBounds;
@@ -69,7 +69,7 @@ public class TweetContentRenderer extends CustomNode {
         insert node into tweetContent;
     }
 
-    function createTextNode(content:String): Void {
+    protected function createTextNode(content:String): Void {
         addToTweetContent(Text {
             content: content
             fill: nodeStyle.UPDATE_TEXT_FILL
@@ -77,7 +77,7 @@ public class TweetContentRenderer extends CustomNode {
         });
     }
 
-    function creatLinkNode(content:String, url:String): Void {
+    protected function createLinkNode(content:String, url:String): Void {
         addToTweetContent(Text {
             content: content
             font: nodeStyle.UPDATE_TEXT_FONT
@@ -90,15 +90,15 @@ public class TweetContentRenderer extends CustomNode {
         });
     }
 
-    function createTextNodes(content:String): Void {
+    protected function createTextNodes(content:String): Void {
         var tokens:String[] = content.split("\\s");
         for (t:String in tokens) {
             if (t.startsWith("http") or t.startsWith("ftp"))
-                creatLinkNode(t, t)
+                createLinkNode(t, t)
             else if (t.startsWith("@"))
-                creatLinkNode(t, "http://twitter.com/{t.substring(1)}")
+                createLinkNode(t, "http://twitter.com/{t.substring(1)}")
             else if (t.startsWith("#"))
-                creatLinkNode(t, "http://www.hashtags.org/tag/{t.substring(1)}")
+                createLinkNode(t, "http://www.hashtags.org/tag/{t.substring(1)}")
             else
                 createTextNode(t)
         }
@@ -106,7 +106,8 @@ public class TweetContentRenderer extends CustomNode {
 
     function createTweetContent(): Node[] {
         tweetContent = [];
-        createTextNode("{user.screenName}: ");
+        createLinkNode("{user.screenName}", "http://twitter.com/{user.screenName}");
+        createTextNode(": ");
         if (tweet.text != null) createTextNodes(tweet.text);
         if (tweet.createdAt != null) createTextNodes("{DateUtil.formatAsTweetDisplayDate(tweet.createdAt)} with ");
         addToTweetContent(HTMLNode {html: tweet.source font: nodeStyle.UPDATE_TEXT_FONT onLinkClicked:linkClicked});
