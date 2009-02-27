@@ -58,6 +58,7 @@ function run() {
     var menuRef:Node;
     var statusBarRef:StatusBar;
     var updateRef:Node;
+    var errorNode:Node;
 
     var stage:JFXStage = JFXStage {
         title: "{model.appInfo.name} {model.appInfo.versionString}"
@@ -126,6 +127,10 @@ function run() {
                                 }
                             ]
                         },
+                        errorNode = ErrorNode {
+                            translateX: bind stage.scene.width - errorNode.layoutBounds.width - 5
+                            translateY: 5
+                        }
                         HomeView {
                             translateX: 5
                             translateY: menuRef.layoutBounds.height + 10
