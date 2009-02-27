@@ -23,6 +23,11 @@ public class TweetVO {
     var status:Status = if (response instanceof Status) response as Status else null;
     var dm:DirectMessage  = if (response instanceof DirectMessage) response as DirectMessage else null;
 
+    public var id =
+        if (status != null) status.getId()
+        else if (dm != null) dm.getId()
+        else -1;
+
     public var user:UserVO = UserVO {
         user: bind
             if (status != null)
