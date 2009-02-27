@@ -124,4 +124,13 @@ public class MeshStyle {
     public var DIALOG_TITLEBAR_TEXT_FILL = APPLICATION_TITLEBAR_TEXT_FILL;
     public var DIALOG_TITLEBAR_TEXT_FONT = APPLICATION_STATUSBAR_TEXT_FONT;
     
+    // error styles
+    public var ERROR_FILL = MESH_RED;
+    public var ERROR_TEXT_FILL = Color.WHITE;
+    public var ERROR_TEXT_FONT = Font {
+        name: "Verdana"
+        size: 11
+        embolden: true
+    }
+
 }

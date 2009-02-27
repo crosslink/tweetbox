@@ -165,7 +165,7 @@ public class FrontController {
         repeatCount: java.lang.Double.POSITIVE_INFINITY
     };
 
-    var waitDur:Duration = 10s;
+    var waitDur:Duration = 3s;
     /** the timeline for scheduling the retrieval of the replies */
     var startReceivingTimeline:Timeline = Timeline {
         keyFrames: [
@@ -269,6 +269,7 @@ public class FrontController {
             model.updateText = "";
             model.updateNodeVisible = false;
             println("twitter exception: {e}");
+            setError(e.getMessage());
         }
     }
 
@@ -284,6 +285,7 @@ public class FrontController {
         }
         catch (e:TwitterException) {
             println("twitter exception: {e}");
+            setError(e.getMessage());
         }
     }
     
@@ -444,6 +446,21 @@ public class FrontController {
   * private class functions
   * --------------------------------------------------------------------------
   */
+    function setError(error:String): Void {
+        var start = error.indexOf("<error>") + 7;
+        var end = error.indexOf("</error>");
+        if (start>0)
+            model.error = "Error: {error.substring(start, end)}"
+        else
+            model.error = "Error: {error}";
+
+        model.isError = true;
+    }
+
+    function clearError() : Void {
+        model.error = "";
+        model.isError = false;
+    }
 
     function sendDirectMessage(update:String) {
         println("sending direct message [{update}] to [{model.directMessageReceiver.screenName}]");
@@ -456,11 +473,13 @@ public class FrontController {
             model.updateText = "";
             model.updateNodeVisible = false;
             println("twitter exception: {e}");
+            setError(e.getMessage());
         }
     }
 
-    function processFailure(error:Object) {
+    function processFailure(error:Object): Void {
         println(error);
+        setError(error.toString());
     }
 
     function processReceivedTwitterResponse(response:Object): Void {
@@ -469,6 +488,7 @@ public class FrontController {
             var tr = response as TwitterResponseVO;
             processReceivedUpdates(tr.result as List, tr.group);
         }
+        clearError();
     }
 
     function processReceivedUpdates(updates:List, group:GroupVO): Void {
@@ -484,6 +504,7 @@ public class FrontController {
         else {
             println("processReceivedUpdates(null, {group.id})");
         }
+        clearError();
     }
 
     function updated(status:Status) {
@@ -495,6 +516,7 @@ public class FrontController {
         model.updateText = "";
         model.state = State.READY;
         model.updateNodeVisible = false;
+        clearError();
         //addAlertMessage("update was sent succesfully");
     }
 
@@ -503,6 +525,7 @@ public class FrontController {
         model.favorites.updates.add(status);
         model.favorites.newUpdates = 1;
         model.state = State.READY;
+        clearError();
         //addAlertMessage("update was sent succesfully");
     }
 
@@ -513,6 +536,7 @@ public class FrontController {
         model.updateText = "";
         model.state = State.READY;
         model.updateNodeVisible = false;
+        clearError();
         //addAlertMessage("direct message was sent succesfully");
     }
 

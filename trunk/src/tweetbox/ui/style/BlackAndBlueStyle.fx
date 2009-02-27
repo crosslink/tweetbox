@@ -136,4 +136,12 @@ public class BlackAndBlueStyle {
         embolden: true
     };
     
+    // error styles
+    public var ERROR_FILL = FILL2;
+    public var ERROR_TEXT_FILL = STROKE2;
+    public var ERROR_TEXT_FONT = Font {
+        name: "Verdana"
+        size: 11
+        embolden: true
+    }
 }

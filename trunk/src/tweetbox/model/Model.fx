@@ -19,6 +19,8 @@ import tweetbox.configuration.Configuration;
 public class Model {
 
     public var state:Integer;
+    public var error:String = "no error";
+    public var isError:Boolean;
    
     public var updateText:String;
     public var updateNodeVisible:Boolean = false;
