@@ -266,14 +266,25 @@ public class FrontController {
             }
         }
         catch (e:TwitterException) {
-            stopReceiving();
             model.updateText = "";
             model.updateNodeVisible = false;
             println("twitter exception: {e}");
         }
     }
 
+    /**
+     * Adds tweet to the current user's favorites
+     * @param tweet - the tweet to add to the user's favorites
+     */
     public function addToFavorites(tweet:TweetVO) {
+        try {
+            var result:Object = null;
+            result = twitter.createFavorite(tweet.id);
+            favoriteAdded(result as Status);
+        }
+        catch (e:TwitterException) {
+            println("twitter exception: {e}");
+        }
     }
     
     public function search(query:String) {
@@ -314,6 +325,7 @@ public class FrontController {
     }
 
     public function favorite(tweet:TweetVO) {
+        addToFavorites(tweet);
     }
     
     public function follow(user:String) {
@@ -441,7 +453,6 @@ public class FrontController {
             sentDirectMessage(result as DirectMessage);
         }
         catch (e:TwitterException) {
-            stopReceiving();
             model.updateText = "";
             model.updateNodeVisible = false;
             println("twitter exception: {e}");
@@ -484,6 +495,14 @@ public class FrontController {
         model.updateText = "";
         model.state = State.READY;
         model.updateNodeVisible = false;
+        //addAlertMessage("update was sent succesfully");
+    }
+
+    function favoriteAdded(status:Status) {
+        System.out.println("favorite was successfully added");
+        model.favorites.updates.add(status);
+        model.favorites.newUpdates = 1;
+        model.state = State.READY;
         //addAlertMessage("update was sent succesfully");
     }
 
