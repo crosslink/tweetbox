@@ -22,7 +22,7 @@ public class AppInfoVO {
 
     public-init var licence = "Mozilla Public Licence 1.1";
     public-init var jnlpUrl = "http://webstart.tweetbox.org/";
-    public-init var libraries = "Twitter4J 1.1.4, JFXtras 0.3";
+    public-init var libraries = "Twitter4J 1.1.5, JFXtras 0.3";
     public-init var javafx = "JavaFX SDK 1.1";
 
     // system info
