@@ -154,12 +154,12 @@ public class UserNode extends CustomNode {
                 imageView,
                 tweetActionButtonGroup,
                 if (tweet==null) {
-                    Text {
+                    Group {
                         translateY: imageView.layoutBounds.height + 10
                         translateX: 0
-                        content: user.screenName
-                        font: nodeStyle.UPDATE_TEXT_FONT
-                        fill: nodeStyle.UPDATE_TEXT_FILL
+                        content: UserNodeContentRenderer {
+                            user: user
+                        }
                     }
                 }
                 else null
