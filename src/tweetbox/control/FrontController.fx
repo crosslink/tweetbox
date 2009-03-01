@@ -466,7 +466,8 @@ public class FrontController {
         println("sending direct message [{update}] to [{model.directMessageReceiver.screenName}]");
         try {
             var result:Object = null;
-            result = model.directMessageReceiver.user.sendDirectMessage(update);
+            //result = model.directMessageReceiver.user.sendDirectMessage(update);
+            result = twitter.sendDirectMessage(model.directMessageReceiver.user.getScreenName(), update);
             sentDirectMessage(result as DirectMessage);
         }
         catch (e:TwitterException) {
