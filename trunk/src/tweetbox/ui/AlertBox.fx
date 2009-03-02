@@ -133,19 +133,24 @@ public class AlertBox {
     };
     
     public function show() {
-        stage.visible = true;
-        fade.rate = 1.0;
-        mediaPlayer.play();
-        fade.play();
-        autoHide.play();
+        if (not stage.visible) {
+            println("showing alertBox pos=({stage.x},{stage.y}) dim=({stage.width}x{stage.height})");
+            stage.visible = true;
+            fade.rate = 1.0;
+            mediaPlayer.play();
+            fade.play();
+            autoHide.play();
+        }
     }
     
     public function hide() {
-        System.out.println("hiding alertBox");
-        controller.clearAlertMessages();
-        fade.rate = -1.0;
-        fade.play();
-        stage.visible = false;
+        if (stage.visible) {
+            println("hiding alertBox");
+            controller.clearAlertMessages();
+            fade.rate = -1.0;
+            fade.play();
+            stage.visible = false;
+        }
     }    
     
     var fade = Timeline {
