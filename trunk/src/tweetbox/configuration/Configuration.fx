@@ -40,6 +40,8 @@ public class Configuration {
         getRepliesInterval: 5m
     };
 
+    public var urlShorteningService = "http://tinyurl.com/api-create.php";
+
     public var applicationStage:javafx.stage.Stage;
     
     public function addAccount(account:AccountVO) {

@@ -32,6 +32,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterResponse;
 
 import tweetbox.twitter.TwitterUtil;
+import tweetbox.util.UrlShrinker;
 import tweetbox.command.*;
 
 import org.jfxtras.async.JFXWorker;
@@ -392,6 +393,10 @@ public class FrontController {
 
     public function hideAboutDialog(): Void {
         model.aboutDialogVisible = false;
+    }
+
+    public function shrinkUrl(url:String): String {
+        return UrlShrinker.shrinkUrl(model.config.urlShorteningService, url);
     }
 
     /*

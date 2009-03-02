@@ -59,6 +59,10 @@ public class ConfigDialog {
         Tab {
             label: "Twitter API"
             node: TwitterAPISettingsView {}
+        },
+        Tab {
+            label: "Tweet options"
+            node: TweetOptionsView {}
         }
     ];
     

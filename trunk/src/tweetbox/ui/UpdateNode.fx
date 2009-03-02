@@ -53,6 +53,7 @@ public class UpdateNode extends CustomNode {
         //updateTextArea.setColumns(Math.max(width/10, 40));
     }
     var model = Model.getInstance();
+    var control = FrontController.getInstance();
 
     var nodeStyle = Style.getApplicationStyle();
     
@@ -138,6 +139,12 @@ public class UpdateNode extends CustomNode {
                                 },
                                 Button {
                                     translateY: 5
+                                    label: "shrink"
+                                    imageURL: "{__DIR__}icons/link.png"
+                                    action: shrink
+                                },
+                                Button {
+                                    translateY: 5
                                     label: "hide"
                                     imageURL: "{__DIR__}icons/cancel.png"
                                     action: cancel
@@ -167,6 +174,21 @@ public class UpdateNode extends CustomNode {
         FrontController.getInstance().sendUpdate(updateTextArea.getText());
         updateTextArea.setText("");
         textLength = 0;
+    }
+
+    function shrink():Void {
+        var result:String = "";
+        var tokens:String[] = updateTextArea.getText().split("\\s");
+        for (t:String in tokens) {
+            if (t.startsWith("http") or t.startsWith("ftp")) {
+                result = "{result} {control.shrinkUrl(t)}"
+            }
+            else {
+                result = "{result} {t}"
+            }
+        }
+        updateTextArea.setText(result);
+        textLength = result.length();
     }
 
     function cancel(): Void {
