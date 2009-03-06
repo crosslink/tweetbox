@@ -454,7 +454,7 @@ public class FrontController {
     function setError(error:String): Void {
         var start = error.indexOf("<error>") + 7;
         var end = error.indexOf("</error>");
-        if (start>0)
+        if (start>6)
             model.error = "Error: {error.substring(start, end)}"
         else
             model.error = "Error: {error}";
