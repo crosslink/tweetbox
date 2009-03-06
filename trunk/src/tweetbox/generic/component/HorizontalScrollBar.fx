@@ -30,14 +30,17 @@ public class HorizontalScrollBar extends ScrollBar {
     /** The view (a Node) that is scrolled by this scrollbar */
     public var view:Node;
 
+    var viewWidth = bind view.boundsInLocal.width on replace {
+        if (view != null) scrolledViewDimension = viewWidth;
+    }
+
     var nodeStyle = Style.getApplicationStyle();
     var scrollbarTrackFill:Paint = nodeStyle.SCROLLBAR_TRACK_FILL;
     var scrollbarThumbFill:Paint = nodeStyle.SCROLLBAR_THUMB_FILL;
 
     override var size = bind width;
     override var scrollButtonSize = height;
-    override var scrolledViewDimension = bind view.boundsInLocal.width;
-
+    
     var thumb:Rectangle;
     var track:Rectangle;
     var scrollForwardBtn:Rectangle;

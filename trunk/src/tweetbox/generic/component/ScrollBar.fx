@@ -36,12 +36,30 @@ public abstract class ScrollBar extends CustomNode {
     /** The height (in pixels) of the scrollbar */
     public var height:Number = 14;
 
+    /** The dimension, i.e. height or width, of the scrolled view */
+    public var scrolledViewDimension:Number on replace {
+        calculateRatios();
+    }
+
+    /** A handler for handling scroll events */
+    public var onScroll:function(scrollPosition:Number);
+
     /**
      * Scroll the associated view by the provided number of pixels
      * @param pixels - the number of pixels to scroll
      */
-    public function scrollBy(pixels:Number) {
-        var newPos = thumbPos + pixels;
+    public function scrollBy(viewPixels:Number) {
+        var thumbTranslation:Number = viewPixels*trackViewRatio;
+        scrollTo(thumbPos + thumbTranslation)
+    }
+
+    /**
+     * Scroll the associated view to the provided position
+     * @param pos - the position to scroll to
+     */
+    public function scrollTo(newPos:Number) {
+        // Keep the scroll thumb within the bounds of the scrollbar
+        var oldPos = thumbPos;
         // Keep the scroll thumb within the bounds of the scrollbar
         if (newPos >= 0 and newPos + thumbLength <= trackLength) {
             thumbPos = newPos;
@@ -54,23 +72,15 @@ public abstract class ScrollBar extends CustomNode {
             // keep thumb above the bottom of the track
             thumbPos = Math.max(trackLength - thumbLength, 0.0);
         }
+        if (oldPos != newPos) {
+            //println("scroll event: thumbPos={thumbPos}, trackLength={trackLength}, scrollPosition={scrollPosition}, trackViewRatio={trackViewRatio}, viewTrackRatio={viewTrackRatio}");
+            onScroll(scrollPosition);
+        }
     }
 
-    /**
-     * Scroll the associated view to the provided position
-     * @param pos - the position to scroll to
-     */
-    public function scrollTo(pos:Number) {
-        // Keep the scroll thumb within the bounds of the scrollbar
-        if (pos >= 0 and pos + thumbLength <= trackLength) {
-            thumbPos = pos;
-        }
-        else if (pos < 0) {
-            thumbPos = 0;
-        }
-        else {
-            thumbPos = Math.max(trackLength - thumbLength, 0.0);
-        }
+    function calculateRatios(): Void {
+        viewTrackRatio = scrolledViewDimension / trackLength;
+        trackViewRatio = trackLength / scrolledViewDimension;
     }
 
     /**
@@ -80,28 +90,10 @@ public abstract class ScrollBar extends CustomNode {
     protected var size:Number;
 
     /**
-     * The dimension, i.e. height or width, of the scrolled view;
-     * DERIVED CLASSES SHOULD OVERRIDE THIS
-     */
-    protected var scrolledViewDimension:Number;
-
-    /**
      * The size (i.e. the length of either side because these buttons are always square) of the scroll buttons;
      * DERIVED CLASSES SHOULD OVERRIDE THIS
      */
     protected var scrollButtonSize:Number;
-
-    /** 
-     * the ratio between the scrolled dimension of the view and the length of the track;
-     * DERIVED CLASSES SHOULD *NOT* OVERRIDE THIS
-     */
-    protected var viewTrackRatio:Number = bind scrolledViewDimension / trackLength;
-    
-    /** 
-     * the ratio between the length of the scroll track and the scrolled dimension of the view;
-     * DERIVED CLASSES SHOULD *NOT* OVERRIDE THIS
-     */
-    protected var trackViewRatio:Number = bind trackLength / scrolledViewDimension;
 
     protected var scrollBarButtonSizeCorrection:Number = 2 * scrollButtonSize;
 
@@ -109,17 +101,31 @@ public abstract class ScrollBar extends CustomNode {
      * calculated length of the scroll track;
      * DERIVED CLASSES SHOULD *NOT* OVERRIDE THIS
      */
-    protected var trackLength:Number = bind size - scrollBarButtonSizeCorrection;
+    protected var trackLength:Number = bind (size - scrollBarButtonSizeCorrection) on replace {
+        calculateRatios();
+    }
 
     /** length of the scrollbar thumb; 
      * DERIVED CLASSES SHOULD *NOT* OVERRIDE THIS
      */
-    protected var thumbLength:Number = bind trackViewRatio * trackLength - scrollBarButtonSizeCorrection;
+    protected var thumbLength:Number = bind Math.max(5+scrollBarButtonSizeCorrection, trackViewRatio * trackLength) - scrollBarButtonSizeCorrection;
+
+    /**
+     * the ratio between the scrolled dimension of the view and the length of the track;
+     * DERIVED CLASSES SHOULD *NOT* OVERRIDE THIS
+     */
+    protected var viewTrackRatio:Number = scrolledViewDimension / trackLength;
+
+    /**
+     * the ratio between the length of the scroll track and the scrolled dimension of the view;
+     * DERIVED CLASSES SHOULD *NOT* OVERRIDE THIS
+     */
+    protected var trackViewRatio:Number = trackLength / scrolledViewDimension;
 
     /** the position ot the scroll thumb on the scroll track. 
      * DERIVED CLASSES SHOULD *NOT* OVERRIDE THIS
      */
-    protected var thumbPos = 0.0;
+    protected var thumbPos:Number = 0.0;
 
     /**
      * The current scroll position of the view

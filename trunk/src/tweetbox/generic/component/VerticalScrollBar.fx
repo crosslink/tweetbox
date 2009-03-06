@@ -25,12 +25,15 @@ public class VerticalScrollBar extends ScrollBar {
     /** The view (a Node) that is scrolled by this scrollbar */
     public var view:Node;
 
+    var viewHeight = bind view.boundsInLocal.height on replace {
+        if (view != null) scrolledViewDimension = viewHeight;
+    }
+
     var nodeStyle = Style.getApplicationStyle();
     var scrollbarTrackFill:Paint = nodeStyle.SCROLLBAR_TRACK_FILL;
     var scrollbarThumbFill:Paint = nodeStyle.SCROLLBAR_THUMB_FILL;
 
     override var size = bind height;
-    override var scrolledViewDimension = bind view.boundsInLocal.height;
     override var scrollButtonSize = width;
 
     var thumb:Rectangle;
