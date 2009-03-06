@@ -25,7 +25,8 @@ import twitter4j.DirectMessage;
 import twitter4j.User;
 
 import tweetbox.model.*;
-import tweetbox.generic.component.ScrollView;
+//import tweetbox.generic.component.ScrollView;
+import tweetbox.generic.component.ListBox;
 import tweetbox.generic.component.Button;
 import tweetbox.generic.util.ImageCache;
 import tweetbox.control.FrontController;
@@ -61,7 +62,7 @@ public class TweetsView extends CustomNode, Resizable {
     };
 
     var title:String = bind group.title;
-    var scrollViewRef:ScrollView;
+    //var scrollViewRef:ScrollView;
                 
     var numRows:Integer;
             
@@ -105,16 +106,26 @@ public class TweetsView extends CustomNode, Resizable {
                 ]
 
             },
-            scrollViewRef = ScrollView {
-                hasHorizontalScrollBar: false
+            ListBox {
                 translateX: 5
                 translateY: 25
-                height: bind height - 25
+                height: bind height - 35
                 width: width - 20
-                content: VBox {
-                    content: bind tweetNodes
-                }
+                model: bind tweetNodes
+                cellHeight: 70
+                cellRenderer: TweetCellRenderer{}
             }
+//            scrollViewRef = ScrollView {
+//                hasHorizontalScrollBar: false
+//                translateX: 5
+//                translateY: 25
+//                height: bind height - 25
+//                width: width - 20
+//                content: VBox {
+//                    content: bind tweetNodes
+//                }
+//            }
+
         ]
     }
 

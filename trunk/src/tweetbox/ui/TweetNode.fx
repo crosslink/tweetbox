@@ -89,8 +89,8 @@ public class TweetNode extends CustomNode {
                 // the background of the tweet
                 Rectangle {
                     translateY: 4
-                    width: bind width - 20
-                    height: bind tweetContentBox.layoutBounds.height + 4
+                    width: width - 20
+                    height: height//bind tweetContentBox.layoutBounds.height + 4
                     arcWidth:10 
                     arcHeight:10
                     fill: nodeStyle.UPDATE_FILL
