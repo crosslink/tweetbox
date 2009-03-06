@@ -150,7 +150,7 @@ public class UpdateNode extends CustomNode {
                                     action: cancel
                                 },
                                 counterLabel = Text {
-                                    translateX: 150
+                                    translateX: 60
                                     translateY: 20
                                     textAlignment: TextAlignment.RIGHT;
                                     content: bind "{MAX_TWEET_LENGTH - textLength}"
