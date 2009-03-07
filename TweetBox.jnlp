@@ -20,7 +20,7 @@
         <property name="jnlp.versionEnabled" value="true"/>
         <extension name="JavaFX Runtime" href="http://dl.javafx.com/1.1/javafx-rt.jnlp"/>
         <jar href="TweetBox.jar" main="true"/>
-        <jar href="lib/twitter4j-1.1.4.jar"/>
+        <jar href="lib/twitter4j-1.1.5.jar"/>
         <jar href="lib/JFXtras-0.3.jar"/>
     </resources>
     <application-desc main-class="tweetbox.ui.Main"/>
