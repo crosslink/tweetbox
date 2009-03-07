@@ -28,8 +28,6 @@ public class ListBox extends CustomNode {
     public var cellHeight:Number = 20;
     public var cellSpacing:Number = 5;
 
-    public var scrollStepSize:Integer = 5;
-
     public var cellRenderer:ListBoxCellRenderer;
 
     public var model: Object[] on replace {
@@ -42,6 +40,8 @@ public class ListBox extends CustomNode {
     }
 
     public var width:Number;
+
+    var scrollStepSize:Number = bind cellHeight+cellSpacing;
 
     var cellBounds = Rectangle2D {
         width: width
