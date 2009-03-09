@@ -60,6 +60,8 @@ function run() {
     var updateRef:Node;
     var errorNode:Node;
 
+    var contentGroup:Group;
+
     var stage:JFXStage = JFXStage {
         title: "{model.appInfo.name} {model.appInfo.versionString}"
         width: stageWidth
@@ -82,7 +84,7 @@ function run() {
 
         scene: Scene {
             content: [
-                Group {
+                contentGroup = Group {
                     cache: true
                     content: [
                         Rectangle {
@@ -149,7 +151,6 @@ function run() {
                             height: 20
                             state: bind model.state;
                         }
-
                     ]
 
                 }
@@ -160,15 +161,22 @@ function run() {
 
     controller.start(stage);
 
-    var windowFrame:Frame = stage.getWindow().getOwner() as Frame;
-    
-    var configDialog = ConfigDialog {
+    var configDialog:ConfigDialog = ConfigDialog {
+        translateY: bind (stage.scene.height - configDialog.height) / 2
+        translateX: bind (stage.scene.width - configDialog.width) / 2
         visible: bind model.configDialogVisible
     }
-    var aboutDialog = AboutDialog {
+    insert configDialog into contentGroup.content;
+
+    var aboutDialog:AboutDialog = AboutDialog {
+        translateY: bind (stage.scene.height - aboutDialog.layoutBounds.height) / 2
+        translateX: bind (stage.scene.width - aboutDialog.layoutBounds.width) / 2
         visible: bind model.aboutDialogVisible
     }
+    insert aboutDialog into contentGroup.content;
 
+    var windowFrame:Frame = stage.getWindow().getOwner() as Frame;
+    
     var alertBox = AlertBox {
         width: 200
         height: 120

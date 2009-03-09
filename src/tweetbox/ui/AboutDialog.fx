@@ -18,8 +18,6 @@ import javafx.scene.text.Text;
 import java.awt.Toolkit;
 import java.awt.Dimension;
 
-import org.jfxtras.stage.JFXStage;
-
 import tweetbox.model.Model;
 import tweetbox.control.FrontController;
 import tweetbox.generic.component.Button;
@@ -29,13 +27,11 @@ import tweetbox.generic.component.HTMLNode;
 /**
  * @author mnankman
  */
-public class AboutDialog {
+public class AboutDialog  extends CustomNode {
     
     public var title = "TweetBox configuration";
-    public var width = 500;
-    public var height = 240;
-    public var visible = false;
-    public var modal = false;
+    public-read var width = 500;
+    public-read var height = 240;
 
     var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
     var nodeStyle = Style.getApplicationStyle();
@@ -127,42 +123,38 @@ public class AboutDialog {
         ]
     }
 
-    public var stage:JFXStage = JFXStage {
-        alwaysOnTop: true
-        x: (screenSize.width - width) / 2
-        y: (screenSize.height - height) / 2
-        title: "About TweetBox"
-        width: width
-        height: height
-        style: StageStyle.TRANSPARENT
-        resizable: false
-        visible: bind visible;
-        scene: Scene {
+    public override function create(): Node {
+        return Group {
             content: bind content
-        }
-
-    };
+        };
+    }
 
 }
 
 public function run() {
-    var about = AboutDialog {}
+    var about = AboutDialog {
+        translateY:100
+        translateX:10
+        visible: bind Model.getInstance().aboutDialogVisible
+    }
+
     Stage {
-        x:100 y:300 width:500 height:300
+        x:100 y:100 width:800 height:400
         onClose: function() {
             java.lang.System.exit(0);
         }
         scene:Scene {
             content: [
                 Button {
-                    translateX: 100
-                    translateY: 100
+                    translateX: 5
+                    translateY: 5
                     width: 100
                     label: "About TweetBox"
                     action: function() {
-                         about.visible = true
+                         FrontController.getInstance().showAboutDialog();
                     }
-                }
+                },
+                about
             ]
 
         }
