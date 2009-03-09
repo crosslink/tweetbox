@@ -15,6 +15,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import tweetbox.generic.component.HTMLNode;
+import tweetbox.generic.component.Link;
+import tweetbox.generic.component.Icon;
 import tweetbox.util.DateUtil;
 import tweetbox.ui.style.Style;
 import tweetbox.valueobject.TweetVO;
@@ -59,8 +61,8 @@ public class TweetContentRenderer extends CustomNode {
             tcRowHeight = 0;
         }
 
-        node.translateX = tcX;
-        node.translateY = tcY;
+        node.translateX = node.translateX + tcX;
+        node.translateY = node.translateY + tcY;
 
         // update the height of the current row
         if (h > tcRowHeight) tcRowHeight = h;
@@ -71,6 +73,7 @@ public class TweetContentRenderer extends CustomNode {
 
     protected function createTextNode(content:String): Void {
         addToTweetContent(Text {
+            translateY: nodeStyle.UPDATE_TEXT_FONT.size
             content: content
             fill: nodeStyle.UPDATE_TEXT_FILL
             font: nodeStyle.UPDATE_TEXT_FONT
@@ -78,13 +81,18 @@ public class TweetContentRenderer extends CustomNode {
     }
 
     protected function createLinkNode(content:String, url:String): Void {
-        addToTweetContent(Text {
-            content: content
-            font: nodeStyle.UPDATE_TEXT_FONT
-            underline: true
-            fill: nodeStyle.UPDATE_LINK_FILL
-            cursor: Cursor.HAND
-            onMouseClicked: function(e:MouseEvent) {
+        addToTweetContent(Link {
+            label: content
+            url: url
+        });
+    }
+
+    protected function createLinkIcon(url:String): Void {
+        addToTweetContent(Icon {
+            imageURL: "{__DIR__}icons/link.png"
+            label: "url"
+            translateY:-20
+            action: function() {
                 linkClicked(url);
             }
         });
@@ -94,7 +102,7 @@ public class TweetContentRenderer extends CustomNode {
         var tokens:String[] = content.split("\\s");
         for (t:String in tokens) {
             if (t.startsWith("http") or t.startsWith("ftp"))
-                createLinkNode(t, t)
+                createLinkNode("link", t)
             else if (t.startsWith("@"))
                 createLinkNode(t, "http://twitter.com/{t.substring(1)}")
             else if (t.startsWith("#"))
