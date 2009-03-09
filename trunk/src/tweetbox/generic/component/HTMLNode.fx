@@ -66,6 +66,7 @@ public class HTMLNode extends CustomNode {
     
     function createLinkNode(content:String, url:String): Text {
         return Text {
+            translateY: font.size
             content: content
             font: font
             underline: true
@@ -90,6 +91,7 @@ public class HTMLNode extends CustomNode {
                             size: font.size
                             embolden: true
                         }
+                        translateY: font.size
                     }
                 }
                 else if (tagStr=="a") {
@@ -97,6 +99,7 @@ public class HTMLNode extends CustomNode {
                 }
                 else {
                     currentElement = Text {
+                        translateY: font.size
                         font: font
                         fill: textColor
                     }
@@ -111,6 +114,7 @@ public class HTMLNode extends CustomNode {
             override function handleText(text, position): Void {
                 if (currentElement == null) {
                     insert Text {
+                        translateY: font.size
                         font: font
                         fill: textColor
                         content: new String(text)
