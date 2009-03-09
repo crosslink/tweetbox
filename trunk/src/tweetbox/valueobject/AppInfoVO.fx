@@ -12,7 +12,7 @@ package tweetbox.valueobject;
 
 public class AppInfoVO {
     public-init var name = "TweetBox";
-    public-init var build = 16;
+    public-init var build = 17;
     public-init var major = 0;
     public-init var minor = 1;
     public-init var revision = 0;
@@ -22,7 +22,7 @@ public class AppInfoVO {
 
     public-init var licence = "Mozilla Public Licence 1.1";
     public-init var jnlpUrl = "http://webstart.tweetbox.org/";
-    public-init var libraries = "Twitter4J 1.1.5, JFXtras 0.3";
+    public-init var libraries = "Twitter4J 1.1.7, JFXtras 0.3";
     public-init var javafx = "JavaFX SDK 1.1";
 
     // system info
