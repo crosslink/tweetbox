@@ -20,11 +20,11 @@ import javafx.scene.image.Image;
 
 import tweetbox.ui.style.Style;
 
-    /**
-     * @author mnankman
-     */
-    public def defaultHeight:Number = 16;
-    public def defaultWidth:Number = 70;
+/**
+ * @author mnankman
+ */
+public def defaultHeight:Number = 16;
+public def defaultWidth:Number = 70;
 
 public class Button extends CustomNode {
 
