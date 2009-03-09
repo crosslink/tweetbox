@@ -112,7 +112,7 @@ public class TweetsView extends CustomNode, Resizable {
                 height: bind height - 35
                 width: width - 20
                 model: bind tweetNodes
-                cellHeight: 70
+                cellHeight: 80
                 cellRenderer: TweetCellRenderer{}
             }
 //            scrollViewRef = ScrollView {

@@ -49,7 +49,7 @@ public class TweetNode extends CustomNode {
     public var height:Number;
     public var width:Number;
 
-    var tweetContentWidth:Number = width - 150;
+    var tweetContentWidth:Number = width - 130;
     
     var nodeStyle = Style.getApplicationStyle();
     var controller = FrontController.getInstance();
@@ -67,7 +67,7 @@ public class TweetNode extends CustomNode {
             }
             Group {
                 translateX: 7
-                translateY: 8
+                translateY: 0
                 content: TweetContentRenderer {
                     maxWidth: tweetContentWidth
                     tweet: tweet

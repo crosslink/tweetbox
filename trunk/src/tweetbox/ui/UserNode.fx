@@ -155,7 +155,7 @@ public class UserNode extends CustomNode {
                 tweetActionButtonGroup,
                 if (tweet==null) {
                     Group {
-                        translateY: imageView.layoutBounds.height + 10
+                        translateY: imageView.layoutBounds.height
                         translateX: 0
                         content: UserNodeContentRenderer {
                             user: user
