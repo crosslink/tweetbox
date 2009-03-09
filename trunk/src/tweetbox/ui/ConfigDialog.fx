@@ -33,13 +33,11 @@ import tweetbox.configuration.CustomConfigNode;
 /**
  * @author mnankman
  */
-public class ConfigDialog {
-    
+public class ConfigDialog extends CustomNode {
+
     public var title = "TweetBox configuration";
-    public var width = 400;
-    public var height = 300;
-    public var visible = false;
-    public var modal = false;
+    public-read var width = 400;
+    public-read var height = 300;
 
     var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
     var nodeStyle = Style.getApplicationStyle();
@@ -138,42 +136,39 @@ public class ConfigDialog {
         ]
     }
 
-    public var stage:JFXStage = JFXStage {
-        alwaysOnTop: true
-        x: (screenSize.width - width) / 2
-        y: (screenSize.height - height) / 2
-        title: title
-        width: width
-        height: height
-        style: StageStyle.TRANSPARENT
-        resizable: false
-        visible: bind visible;
-        scene: Scene {
+    public override function create(): Node {
+        return Group {
             content: bind content
-        }
+        };
+    }
 
-    };
 
 }
 
 public function run() {
-    var config = ConfigDialog {}
+    var config = ConfigDialog {
+        translateY:200
+        translateX:100
+        visible: bind Model.getInstance().configDialogVisible
+    }
+
     Stage {
-        x:100 y:300 width:500 height:300
+        x:100 y:300 width:600 height:600
         onClose: function() {
             java.lang.System.exit(0);
         }
         scene:Scene {
             content: [
                 Button {
-                    translateX: 100
-                    translateY: 100
-                    width: 100
+                    translateX: 5
+                    translateY: 5
+                    width: 150
                     label: "Configure TweetBox"
                     action: function() {
                          FrontController.getInstance().showConfigDialog();
                     }
-                }
+                },
+                config
             ]
 
         }
