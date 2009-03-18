@@ -103,7 +103,8 @@ public class MeshStyle {
 
     // scroll bar styles
     public var SCROLLBAR_TRACK_FILL = Color.WHITE;
-    public var SCROLLBAR_THUMB_FILL = MESH_RED;
+    public var VERTICALSCROLLBAR_THUMB_FILL = Style.scrollbarThumbFillGradient(MESH_RED, 1);
+    public var HORIZONTALSCROLLBAR_THUMB_FILL = Style.scrollbarThumbFillGradient(MESH_RED, 0);
 
     // tab navigator styles
     public var TAB_TEXT_FILL = BUTTON_TEXT_FILL;

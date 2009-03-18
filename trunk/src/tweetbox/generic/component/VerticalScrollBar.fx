@@ -31,7 +31,8 @@ public class VerticalScrollBar extends ScrollBar {
 
     var nodeStyle = Style.getApplicationStyle();
     var scrollbarTrackFill:Paint = nodeStyle.SCROLLBAR_TRACK_FILL;
-    var scrollbarThumbFill:Paint = nodeStyle.SCROLLBAR_THUMB_FILL;
+    var scrollbarThumbFill:Paint = nodeStyle.VERTICALSCROLLBAR_THUMB_FILL;
+    var scrollbarButtonFill:Paint = nodeStyle.BUTTON_FILL;
 
     override var size = bind height;
     override var scrollButtonSize = width;
@@ -68,7 +69,7 @@ public class VerticalScrollBar extends ScrollBar {
                             height: scrollButtonSize
                             arcHeight: scrollButtonSize / 2
                             arcWidth: scrollButtonSize / 2
-                            fill: bind scrollbarThumbFill
+                            fill: bind scrollbarButtonFill
 
                             onMousePressed: function(e:MouseEvent):Void {
                                 scrollForward.stop();
@@ -101,7 +102,7 @@ public class VerticalScrollBar extends ScrollBar {
                             height: scrollButtonSize
                             arcHeight: scrollButtonSize / 2
                             arcWidth: scrollButtonSize / 2
-                            fill: bind scrollbarThumbFill
+                            fill: bind scrollbarButtonFill
 
                             onMousePressed: function(e:MouseEvent):Void {
                                 scrollBackwards.stop();

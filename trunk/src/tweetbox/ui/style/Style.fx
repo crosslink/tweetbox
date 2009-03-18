@@ -15,7 +15,8 @@ import java.lang.Math;
  * @author mnankman
  */
 
-var APPLICATIONSTYLE = MeshStyle{}
+//var APPLICATIONSTYLE = MeshStyle{}
+var APPLICATIONSTYLE = GallacticBrilliance{}
 //var APPLICATIONSTYLE = BlackAndBlueStyle{}
 
 public function getApplicationStyle() {
@@ -36,9 +37,14 @@ public function adjustBrightness(c:Color, adjustment:Number): Color {
     }
 }
 
+/**
+ * creates a linear gradient for the fill of a button
+ * @param baseColor - the base color
+ */
 public function buttonFillGradient(baseColor:Color): LinearGradient {
    return LinearGradient {
-        startX: 0 startY: 0 endX: 0 endY: 1
+        startX: 0 startY: 0
+        endX: 0 endY: 1
         stops: [
             Stop { offset: 0.0 color: baseColor },
             Stop { offset: 0.9 color: adjustBrightness(baseColor, 0.95) },
@@ -47,9 +53,14 @@ public function buttonFillGradient(baseColor:Color): LinearGradient {
     };
 }
 
+/**
+ * creates a linear gradient for the stroke of a button
+ * @param baseColor - the base color
+ */
 public function buttonStrokeGradient(baseColor:Color): LinearGradient {
    return LinearGradient {
-        startX: 0 startY: 0 endX: 0 endY: 1
+        startX: 0 startY: 0
+        endX: 0 endY: 1
         stops: [
             Stop { offset: 0.0 color: adjustBrightness(baseColor, 0.8) },
             Stop { offset: 1.0 color: baseColor },
@@ -57,3 +68,37 @@ public function buttonStrokeGradient(baseColor:Color): LinearGradient {
     };
 }
 
+/**
+ * creates a linear gradient for the fill of a scrollbar thumb
+ * @param baseColor - the base color
+ * @param orientation - 0 = horizontal, 1 = vertical
+ */
+public function scrollbarThumbFillGradient(baseColor:Color, orientation:Integer): LinearGradient {
+   var endY:Number = if (orientation == 0) 1 else 0;
+   return LinearGradient {
+        startX: 0 startY: 0
+        endX: 1-endY endY: endY
+        stops: [
+            Stop { offset: 0.0 color: baseColor },
+            Stop { offset: 0.9 color: adjustBrightness(baseColor, 0.95) },
+            Stop { offset: 1.0 color: adjustBrightness(baseColor, 0.8) },
+        ]
+    };
+}
+
+/**
+ * creates a linear gradient for the stroke of a scrollbar thumb
+ * @param baseColor - the base color
+ * @param orientation - 0 = horizontal, 1 = vertical
+ */
+public function scrollbarThumbStrokeGradient(baseColor:Color, orientation:Integer): LinearGradient {
+   var endY:Number = if (orientation == 0) 1 else 0;
+   return LinearGradient {
+        startX: 0 startY: 0
+        endX: 1 endY: 0
+        stops: [
+            Stop { offset: 0.0 color: adjustBrightness(baseColor, 0.8) },
+            Stop { offset: 1.0 color: baseColor },
+        ]
+    };
+}
