@@ -32,7 +32,7 @@ public class TabNavigator extends CustomNode {
     public var width:Number;
     public var height:Number;
 
-    var nodeStyle = Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle();
 
     var selectedTab:Tab = if (tabs != null and sizeof tabs > 0) tabs[0] else null;
 
@@ -44,7 +44,7 @@ public class TabNavigator extends CustomNode {
             Rectangle {
                 translateX:0
                 translateY:0
-                stroke: nodeStyle.TABVIEW_STROKE
+                stroke: bind nodeStyle.TABVIEW_STROKE
                 fill: Color.TRANSPARENT
                 x:0
                 y:0

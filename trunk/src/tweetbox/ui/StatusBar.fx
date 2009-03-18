@@ -24,7 +24,7 @@ import java.lang.System;
 
 public class StatusBar extends CustomNode {
     
-    var nodeStyle = Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle();
     var stateDescriptions:String[] = [
         "ready",
         "error",
@@ -40,8 +40,8 @@ public class StatusBar extends CustomNode {
             Text {
                 id: "{i}"
                 content: bind stateDescriptions[i]  
-                fill: nodeStyle.APPLICATION_STATUSBAR_TEXT_FILL
-                font: nodeStyle.APPLICATION_STATUSBAR_TEXT_FONT
+                fill: bind nodeStyle.APPLICATION_STATUSBAR_TEXT_FILL
+                font: bind nodeStyle.APPLICATION_STATUSBAR_TEXT_FONT
             }
         }                        
     ];
@@ -92,12 +92,12 @@ public class StatusBar extends CustomNode {
                     y:0
                     width: bind width - 2
                     height: bind 20 
-                    fill:nodeStyle.APPLICATION_STATUSBAR_FILL
+                    fill: bind nodeStyle.APPLICATION_STATUSBAR_FILL
                 },
                 Line {
                     startX: 10
                     endX: bind width - 10;
-                    stroke: nodeStyle.APPLICATION_STATUSBAR_TEXT_FILL
+                    stroke: bind nodeStyle.APPLICATION_STATUSBAR_TEXT_FILL
                 },
                 textContainer = Group {
                     translateY: 15

@@ -22,7 +22,7 @@ import javafx.scene.image.Image;
 
 public class ErrorNode extends CustomNode {
     var model = Model.getInstance();
-    var nodeStyle = Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle();
     
     public-read var width = bind imageRef.layoutBounds.width + textRef.layoutBounds.width + 10;
     public var height = 16;
@@ -41,7 +41,7 @@ public class ErrorNode extends CustomNode {
                     y:0
                     width: bind width
                     height: height
-                    fill:nodeStyle.ERROR_FILL
+                    fill: bind nodeStyle.ERROR_FILL
                 },
                 imageRef = ImageView {
                     blocksMouse: false;
@@ -58,8 +58,8 @@ public class ErrorNode extends CustomNode {
                     translateY: bind height / 2 + 5
                     translateY: 10
                     content: bind model.error
-                    font: nodeStyle.ERROR_TEXT_FONT
-                    fill: nodeStyle.ERROR_TEXT_FILL
+                    font: bind nodeStyle.ERROR_TEXT_FONT
+                    fill: bind nodeStyle.ERROR_TEXT_FILL
                 }
             ]
         };

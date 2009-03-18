@@ -31,118 +31,124 @@ public var STROKE3 = KULER5;
 public var STROKE4 = KULER2;
 public var STROKE5 = KULER3;
 
-public class GallacticBrilliance {
-    
-    public var APPLICATION_BACKGROUND_FILL = FILL1;
-    
-    public var APPLICATION_BACKGROUND_STROKE = STROKE1;
-    
-    // tweetsview styles
-    public var TWEETSVIEW_TITLEBAR_FILL = FILL5;
-    public var TWEETSVIEW_STROKE = FILL5;
-    public var TWEETSVIEW_FILL = Color.TRANSPARENT;
-    public var TWEETSVIEW_TITLEBAR_TEXT_FILL = STROKE5;
-    public var TWEETSVIEW_TITLEBAR_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 11
-        embolden: true
-    }
+public function create(): Theme {
+    return Theme {
+        NAME: "Gallactic Brilliance"
 
-    // title bar styles
-    public var APPLICATION_TITLEBAR_FILL = FILL5;
-    public var APPLICATION_TITLEBAR_TEXT_FILL = STROKE5;
-    public var APPLICATION_TITLEBAR_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 11
-        embolden: true
-    }
-    
-    // status bar styles
-    public var APPLICATION_STATUSBAR_FILL = FILL2;
-    public var APPLICATION_STATUSBAR_TEXT_FILL = STROKE2;
-    public var APPLICATION_STATUSBAR_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 11
-        embolden: true
-    }
-    
-    // update styles
-    public var UPDATEBOX_FILL = FILL4;
-    public var UPDATEBOX_STROKE = STROKE4;
-    public var UPDATE_FILL = FILL4;
-    public var UPDATEBOX_DMTO_TEXT_BG_FILL = FILL4;
-    public var UPDATEBOX_DMTO_TEXT_FILL = STROKE4;
-    public var UPDATE_TEXT_FILL = Color.BLACK;
-    public var UPDATE_LINK_FILL = Color.BLUE;
-    public var UPDATE_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 10
-    }
-    public var UPDATECOUNTER_TEXT_FILL = Color.BLACK;
-    public var UPDATECOUNTER_TOOMUCH_TEXT_FILL = Color.RED;
-    public var UPDATECOUNTER_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 20
-    }
+        APPLICATION_BACKGROUND_FILL : FILL1;
+        APPLICATION_BACKGROUND_STROKE : STROKE1;
 
-    // group node styles
-    public var GROUPNODE_TEXT_FILL = Color.BLACK;
-    public var GROUPNODE_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 20
-    }
+        // tweetsview styles
+        TWEETSVIEW_TITLEBAR_FILL : FILL5;
+        TWEETSVIEW_STROKE : FILL5;
+        TWEETSVIEW_FILL : Color.TRANSPARENT;
+        TWEETSVIEW_TITLEBAR_TEXT_FILL : STROKE5;
+        TWEETSVIEW_TITLEBAR_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+            embolden: true
+        }
 
-    // alert box styles
-    public var ALERT_TEXT_FILL = FILL4;
-    public var ALERT_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 12
-        embolden: true
-    }
+        // title bar styles
+        APPLICATION_TITLEBAR_FILL : FILL5;
+        APPLICATION_TITLEBAR_TEXT_FILL : STROKE5;
+        APPLICATION_TITLEBAR_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+            embolden: true
+        }
 
-    // button styles
-    public var BUTTON_STROKE = Style.buttonStrokeGradient(FILL3);
-    public var BUTTON_FILL = Style.buttonFillGradient(FILL3);
-    public var BUTTON_TEXT_FILL = STROKE3;
-    public var BUTTON_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 11
-    }
+        // status bar styles
+        APPLICATION_STATUSBAR_FILL : FILL2;
+        APPLICATION_STATUSBAR_TEXT_FILL : STROKE2;
+        APPLICATION_STATUSBAR_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+            embolden: true
+        }
 
-    // scroll bar styles
-    public var SCROLLBAR_TRACK_FILL = FILL5;
-    public var VERTICALSCROLLBAR_THUMB_FILL = Style.scrollbarThumbFillGradient(FILL3, 1);
-    public var HORIZONTALSCROLLBAR_THUMB_FILL = Style.scrollbarThumbFillGradient(FILL3, 0);
+        // update styles
+        UPDATEBOX_FILL : Style.adjustOpacity(FILL4, 0.8);;
+        UPDATEBOX_STROKE : STROKE4;
+        UPDATE_FILL : FILL4;
+        UPDATEBOX_DMTO_TEXT_BG_FILL : FILL4;
+        UPDATEBOX_DMTO_TEXT_FILL : STROKE4;
+        UPDATE_TEXT_FILL : Color.BLACK;
+        UPDATE_LINK_FILL : Color.BLUE;
+        UPDATE_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 10
+        }
+        UPDATECOUNTER_TEXT_FILL : Color.BLACK;
+        UPDATECOUNTER_TOOMUCH_TEXT_FILL : Color.RED;
+        UPDATECOUNTER_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 20
+        }
 
-    // tab navigator styles
-    public var TAB_TEXT_FILL = BUTTON_TEXT_FILL;
-    public var TAB_TEXT_FONT = BUTTON_TEXT_FONT;
-    public var TAB_FILL = BUTTON_FILL;
-    public var TAB_STROKE = BUTTON_STROKE;
-    public var TABVIEW_STROKE = KULER2;
+        // group node styles
+        GROUPNODE_TEXT_FILL : Color.BLACK;
+        GROUPNODE_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 20
+        }
 
-    // Dialog styles
-    public var DIALOG_FILL = FILL1;
-    public var DIALOG_STROKE = FILL1;
-    public var DIALOG_TEXT_FILL = STROKE1;
-    public var DIALOG_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 11
-    }
-    public var DIALOG_TITLEBAR_FILL = FILL5;
-    public var DIALOG_TITLEBAR_TEXT_FILL = STROKE5;
-    public var DIALOG_TITLEBAR_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 11
-        embolden: true
-    };
-    
-    // error styles
-    public var ERROR_FILL = FILL2;
-    public var ERROR_TEXT_FILL = STROKE2;
-    public var ERROR_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 11
-        embolden: true
+        // alert box styles
+        ALERT_TEXT_FILL : FILL4;
+        ALERT_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 12
+            embolden: true
+        }
+
+        // button styles
+        BUTTON_STROKE : Style.buttonStrokeGradient(FILL3);
+        BUTTON_FILL : Style.buttonFillGradient(FILL3);
+        BUTTON_TEXT_FILL : STROKE3;
+        BUTTON_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+        }
+
+        // scroll bar styles
+        SCROLLBAR_TRACK_FILL : FILL5;
+        VERTICALSCROLLBAR_THUMB_FILL : Style.scrollbarThumbFillGradient(FILL3, 1);
+        HORIZONTALSCROLLBAR_THUMB_FILL : Style.scrollbarThumbFillGradient(FILL3, 0);
+
+        // tab navigator styles
+        TAB_TEXT_FILL : STROKE3;
+        TAB_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+        };
+        TAB_FILL : Style.buttonFillGradient(FILL3);
+        TAB_STROKE : Style.buttonStrokeGradient(FILL3);
+        TABVIEW_STROKE : KULER2;
+
+        // Dialog styles
+        DIALOG_FILL : FILL1;
+        DIALOG_STROKE : FILL1;
+        DIALOG_TEXT_FILL : STROKE1;
+        DIALOG_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+        }
+        DIALOG_TITLEBAR_FILL : FILL5;
+        DIALOG_TITLEBAR_TEXT_FILL : STROKE5;
+        DIALOG_TITLEBAR_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+            embolden: true
+        };
+
+        // error styles
+        ERROR_FILL : FILL2;
+        ERROR_TEXT_FILL : STROKE2;
+        ERROR_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+            embolden: true
+        }
+
     }
 }

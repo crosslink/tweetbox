@@ -17,121 +17,134 @@ import javafx.scene.text.Font;
 public var MESH_BLUE:Color = Color.rgb(41,170,210);
 public var MESH_RED:Color = Color.rgb(215,31,58);
 
-public class MeshStyle {
-    
-    public var APPLICATION_BACKGROUND_FILL = LinearGradient {
-        startX:0 startY:0 endX:0 endY: 1
-        stops: [
-            Stop { offset:0 color:Color.rgb(41,170,210)},
-            Stop { offset:1 color:Color.rgb(245,245,245) },
-        ]
-    }
-    
-    public var APPLICATION_BACKGROUND_STROKE = MESH_BLUE;
-    
-    // tweetsview styles
-    public var TWEETSVIEW_TITLEBAR_FILL = MESH_RED;
-    public var TWEETSVIEW_STROKE = MESH_RED;
-    public var TWEETSVIEW_FILL = Color.TRANSPARENT;
-    public var TWEETSVIEW_TITLEBAR_TEXT_FILL = Color.WHITE;
-    public var TWEETSVIEW_TITLEBAR_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 11
-        embolden: true
-    }
+public var BACKGROUND = LinearGradient {
+            startX:0 startY:0 endX:0 endY: 1
+            stops: [
+                Stop { offset:0 color:Color.rgb(41,170,210)},
+                Stop { offset:1 color:Color.rgb(245,245,245) },
+            ]
+        }
 
-    // title bar styles
-    public var APPLICATION_TITLEBAR_FILL = MESH_RED;
-    public var APPLICATION_TITLEBAR_TEXT_FILL = Color.WHITE;
-    public var APPLICATION_TITLEBAR_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 11
-        embolden: true
-    }
-    
-    // status bar styles
-    public var APPLICATION_STATUSBAR_FILL = Color.rgb(255,255,255);
-    public var APPLICATION_STATUSBAR_TEXT_FILL = MESH_BLUE;
-    public var APPLICATION_STATUSBAR_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 11
-        embolden: true
-    }
-    
-    // update styles
-    public var UPDATEBOX_FILL = Color.rgb(41,170,210, 0.8);
-    public var UPDATEBOX_STROKE = MESH_RED;
-    public var UPDATE_FILL = Color.rgb(255,255,255);
-    public var UPDATEBOX_DMTO_TEXT_BG_FILL = MESH_RED;
-    public var UPDATEBOX_DMTO_TEXT_FILL = Color.WHITE;
-    public var UPDATE_TEXT_FILL = Color.BLACK;
-    public var UPDATE_LINK_FILL = Color.BLUE;
-    public var UPDATE_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 11
-    }
-    public var UPDATECOUNTER_TEXT_FILL = Color.WHITE;
-    public var UPDATECOUNTER_TOOMUCH_TEXT_FILL = Color.RED;
-    public var UPDATECOUNTER_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 20
-    }
+public function create():Theme {
+    return Theme {
+        NAME: "The Mesh"
 
-    // group node styles
-    public var GROUPNODE_TEXT_FILL = Color.WHITE;
-    public var GROUPNODE_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 28
+        APPLICATION_BACKGROUND_FILL : BACKGROUND;
+
+        APPLICATION_BACKGROUND_STROKE : MESH_BLUE;
+
+        // tweetsview styles
+        TWEETSVIEW_TITLEBAR_FILL : MESH_RED;
+        TWEETSVIEW_STROKE : MESH_RED;
+        TWEETSVIEW_FILL : Color.TRANSPARENT;
+        TWEETSVIEW_TITLEBAR_TEXT_FILL : Color.WHITE;
+        TWEETSVIEW_TITLEBAR_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+            embolden: true
+        }
+
+        // title bar styles
+        APPLICATION_TITLEBAR_FILL : MESH_RED;
+        APPLICATION_TITLEBAR_TEXT_FILL : Color.WHITE;
+        APPLICATION_TITLEBAR_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+            embolden: true
+        }
+
+        // status bar styles
+        APPLICATION_STATUSBAR_FILL : Color.rgb(255,255,255);
+        APPLICATION_STATUSBAR_TEXT_FILL : MESH_BLUE;
+        APPLICATION_STATUSBAR_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+            embolden: true
+        }
+
+        // update styles
+        UPDATEBOX_FILL : Style.adjustOpacity(MESH_BLUE, 0.8);
+        UPDATEBOX_STROKE : MESH_RED;
+        UPDATE_FILL : Color.rgb(255,255,255);
+        UPDATEBOX_DMTO_TEXT_BG_FILL : MESH_RED;
+        UPDATEBOX_DMTO_TEXT_FILL : Color.WHITE;
+        UPDATE_TEXT_FILL : Color.BLACK;
+        UPDATE_LINK_FILL : Color.BLUE;
+        UPDATE_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+        }
+        UPDATECOUNTER_TEXT_FILL : Color.WHITE;
+        UPDATECOUNTER_TOOMUCH_TEXT_FILL : Color.RED;
+        UPDATECOUNTER_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 20
+        }
+
+        // group node styles
+        GROUPNODE_TEXT_FILL : Color.WHITE;
+        GROUPNODE_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 28
+        }
+
+        // alert box styles
+        ALERT_TEXT_FILL : Color.BLACK;
+        ALERT_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 12
+            embolden: true
+        }
+
+        // button styles
+        BUTTON_STROKE : Style.buttonStrokeGradient(MESH_RED);
+        BUTTON_FILL : Style.buttonFillGradient(MESH_RED);
+        BUTTON_TEXT_FILL : Color.WHITE;
+        BUTTON_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+        }
+
+        // scroll bar styles
+        SCROLLBAR_TRACK_FILL : Color.WHITE;
+        VERTICALSCROLLBAR_THUMB_FILL : Style.scrollbarThumbFillGradient(MESH_RED, 1);
+        HORIZONTALSCROLLBAR_THUMB_FILL : Style.scrollbarThumbFillGradient(MESH_RED, 0);
+
+        // tab navigator styles
+        TAB_TEXT_FILL : Color.WHITE;
+        TAB_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+        };
+        TAB_FILL : Style.buttonFillGradient(MESH_RED);
+        TAB_STROKE : Style.buttonStrokeGradient(MESH_RED);
+        TABVIEW_STROKE : MESH_RED;
+
+
+        // Dialog styles
+        DIALOG_FILL : BACKGROUND;
+        DIALOG_STROKE : MESH_BLUE;
+        DIALOG_TEXT_FILL : Color.BLACK;
+        DIALOG_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+        }
+        DIALOG_TITLEBAR_FILL : Color.rgb(255,255,255);
+        DIALOG_TITLEBAR_TEXT_FILL : MESH_BLUE;
+        DIALOG_TITLEBAR_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+            embolden: true
+        }
+
+        // error styles
+        ERROR_FILL : MESH_RED;
+        ERROR_TEXT_FILL : Color.WHITE;
+        ERROR_TEXT_FONT : Font {
+            name: "Verdana"
+            size: 11
+            embolden: true
+        }
     }
-
-    // alert box styles
-    public var ALERT_TEXT_FILL = Color.BLACK;
-    public var ALERT_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 12
-        embolden: true
-    }
-
-    // button styles
-    public var BUTTON_STROKE = Style.buttonStrokeGradient(MESH_RED);
-    public var BUTTON_FILL = Style.buttonFillGradient(MESH_RED);
-    public var BUTTON_TEXT_FILL = Color.WHITE;
-    public var BUTTON_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 11
-    }
-
-    // scroll bar styles
-    public var SCROLLBAR_TRACK_FILL = Color.WHITE;
-    public var VERTICALSCROLLBAR_THUMB_FILL = Style.scrollbarThumbFillGradient(MESH_RED, 1);
-    public var HORIZONTALSCROLLBAR_THUMB_FILL = Style.scrollbarThumbFillGradient(MESH_RED, 0);
-
-    // tab navigator styles
-    public var TAB_TEXT_FILL = BUTTON_TEXT_FILL;
-    public var TAB_TEXT_FONT = BUTTON_TEXT_FONT;
-    public var TAB_FILL = BUTTON_FILL;
-    public var TAB_STROKE = BUTTON_STROKE;
-    public var TABVIEW_STROKE = MESH_RED;
-
-    // Dialog styles
-    public var DIALOG_FILL = APPLICATION_BACKGROUND_FILL;
-    public var DIALOG_STROKE = APPLICATION_BACKGROUND_STROKE;
-    public var DIALOG_TEXT_FILL = Color.BLACK;
-    public var DIALOG_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 11
-    }
-    public var DIALOG_TITLEBAR_FILL = APPLICATION_TITLEBAR_FILL;
-    public var DIALOG_TITLEBAR_TEXT_FILL = APPLICATION_TITLEBAR_TEXT_FILL;
-    public var DIALOG_TITLEBAR_TEXT_FONT = APPLICATION_STATUSBAR_TEXT_FONT;
-    
-    // error styles
-    public var ERROR_FILL = MESH_RED;
-    public var ERROR_TEXT_FILL = Color.WHITE;
-    public var ERROR_TEXT_FONT = Font {
-        name: "Verdana"
-        size: 11
-        embolden: true
-    }
-
 }
+

@@ -40,7 +40,7 @@ public class ConfigDialog extends CustomNode {
     public-read var height = 300;
 
     var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
-    var nodeStyle = Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle();
     var controller = FrontController.getInstance();
     var model = Model.getInstance();
 
@@ -70,13 +70,13 @@ public class ConfigDialog extends CustomNode {
                 cache:true
                 translateX:0
                 translateY:0
-                stroke: nodeStyle.DIALOG_STROKE
+                stroke: bind nodeStyle.DIALOG_STROKE
                 strokeWidth: 3
                 x:0
                 y:0
                 width: bind width - 2
                 height: bind height - 2
-                fill:nodeStyle.DIALOG_FILL
+                fill: bind nodeStyle.DIALOG_FILL
 
             },
             Group {
@@ -86,14 +86,14 @@ public class ConfigDialog extends CustomNode {
                         y:3
                         width: bind width - 6
                         height: bind 20
-                        fill:nodeStyle.DIALOG_TITLEBAR_FILL
+                        fill: bind nodeStyle.DIALOG_TITLEBAR_FILL
                     },
                     Text {
                         translateY: 15
                         translateX: 10
                         content: title
-                        fill: nodeStyle.DIALOG_TITLEBAR_TEXT_FILL
-                        font: nodeStyle.DIALOG_TITLEBAR_TEXT_FONT
+                        fill: bind nodeStyle.DIALOG_TITLEBAR_TEXT_FILL
+                        font: bind nodeStyle.DIALOG_TITLEBAR_TEXT_FONT
                     }
                 ]
             },

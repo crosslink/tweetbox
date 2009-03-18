@@ -35,7 +35,7 @@ public class Tab extends CustomNode {
         node.visible = selected;
     }
 
-    var nodeStyle = Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle();
 
     var opacityValue:Number = 0.0;
 
@@ -106,8 +106,8 @@ public class Tab extends CustomNode {
                     translateX: 5
                     translateY: 15
                     content: bind label;
-                    fill: nodeStyle.TAB_TEXT_FILL
-                    font: nodeStyle.TAB_TEXT_FONT
+                    fill: bind nodeStyle.TAB_TEXT_FILL
+                    font: bind nodeStyle.TAB_TEXT_FONT
                 }
             ]
         };

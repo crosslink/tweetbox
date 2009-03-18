@@ -34,10 +34,10 @@ public class HorizontalScrollBar extends ScrollBar {
         if (view != null) scrolledViewDimension = viewWidth;
     }
 
-    var nodeStyle = Style.getApplicationStyle();
-    var scrollbarTrackFill:Paint = nodeStyle.SCROLLBAR_TRACK_FILL;
-    var scrollbarThumbFill:Paint = nodeStyle.HORIZONTALSCROLLBAR_THUMB_FILL;
-    var scrollbarButtonFill:Paint = nodeStyle.BUTTON_FILL;
+    var nodeStyle = bind Style.getApplicationStyle();
+    var scrollbarTrackFill:Paint = bind nodeStyle.SCROLLBAR_TRACK_FILL;
+    var scrollbarThumbFill:Paint = bind nodeStyle.HORIZONTALSCROLLBAR_THUMB_FILL;
+    var scrollbarButtonFill:Paint = bind nodeStyle.BUTTON_FILL;
 
     override var size = bind width;
     override var scrollButtonSize = height;
@@ -156,7 +156,7 @@ public class HorizontalScrollBar extends ScrollBar {
                             y: 0
                             width: bind thumbLength
                             height: height
-                            fill: scrollbarThumbFill
+                            fill: bind scrollbarThumbFill
                             arcHeight: scrollButtonSize / 2
                             arcWidth: scrollButtonSize / 2
 

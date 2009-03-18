@@ -42,6 +42,8 @@ public class Configuration {
 
     public var urlShorteningService = "http://tinyurl.com/api-create.php";
 
+    public var themeName = "The Mesh";
+
     public var applicationStage:javafx.stage.Stage;
     
     public function addAccount(account:AccountVO) {
@@ -87,6 +89,8 @@ public class Configuration {
                 config.setProperty("group.{group.id}.expanded", "{group.expanded}");
             }
 
+            config.setProperty("application.theme", "{themeName}");
+
             config.store(outStream, "TweetBox properties");
             System.out.println("config saved to: {configFile.getPath()}");
         }
@@ -122,6 +126,8 @@ public class Configuration {
             for (group:GroupVO in groups) {
                 group.expanded = new java.lang.Boolean(config.getProperty("group.{group.id}.expanded")).booleanValue();
             }
+
+            themeName = config.getProperty("application.theme") as String;
         }
         catch (e:IOException) {
             println("could not load config. Cause: {e}");

@@ -46,7 +46,7 @@ public class AlertBox {
 
     var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
     
-    var nodeStyle = Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle();
     var model = Model.getInstance();
     var controller = FrontController.getInstance();
     
@@ -70,12 +70,12 @@ public class AlertBox {
                 cache:true
                 translateX:0
                 translateY:0
-                stroke: nodeStyle.APPLICATION_BACKGROUND_STROKE
+                stroke: bind nodeStyle.APPLICATION_BACKGROUND_STROKE
                 strokeWidth: 3
                 x:0 y:0
                 width: bind width - 2
                 height: bind height - 2
-                fill:nodeStyle.APPLICATION_BACKGROUND_FILL
+                fill: bind nodeStyle.APPLICATION_BACKGROUND_FILL
 
                 onMouseClicked:
                     function(me:MouseEvent):Void {
@@ -90,14 +90,14 @@ public class AlertBox {
                         y:3
                         width: bind width - 6
                         height: bind 20
-                        fill:nodeStyle.APPLICATION_TITLEBAR_FILL
+                        fill: bind nodeStyle.APPLICATION_TITLEBAR_FILL
                     },
                     Text {
                         translateY: 15
                         translateX: 10
                         content: "TweetBox Alert"
-                        fill: nodeStyle.APPLICATION_TITLEBAR_TEXT_FILL
-                        font: nodeStyle.APPLICATION_TITLEBAR_TEXT_FONT
+                        fill: bind nodeStyle.APPLICATION_TITLEBAR_TEXT_FILL
+                        font: bind nodeStyle.APPLICATION_TITLEBAR_TEXT_FONT
                     }
                 ]
             },
@@ -108,7 +108,7 @@ public class AlertBox {
                     Text {
                         wrappingWidth: bind width - 10
                         content: message
-                        font: nodeStyle.ALERT_TEXT_FONT
+                        font: bind nodeStyle.ALERT_TEXT_FONT
                     }
                 }
             }

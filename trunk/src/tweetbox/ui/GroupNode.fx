@@ -46,14 +46,14 @@ public class GroupNode extends CustomNode {
 
     var numRows:Integer;
 
-    var nodeStyle = Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle();
 
     var view:Group = Group {
         visible: true
         content: bind [
             Rectangle {
                 fill: null
-                stroke: nodeStyle.TWEETSVIEW_STROKE
+                stroke: bind nodeStyle.TWEETSVIEW_STROKE
                 x:0
                 y:0
                 width: bind width
@@ -99,15 +99,15 @@ public class GroupNode extends CustomNode {
                 height: bind height - 29
                 arcWidth:10
                 arcHeight:10
-                fill: nodeStyle.UPDATE_FILL
+                fill: bind nodeStyle.UPDATE_FILL
             },
 
             Text {
                 translateX: width * 0.6
                 translateY: height * 0.7
                 content: "{numRows}"
-                font: nodeStyle.GROUPNODE_TEXT_FONT
-                fill: nodeStyle.GROUPNODE_TEXT_FILL
+                font: bind nodeStyle.GROUPNODE_TEXT_FONT
+                fill: bind nodeStyle.GROUPNODE_TEXT_FILL
             }
 
             if (numRows>0) {

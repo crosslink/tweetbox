@@ -32,7 +32,7 @@ public class Link extends CustomNode {
     public var label:String = "";
     public var url:String = "";
 
-    public var nodeStyle = Style.getApplicationStyle();
+    public var nodeStyle = bind Style.getApplicationStyle();
 
     var labelNode:Node = Text {
         translateY: bind nodeStyle.BUTTON_TEXT_FONT.size
