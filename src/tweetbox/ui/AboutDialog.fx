@@ -34,7 +34,7 @@ public class AboutDialog  extends CustomNode {
     public-read var height = 240;
 
     var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
-    var nodeStyle = Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle();
     var controller = FrontController.getInstance();
     var model = Model.getInstance();
     var closeButton:Button;
@@ -49,12 +49,12 @@ public class AboutDialog  extends CustomNode {
                 cache: true
                 translateX:0
                 translateY:0
-                stroke: nodeStyle.DIALOG_STROKE
+                stroke: bind nodeStyle.DIALOG_STROKE
                 strokeWidth: 3
                 x:0 y:0
                 width: bind width - 2
                 height: bind height - 2
-                fill:nodeStyle.DIALOG_FILL
+                fill: bind nodeStyle.DIALOG_FILL
 
             },
             Group {
@@ -64,14 +64,14 @@ public class AboutDialog  extends CustomNode {
                         y:3
                         width: bind width - 7
                         height: bind 20
-                        fill:nodeStyle.DIALOG_TITLEBAR_FILL
+                        fill: bind nodeStyle.DIALOG_TITLEBAR_FILL
                     },
                     Text {
                         translateY: 15
                         translateX: 10
                         content: "About TweetBox"
-                        fill: nodeStyle.DIALOG_TITLEBAR_TEXT_FILL
-                        font: nodeStyle.DIALOG_TITLEBAR_TEXT_FONT
+                        fill: bind nodeStyle.DIALOG_TITLEBAR_TEXT_FILL
+                        font: bind nodeStyle.DIALOG_TITLEBAR_TEXT_FONT
                     }
                 ]
             },
@@ -83,30 +83,30 @@ public class AboutDialog  extends CustomNode {
                     t1 = Text {
                         translateX: bind ((width - t1.layoutBounds.width) / 2)
                         content: "TweetBox {model.appInfo.major}.{model.appInfo.minor}.{model.appInfo.build} {model.appInfo.info}"
-                        font: nodeStyle.DIALOG_TEXT_FONT
-                        fill: nodeStyle.DIALOG_TEXT_FILL
+                        font: bind nodeStyle.DIALOG_TEXT_FONT
+                        fill: bind nodeStyle.DIALOG_TEXT_FILL
                     },
                     t2 = Text {
                         translateX: bind ((width - t2.layoutBounds.width) / 2)
                         translateY: 20
                         content: "powered by: {model.appInfo.javafx}, {model.appInfo.libraries}"
-                        font: nodeStyle.DIALOG_TEXT_FONT
-                        fill: nodeStyle.DIALOG_TEXT_FILL
+                        font: bind nodeStyle.DIALOG_TEXT_FONT
+                        fill: bind nodeStyle.DIALOG_TEXT_FILL
                     },
                     t3 = Text {
                         translateX: bind ((width - t3.layoutBounds.width) / 2)
                         translateY: 20
                         content: "licence: {model.appInfo.licence}"
-                        font: nodeStyle.DIALOG_TEXT_FONT
-                        fill: nodeStyle.DIALOG_TEXT_FILL
+                        font: bind nodeStyle.DIALOG_TEXT_FONT
+                        fill: bind nodeStyle.DIALOG_TEXT_FILL
                     },
                     t4 = Text {
                         translateX: bind ((width - t4.layoutBounds.width) / 2)
                         translateY: 30
                         wrappingWidth: width - 10
                         content: "Running on {model.appInfo.osName} {model.appInfo.osVersion}, Java Runtime {model.appInfo.javaVersion}, {model.appInfo.vmVendor} {model.appInfo.vmName} {model.appInfo.vmVersion}"
-                        font: nodeStyle.DIALOG_TEXT_FONT
-                        fill: nodeStyle.DIALOG_TEXT_FILL
+                        font: bind nodeStyle.DIALOG_TEXT_FONT
+                        fill: bind nodeStyle.DIALOG_TEXT_FILL
                     },
                     closeButton = Button {
                         translateY: 50

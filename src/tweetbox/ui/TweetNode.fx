@@ -51,7 +51,7 @@ public class TweetNode extends CustomNode {
 
     var tweetContentWidth:Number = width - 120;
     
-    var nodeStyle = Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle();
     var controller = FrontController.getInstance();
     var model = Model.getInstance();
 
@@ -93,7 +93,7 @@ public class TweetNode extends CustomNode {
                     height: height//bind tweetContentBox.layoutBounds.height + 4
                     arcWidth:10 
                     arcHeight:10
-                    fill: nodeStyle.UPDATE_FILL
+                    fill: bind nodeStyle.UPDATE_FILL
                 },
            
                 tweetContentBox,                

@@ -11,16 +11,24 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import java.lang.Math;
 
+import tweetbox.model.Model;
 /**
  * @author mnankman
  */
 
-//var APPLICATIONSTYLE = MeshStyle{}
-var APPLICATIONSTYLE = GallacticBrilliance{}
-//var APPLICATIONSTYLE = BlackAndBlueStyle{}
+var themeName = bind Model.getInstance().config.themeName on replace {
+    println("themeName = {themeName}");
+}
 
-public function getApplicationStyle() {
-    return APPLICATIONSTYLE;
+var themes:Theme[] = [
+    MeshStyle.create(),
+    GallacticBrilliance.create(),
+    BlackAndBlueStyle.create()
+];
+
+public bound function getApplicationStyle() {
+    var result:Theme[] = for (t:Theme in themes) if (t.NAME == themeName) t else null;
+    return if (sizeof result>0) result[0] else themes[0];
 }
 
 /**
@@ -34,6 +42,20 @@ public function adjustBrightness(c:Color, adjustment:Number): Color {
         red: Math.min(1.0, Math.round(c.red * adjustment))
         green: Math.min(1.0, Math.round(c.green * adjustment))
         blue: Math.min(1.0, Math.round(c.blue * adjustment))
+    }
+}
+
+/**
+ * adjusts the opacity of the provided color and returns the resulting color
+ * @param c - the Color instance to be adjusted
+ * @param opacity - the required opacity of the color
+ */
+public function adjustOpacity(c:Color, opacity:Number): Color {
+    return Color {
+        red: c.red
+        green: c.green
+        blue: c.blue
+        opacity: opacity
     }
 }
 

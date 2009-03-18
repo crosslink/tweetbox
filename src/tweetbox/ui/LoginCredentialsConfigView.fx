@@ -31,7 +31,7 @@ public class LoginCredentialsConfigView extends CustomConfigNode {
     public var width;
     public var height;
 
-    var nodeStyle = Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle();
     var controller = FrontController.getInstance();
     var model = Model.getInstance();
     var twitterAccount:AccountVO = controller.getAccount("twitter");
@@ -62,8 +62,8 @@ public class LoginCredentialsConfigView extends CustomConfigNode {
                 Text {
                     translateX: 10
                     translateY: 10
-                    fill: nodeStyle.DIALOG_TEXT_FILL
-                    font: nodeStyle.DIALOG_TEXT_FONT
+                    fill: bind nodeStyle.DIALOG_TEXT_FILL
+                    font: bind nodeStyle.DIALOG_TEXT_FONT
                     content: "login: "
                 },
                 loginField = SwingTextField {
@@ -75,8 +75,8 @@ public class LoginCredentialsConfigView extends CustomConfigNode {
                 Text {
                     translateX: 10
                     translateY: 40
-                    fill: nodeStyle.DIALOG_TEXT_FILL
-                    font: nodeStyle.DIALOG_TEXT_FONT
+                    fill: bind nodeStyle.DIALOG_TEXT_FILL
+                    font: bind nodeStyle.DIALOG_TEXT_FONT
                     content: "password: "
                 },
                 Group {

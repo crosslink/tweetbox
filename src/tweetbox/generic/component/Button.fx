@@ -36,7 +36,7 @@ public class Button extends CustomNode {
 
     public var action:function();
 
-    public var nodeStyle = Style.getApplicationStyle();
+    public var nodeStyle = bind Style.getApplicationStyle();
 
     var opacityValue:Number = 0.0;
 
@@ -62,8 +62,8 @@ public class Button extends CustomNode {
                     height: bind height
                     arcHeight: bind height / 2
                     arcWidth: bind height / 2
-                    fill: nodeStyle.BUTTON_FILL
-                    stroke: nodeStyle.BUTTON_STROKE
+                    fill: bind nodeStyle.BUTTON_FILL
+                    stroke: bind nodeStyle.BUTTON_STROKE
 
                     onMouseEntered: function(event) {
                         fade.rate = 1.0;

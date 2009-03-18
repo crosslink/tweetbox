@@ -55,7 +55,7 @@ public class UserNode extends CustomNode {
     var addFavIconVisible:Boolean = tweet != null;
     var dmIconVisible:Boolean = true;
 
-    var nodeStyle = Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle();
    
     var controller = FrontController.getInstance();
     var imageCache = ImageCache.getInstance();

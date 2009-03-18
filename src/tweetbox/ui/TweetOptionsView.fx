@@ -22,7 +22,7 @@ import tweetbox.configuration.CustomConfigNode;
 
 public class TweetOptionsView extends CustomConfigNode {
 
-    var nodeStyle = Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle();
     var controller = FrontController.getInstance();
     var model = Model.getInstance();
 
@@ -36,8 +36,8 @@ public class TweetOptionsView extends CustomConfigNode {
                     translateX: 20
                     translateY: 40
                     content: "under construction"
-                    fill: nodeStyle.DIALOG_TEXT_FILL
-                    font: nodeStyle.DIALOG_TEXT_FONT
+                    fill: bind nodeStyle.DIALOG_TEXT_FILL
+                    font: bind nodeStyle.DIALOG_TEXT_FONT
                 }
             ]
         };

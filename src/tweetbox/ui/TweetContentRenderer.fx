@@ -36,7 +36,8 @@ public class TweetContentRenderer extends CustomNode {
 
     public var user:UserVO = tweet.user;
 
-    var nodeStyle = Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle();
+    var updateTextFont = bind nodeStyle.UPDATE_TEXT_FONT;
 
     protected var tweetContent: Node[] = [];
     var tcCurrentRow:Number = 0;
@@ -73,10 +74,10 @@ public class TweetContentRenderer extends CustomNode {
 
     protected function createTextNode(content:String): Void {
         addToTweetContent(Text {
-            translateY: nodeStyle.UPDATE_TEXT_FONT.size
+            translateY: updateTextFont.size
             content: content
-            fill: nodeStyle.UPDATE_TEXT_FILL
-            font: nodeStyle.UPDATE_TEXT_FONT
+            fill: bind nodeStyle.UPDATE_TEXT_FILL
+            font: bind updateTextFont
         });
     }
 
@@ -118,7 +119,7 @@ public class TweetContentRenderer extends CustomNode {
         createTextNode(": ");
         if (tweet.text != null) createTextNodes(tweet.text);
         if (tweet.createdAt != null) createTextNodes("{DateUtil.formatAsTweetDisplayDate(tweet.createdAt)} with ");
-        addToTweetContent(HTMLNode {html: tweet.source font: nodeStyle.UPDATE_TEXT_FONT onLinkClicked:linkClicked});
+        addToTweetContent(HTMLNode {html: tweet.source font: bind nodeStyle.UPDATE_TEXT_FONT onLinkClicked:linkClicked});
         return tweetContent;
     }
 

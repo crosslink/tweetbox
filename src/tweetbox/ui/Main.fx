@@ -41,7 +41,7 @@ import tweetbox.generic.layout.FlowBox;
 
 function run() {
     var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
-    var nodeStyle = Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle();
     var model = Model.getInstance();
 
     var stageWidth:Number = 950;
@@ -88,12 +88,12 @@ function run() {
                     cache: true
                     content: [
                         Rectangle {
-                            stroke: nodeStyle.APPLICATION_BACKGROUND_STROKE
+                            stroke: bind nodeStyle.APPLICATION_BACKGROUND_STROKE
                             x:0.0
                             y:0.0
                             width: bind stage.scene.width - 2
                             height: bind stage.scene.height - 2
-                            fill:nodeStyle.APPLICATION_BACKGROUND_FILL
+                            fill: bind nodeStyle.APPLICATION_BACKGROUND_FILL
 
                         },
                         menuRef = HBox {

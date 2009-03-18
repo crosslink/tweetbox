@@ -55,7 +55,7 @@ public class UpdateNode extends CustomNode {
     var model = Model.getInstance();
     var control = FrontController.getInstance();
 
-    var nodeStyle = Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle();
     
     var updateTextArea = new JTextArea(text, 5, 30);
     var textLength:Integer = updateTextArea.getDocument().getLength();
@@ -104,8 +104,8 @@ public class UpdateNode extends CustomNode {
                     strokeWidth: 3
                     width: bind updateBox.layoutBounds.width + 10
                     height: bind updateBox.layoutBounds.height + 10
-                    fill:nodeStyle.UPDATEBOX_FILL
-                    stroke:nodeStyle.UPDATEBOX_STROKE
+                    fill: bind nodeStyle.UPDATEBOX_FILL
+                    stroke: bind nodeStyle.UPDATEBOX_STROKE
                 },
                 updateBox = VBox {
                     translateX: 5
@@ -117,12 +117,12 @@ public class UpdateNode extends CustomNode {
                                 Rectangle {
                                     width: 329
                                     height: 18
-                                    fill: nodeStyle.UPDATEBOX_DMTO_TEXT_BG_FILL
+                                    fill: bind nodeStyle.UPDATEBOX_DMTO_TEXT_BG_FILL
                                 }
                                 Text {
                                     translateY: 12
                                     translateX: 2
-                                    fill: nodeStyle.UPDATEBOX_DMTO_TEXT_FILL
+                                    fill: bind nodeStyle.UPDATEBOX_DMTO_TEXT_FILL
                                     content: bind "dm to: {model.directMessageReceiver.user.getName()} ({model.directMessageReceiver.screenName})"
                                 }
                             ]
@@ -154,7 +154,7 @@ public class UpdateNode extends CustomNode {
                                     translateY: 20
                                     textAlignment: TextAlignment.RIGHT;
                                     content: bind "{MAX_TWEET_LENGTH - textLength}"
-                                    font: nodeStyle.UPDATECOUNTER_TEXT_FONT
+                                    font: bind nodeStyle.UPDATECOUNTER_TEXT_FONT
                                     fill: bind 
                                         if (maxLengthExceeded)
                                             nodeStyle.UPDATECOUNTER_TOOMUCH_TEXT_FILL

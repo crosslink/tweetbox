@@ -66,7 +66,7 @@ public class TweetsView extends CustomNode, Resizable {
                 
     var numRows:Integer;
             
-    var nodeStyle = Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle();
 
     var tweetNodes:TweetNode[] = [];
 
@@ -74,7 +74,7 @@ public class TweetsView extends CustomNode, Resizable {
         visible: bind expanded
         content: [
             Rectangle {
-                stroke: nodeStyle.TWEETSVIEW_STROKE
+                stroke: bind nodeStyle.TWEETSVIEW_STROKE
                 fill: null;
                 x:0
                 y:0
