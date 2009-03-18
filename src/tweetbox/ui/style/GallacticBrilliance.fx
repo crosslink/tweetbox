@@ -14,24 +14,24 @@ import javafx.scene.text.Font;
  * @author mnankman
  */
 
-public var KULER1:Color = Color.rgb(196,228,225);
-public var KULER2:Color = Color.rgb(84,178,219);
-public var KULER3:Color = Color.rgb(2,5,13);
-public var KULER4:Color = Color.rgb(28,100,122);
-public var KULER5:Color = Color.rgb(238,253,255);
+public var KULER1:Color = Color.rgb(0xAE,0xCC,0xE6);//#AECCE6
+public var KULER2:Color = Color.rgb(0x57,0x8A,0xAB);//#578AAB
+public var KULER3:Color = Color.rgb(0x1B,0x3E,0x4B);//#1B3E4B
+public var KULER4:Color = Color.rgb(0x33,0x33,0x33);//#333333
+public var KULER5:Color = Color.rgb(0xEF,0xF5,0xFF);//#EFF5FF
 
-public var FILL1 = KULER5;
+public var FILL1 = KULER4;
 public var FILL2 = KULER1;
-public var FILL3 = KULER4;
-public var FILL4 = KULER3;
+public var FILL3 = KULER3;
+public var FILL4 = KULER5;
 public var FILL5 = KULER2;
-public var STROKE1 = KULER3;
+public var STROKE1 = KULER1;
 public var STROKE2 = KULER3;
-public var STROKE3 = KULER1;
+public var STROKE3 = KULER5;
 public var STROKE4 = KULER2;
 public var STROKE5 = KULER3;
 
-public class BlackAndBlueStyle {
+public class GallacticBrilliance {
     
     public var APPLICATION_BACKGROUND_FILL = FILL1;
     
@@ -67,18 +67,18 @@ public class BlackAndBlueStyle {
     }
     
     // update styles
-    public var UPDATEBOX_FILL = FILL3;
-    public var UPDATEBOX_STROKE = STROKE3;
+    public var UPDATEBOX_FILL = FILL4;
+    public var UPDATEBOX_STROKE = STROKE4;
     public var UPDATE_FILL = FILL4;
     public var UPDATEBOX_DMTO_TEXT_BG_FILL = FILL4;
     public var UPDATEBOX_DMTO_TEXT_FILL = STROKE4;
-    public var UPDATE_TEXT_FILL = Color.WHITE;
+    public var UPDATE_TEXT_FILL = Color.BLACK;
     public var UPDATE_LINK_FILL = Color.BLUE;
     public var UPDATE_TEXT_FONT = Font {
         name: "Verdana"
         size: 10
     }
-    public var UPDATECOUNTER_TEXT_FILL = Color.WHITE;
+    public var UPDATECOUNTER_TEXT_FILL = Color.BLACK;
     public var UPDATECOUNTER_TOOMUCH_TEXT_FILL = Color.RED;
     public var UPDATECOUNTER_TEXT_FONT = Font {
         name: "Verdana"
@@ -86,7 +86,7 @@ public class BlackAndBlueStyle {
     }
 
     // group node styles
-    public var GROUPNODE_TEXT_FILL = Color.WHITE;
+    public var GROUPNODE_TEXT_FILL = Color.BLACK;
     public var GROUPNODE_TEXT_FONT = Font {
         name: "Verdana"
         size: 20
@@ -110,9 +110,9 @@ public class BlackAndBlueStyle {
     }
 
     // scroll bar styles
-    public var SCROLLBAR_TRACK_FILL = FILL4;
-    public var VERTICALSCROLLBAR_THUMB_FILL = Style.scrollbarThumbFillGradient(STROKE4, 1);
-    public var HORIZONTALSCROLLBAR_THUMB_FILL = Style.scrollbarThumbFillGradient(STROKE4, 0);
+    public var SCROLLBAR_TRACK_FILL = FILL5;
+    public var VERTICALSCROLLBAR_THUMB_FILL = Style.scrollbarThumbFillGradient(FILL3, 1);
+    public var HORIZONTALSCROLLBAR_THUMB_FILL = Style.scrollbarThumbFillGradient(FILL3, 0);
 
     // tab navigator styles
     public var TAB_TEXT_FILL = BUTTON_TEXT_FILL;

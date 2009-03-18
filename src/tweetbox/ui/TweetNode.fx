@@ -49,7 +49,7 @@ public class TweetNode extends CustomNode {
     public var height:Number;
     public var width:Number;
 
-    var tweetContentWidth:Number = width - 130;
+    var tweetContentWidth:Number = width - 120;
     
     var nodeStyle = Style.getApplicationStyle();
     var controller = FrontController.getInstance();
@@ -89,7 +89,7 @@ public class TweetNode extends CustomNode {
                 // the background of the tweet
                 Rectangle {
                     translateY: 4
-                    width: width - 20
+                    width: width - 4
                     height: height//bind tweetContentBox.layoutBounds.height + 4
                     arcWidth:10 
                     arcHeight:10
