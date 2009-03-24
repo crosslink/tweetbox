@@ -21,121 +21,91 @@ import java.awt.Dimension;
 import tweetbox.model.Model;
 import tweetbox.control.FrontController;
 import tweetbox.generic.component.Button;
+import tweetbox.generic.component.Dialog;
 import tweetbox.ui.style.Style;
 import tweetbox.generic.component.HTMLNode;
 
 /**
  * @author mnankman
  */
-public class AboutDialog  extends CustomNode {
-    
-    public var title = "TweetBox configuration";
-    public-read var width = 500;
-    public-read var height = 240;
 
-    var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
+def height = 240;
+def width = 500;
+
+public function create(): Dialog {
     var nodeStyle = bind Style.getApplicationStyle();
     var controller = FrontController.getInstance();
     var model = Model.getInstance();
-    var closeButton:Button;
     var t1:Text;
     var t2:Text;
     var t3:Text;
     var t4:Text;
-    
-    var content = Group {
+
+    var dlg:Dialog = Dialog {
+        title: "About TweetBox"
+        width: width
+        height: height
         content: [
-            Rectangle {
-                cache: true
-                translateX:0
-                translateY:0
-                stroke: bind nodeStyle.DIALOG_STROKE
-                strokeWidth: 3
-                x:0 y:0
-                width: bind width - 2
-                height: bind height - 2
-                fill: bind nodeStyle.DIALOG_FILL
-
+            t1 = Text {
+                translateX: bind ((width - t1.layoutBounds.width) / 2)
+                content: "TweetBox {model.appInfo.major}.{model.appInfo.minor}.{model.appInfo.build} {model.appInfo.info}"
+                font: bind nodeStyle.DIALOG_TEXT_FONT
+                fill: bind nodeStyle.DIALOG_TEXT_FILL
             },
-            Group {
-                content: [
-                    Rectangle {
-                        x:3
-                        y:3
-                        width: bind width - 7
-                        height: bind 20
-                        fill: bind nodeStyle.DIALOG_TITLEBAR_FILL
-                    },
-                    Text {
-                        translateY: 15
-                        translateX: 10
-                        content: "About TweetBox"
-                        fill: bind nodeStyle.DIALOG_TITLEBAR_TEXT_FILL
-                        font: bind nodeStyle.DIALOG_TITLEBAR_TEXT_FONT
-                    }
-                ]
+            t2 = Text {
+                translateX: bind ((width - t2.layoutBounds.width) / 2)
+                translateY: 20
+                content: "powered by: {model.appInfo.javafx}, {model.appInfo.libraries}"
+                font: bind nodeStyle.DIALOG_TEXT_FONT
+                fill: bind nodeStyle.DIALOG_TEXT_FILL
             },
-            VBox {
-                cache: true
-                translateX: 0
+            t3 = Text {
+                translateX: bind ((width - t3.layoutBounds.width) / 2)
                 translateY: 40
-                content: [
-                    t1 = Text {
-                        translateX: bind ((width - t1.layoutBounds.width) / 2)
-                        content: "TweetBox {model.appInfo.major}.{model.appInfo.minor}.{model.appInfo.build} {model.appInfo.info}"
-                        font: bind nodeStyle.DIALOG_TEXT_FONT
-                        fill: bind nodeStyle.DIALOG_TEXT_FILL
-                    },
-                    t2 = Text {
-                        translateX: bind ((width - t2.layoutBounds.width) / 2)
-                        translateY: 20
-                        content: "powered by: {model.appInfo.javafx}, {model.appInfo.libraries}"
-                        font: bind nodeStyle.DIALOG_TEXT_FONT
-                        fill: bind nodeStyle.DIALOG_TEXT_FILL
-                    },
-                    t3 = Text {
-                        translateX: bind ((width - t3.layoutBounds.width) / 2)
-                        translateY: 20
-                        content: "licence: {model.appInfo.licence}"
-                        font: bind nodeStyle.DIALOG_TEXT_FONT
-                        fill: bind nodeStyle.DIALOG_TEXT_FILL
-                    },
-                    t4 = Text {
-                        translateX: bind ((width - t4.layoutBounds.width) / 2)
-                        translateY: 30
-                        wrappingWidth: width - 10
-                        content: "Running on {model.appInfo.osName} {model.appInfo.osVersion}, Java Runtime {model.appInfo.javaVersion}, {model.appInfo.vmVendor} {model.appInfo.vmName} {model.appInfo.vmVersion}"
-                        font: bind nodeStyle.DIALOG_TEXT_FONT
-                        fill: bind nodeStyle.DIALOG_TEXT_FILL
-                    },
-                    closeButton = Button {
-                        translateY: 50
-                        translateX: bind (width - closeButton.layoutBounds.width) / 2
-                        label: "Close"
-                        imageURL: "{__DIR__}icons/cancel.png"
-                        action: function():Void {
-                            controller.hideAboutDialog();
-                        }
-                    },
-                ]
+                content: "licence: {model.appInfo.licence}"
+                font: bind nodeStyle.DIALOG_TEXT_FONT
+                fill: bind nodeStyle.DIALOG_TEXT_FILL
+            },
+            t4 = Text {
+                translateX: bind ((width - t4.layoutBounds.width) / 2)
+                translateY: 60
+                wrappingWidth: width - 10
+                content: "Running on {model.appInfo.osName} {model.appInfo.osVersion}, Java Runtime {model.appInfo.javaVersion}, {model.appInfo.vmVendor} {model.appInfo.vmName} {model.appInfo.vmVersion}"
+                font: bind nodeStyle.DIALOG_TEXT_FONT
+                fill: bind nodeStyle.DIALOG_TEXT_FILL
+            }
+        ]
 
+        buttons : [
+            Button {
+                label: "Close"
+                imageURL: "{__DIR__}icons/cancel.png"
+                action: function():Void {
+                    dlg.close();
+                }
             }
         ]
     }
 
-    public override function create(): Node {
-        return Group {
-            content: bind content
-        };
-    }
-
+    return dlg;
 }
 
 public function run() {
-    var about = AboutDialog {
-        translateY:100
-        translateX:10
-        visible: bind Model.getInstance().aboutDialogVisible
+    var about = create();
+    
+    var scene:Scene = Scene {
+        content: [
+            Button {
+                translateX: 5
+                translateY: 5
+                width: 100
+                label: "About TweetBox"
+                action: function() {
+                     about.open(scene);
+                }
+            }
+        ]
+
     }
 
     Stage {
@@ -143,20 +113,6 @@ public function run() {
         onClose: function() {
             java.lang.System.exit(0);
         }
-        scene:Scene {
-            content: [
-                Button {
-                    translateX: 5
-                    translateY: 5
-                    width: 100
-                    label: "About TweetBox"
-                    action: function() {
-                         FrontController.getInstance().showAboutDialog();
-                    }
-                },
-                about
-            ]
-
-        }
+        scene: scene
     }
 }

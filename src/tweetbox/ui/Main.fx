@@ -37,7 +37,27 @@ import tweetbox.control.FrontController;
 import tweetbox.generic.component.ScrollView;
 import tweetbox.generic.component.Button;
 import tweetbox.generic.component.Window;
+import tweetbox.generic.component.Dialog;
 import tweetbox.generic.layout.FlowBox;
+
+var aboutDialog:Dialog = null;
+var configDialog:Dialog = null;
+
+
+function showAboutDialog(scene:Scene) {
+    if (aboutDialog == null) {
+        aboutDialog = AboutDialog.create();
+    }
+    aboutDialog.open(scene);
+}
+
+function showConfigDialog(scene:Scene) {
+    if (configDialog == null) {
+        configDialog = ConfigDialog.create();
+    }
+    configDialog.open(scene);
+}
+
 
 function run() {
     var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -118,13 +138,13 @@ function run() {
                                     label: "Config"
                                     imageURL: "{__DIR__}icons/bullet_wrench.png"
                                     action: function():Void {
-                                        controller.showConfigDialog();
+                                        showConfigDialog(stage.scene);
                                     }
                                 },
                                 Button {
                                     label: "About"
                                     action: function():Void {
-                                        controller.showAboutDialog();
+                                        showAboutDialog(stage.scene);
                                     }
                                 }
                             ]
@@ -161,20 +181,6 @@ function run() {
 
     controller.start(stage);
 
-    var configDialog:ConfigDialog = ConfigDialog {
-        translateY: bind (stage.scene.height - configDialog.height) / 2
-        translateX: bind (stage.scene.width - configDialog.width) / 2
-        visible: bind model.configDialogVisible
-    }
-    insert configDialog into contentGroup.content;
-
-    var aboutDialog:AboutDialog = AboutDialog {
-        translateY: bind (stage.scene.height - aboutDialog.layoutBounds.height) / 2
-        translateX: bind (stage.scene.width - aboutDialog.layoutBounds.width) / 2
-        visible: bind model.aboutDialogVisible
-    }
-    insert aboutDialog into contentGroup.content;
-
     var windowFrame:Frame = stage.getWindow().getOwner() as Frame;
     
     var alertBox = AlertBox {
@@ -190,4 +196,8 @@ function run() {
     }
 
     stage.visible = true;
+
+    if (model.needLoginCredentials) {
+        showConfigDialog(stage.scene);
+    }
 }

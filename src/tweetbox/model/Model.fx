@@ -31,8 +31,7 @@ public class Model {
     public var directMessageMode:Boolean = false;
     public var directMessageReceiver:UserVO;
 
-    public var configDialogVisible:Boolean = false;
-    public var aboutDialogVisible:Boolean = false;
+    public var needLoginCredentials:Boolean = false;
 
     public var friendUpdates:GroupVO = GroupVO {
         expanded: true

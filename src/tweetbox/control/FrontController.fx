@@ -228,7 +228,7 @@ public class FrontController {
             twitter.setUserId(twitterAccount.login);
             twitter.setPassword(twitterAccount.password);
         } else {
-            model.configDialogVisible = true;
+            model.needLoginCredentials = true;
         }
 
         model.friendUpdates.refresh = getFriendsTimelineCommand.run;
@@ -377,22 +377,6 @@ public class FrontController {
             delete model.alertMessages;
             model.alertMessageCount = 0;
         }
-    }
-
-    public function showConfigDialog(): Void {
-        model.configDialogVisible = true;
-    }
-
-    public function hideConfigDialog(): Void {
-        model.configDialogVisible = false;
-    }
-
-    public function showAboutDialog(): Void {
-        model.aboutDialogVisible = true;
-    }
-
-    public function hideAboutDialog(): Void {
-        model.aboutDialogVisible = false;
     }
 
     public function shrinkUrl(url:String): String {
