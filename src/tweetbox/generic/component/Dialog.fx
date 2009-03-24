@@ -34,6 +34,8 @@ public class Dialog extends CustomNode {
     public var owner: Scene on replace {
         x = (owner.width - width) / 2;
         y = (owner.height - height) / 2;
+        if (x<0) x = 10;
+        if (y<0) y = 10;
     }
 
     public var width:Integer;
