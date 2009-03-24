@@ -77,6 +77,7 @@ public class TabNavigator extends CustomNode {
                     spacing: 0
                     width: bind width
                     content: tabs
+                    invalidLayout: true
                 },
                 view
             ]

@@ -28,9 +28,7 @@ public class FlowBox extends Container {
         if (invalidLayout) impl_requestLayout();
     }
 
-    override var content;/* on replace {
-        impl_requestLayout();
-    }*/
+    override var content;
 
     override var width on replace {
         impl_requestLayout();
