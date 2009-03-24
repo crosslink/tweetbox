@@ -64,10 +64,13 @@ public class ListBox extends CustomNode {
 
     var lastStartIndex:Integer = 0;
 
+    public-read var selectedNode:Node = null;
+
     function renderCells(scrollPosition:Number):Void {
         //println("renderCells() {scrollPosition} : {sizeof model} : {totalHeight}");
         var nodes:Node[] = [];
         var n:Node;
+        var cellWrapper:Group;
         var nextY:Number = 0.0;
         var nodeIndex:Integer;
         var startIndex:Integer = Math.round((0.0-scrollPosition) / (cellHeight+cellSpacing));
@@ -77,9 +80,22 @@ public class ListBox extends CustomNode {
             nodeIndex = startIndex+i;
             if (nodeIndex < sizeof model) {
                 n = cellRenderer.create(model[nodeIndex], cellBounds);
-                n.translateY = nextY;
+                cellWrapper = Group {
+                    translateY:nextY
+                    content: [
+                        n,
+                        Rectangle {
+                            width: cellBounds.width
+                            height: cellBounds.height
+                            fill: Color.TRANSPARENT
+                            onMouseReleased: function(e:MouseEvent) {
+                                selectedNode = n;
+                            }
+                        }
+                    ]
+                }
                 nextY = nextY + cellHeight + cellSpacing;
-                insert n into nodes;
+                insert cellWrapper into nodes;
                 endIndex = nodeIndex;
             }
         }

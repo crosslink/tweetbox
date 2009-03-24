@@ -66,11 +66,25 @@ public function create(): Dialog {
                     },
                     Tab {
                         label: "Twitter API"
-                        node: TwitterAPISettingsView {}
+                        node: TwitterAPISettingsView {
+                            width: bind width - 30
+                            height: bind height - 25
+                        }
+
                     },
                     Tab {
                         label: "Tweet options"
-                        node: TweetOptionsView {}
+                        node: TweetOptionsView {
+                            width: bind width - 30
+                            height: bind height - 25
+                        }
+                    },
+                    Tab {
+                        label: "Appearance"
+                        node: AppearanceOptionsView {
+                            width: bind width - 30
+                            height: bind height - 25
+                        }
                     }
                 ]
 
