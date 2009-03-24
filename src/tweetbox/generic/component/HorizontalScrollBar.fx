@@ -19,7 +19,7 @@ import javafx.animation.Interpolator;
 //import javafx.scene.layout.Container;
 import java.lang.Math;
 
-import tweetbox.ui.style.Style;
+import tweetbox.ui.style.*;
 
 /**
  * @author mnankman
@@ -34,6 +34,9 @@ public class HorizontalScrollBar extends ScrollBar {
         if (view != null) scrolledViewDimension = viewWidth;
     }
 
+    public var overrideNodeStyle:Theme = null on replace {
+        if (overrideNodeStyle != null) nodeStyle = overrideNodeStyle;
+    }
     var nodeStyle = bind Style.getApplicationStyle();
     var scrollbarTrackFill:Paint = bind nodeStyle.SCROLLBAR_TRACK_FILL;
     var scrollbarThumbFill:Paint = bind nodeStyle.HORIZONTALSCROLLBAR_THUMB_FILL;

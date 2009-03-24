@@ -28,9 +28,6 @@ import tweetbox.configuration.CustomConfigNode;
 
 public class LoginCredentialsConfigView extends CustomConfigNode {
 
-    public var width;
-    public var height;
-
     var nodeStyle = bind Style.getApplicationStyle();
     var controller = FrontController.getInstance();
     var model = Model.getInstance();

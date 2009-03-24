@@ -18,7 +18,7 @@ import javafx.animation.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 
-import tweetbox.ui.style.Style;
+import tweetbox.ui.style.*;
 
 /**
  * @author mnankman
@@ -36,7 +36,10 @@ public class Button extends CustomNode {
 
     public var action:function();
 
-    public var nodeStyle = bind Style.getApplicationStyle();
+    public var overrideNodeStyle:Theme = null on replace {
+        if (overrideNodeStyle != null) nodeStyle = overrideNodeStyle;
+    }
+    public-read var nodeStyle = bind Style.getApplicationStyle();
 
     var opacityValue:Number = 0.0;
 

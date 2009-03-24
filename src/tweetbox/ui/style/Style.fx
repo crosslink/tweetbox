@@ -20,11 +20,7 @@ var themeName = bind Model.getInstance().config.themeName on replace {
     println("themeName = {themeName}");
 }
 
-var themes:Theme[] = [
-    MeshStyle.create(),
-    GallacticBrilliance.create(),
-    BlackAndBlueStyle.create()
-];
+var themes:Theme[] = Model.getInstance().themes;
 
 public bound function getApplicationStyle() {
     var result:Theme[] = for (t:Theme in themes) if (t.NAME == themeName) t else null;

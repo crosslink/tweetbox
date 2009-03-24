@@ -12,6 +12,7 @@ import javafx.scene.text.*;
 import javafx.geometry.Point2D;
 
 import tweetbox.valueobject.*;
+import tweetbox.ui.style.*;
 import tweetbox.configuration.Configuration;
 /**
  * The model behind TweetBox
@@ -75,11 +76,18 @@ public class Model {
         userUpdates
     ];
 
-    public-read var appInfo = AppInfoVO {};
+    public-read def appInfo = AppInfoVO {};
 
-    public-read var config:Configuration = Configuration {
+    public-read def config:Configuration = Configuration {
         groups: bind groups
     }
+
+    public-read def themes:Theme[] = [
+        MeshStyle.create(),
+        GallacticBrilliance.create(),
+        BlackAndBlueStyle.create()
+    ];
+
 
 
     public var alertMessages:String[] = [];

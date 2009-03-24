@@ -15,5 +15,7 @@ import javafx.scene.Node;
  */
 
 public abstract class CustomConfigNode extends CustomNode {
+    public var width:Integer;
+    public var height:Integer;
     public abstract function apply(): Void;
 }
