@@ -25,6 +25,7 @@ import tweetbox.util.HtmlUtil;
 import tweetbox.ui.style.Style;
 import tweetbox.generic.layout.FlowBox;
 import tweetbox.generic.component.HTMLNode;
+import tweetbox.generic.component.HTMLPane;
 import tweetbox.control.FrontController;
 import tweetbox.generic.util.ImageCache;
 
@@ -49,30 +50,38 @@ public class TweetNode extends CustomNode {
     public var height:Number;
     public var width:Number;
 
-    var tweetContentWidth:Number = width - 120;
+    var tweetContentWidth:Number = width - 80;
+    var tweetContentHeight:Number = height;
     
     var nodeStyle = bind Style.getApplicationStyle();
     var controller = FrontController.getInstance();
     var model = Model.getInstance();
 
     var tweetContentBox:HBox = HBox {
-        translateY: 7
+        translateY: 2
         //verticalAlignment: VerticalAlignment.TOP
         content: [
             UserNode {
                 translateX: 5
-                translateY: 5
+                translateY: 10
                 user: tweet.user;
                 tweet: tweet;
-            }
-            Group {
+            },
+            TweetContentRenderer {
                 translateX: 7
-                translateY: 0
-                content: TweetContentRenderer {
-                    maxWidth: tweetContentWidth
-                    tweet: tweet
-                }
+                maxWidth: tweetContentWidth
+                maxHeight: tweetContentHeight
+                tweet: tweet
             }
+//            Group {
+//                translateX: 7
+//                translateY: 0
+//                content: TweetContentRenderer {
+//                    maxWidth: tweetContentWidth
+//                    maxHeight: tweetContentHeight
+//                    tweet: tweet
+//                }
+//            }
         ]
     };
 
