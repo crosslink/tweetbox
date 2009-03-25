@@ -38,6 +38,7 @@ import tweetbox.generic.component.ScrollView;
 import tweetbox.generic.component.Button;
 import tweetbox.generic.component.Window;
 import tweetbox.generic.component.Dialog;
+import tweetbox.generic.component.Balloon;
 import tweetbox.generic.layout.FlowBox;
 
 var aboutDialog:Dialog = null;
@@ -58,6 +59,24 @@ function showConfigDialog(scene:Scene) {
     configDialog.open(scene);
 }
 
+var stage:JFXStage;
+var balloon:Balloon;
+
+public function showBalloon(x:Number, y:Number, toX:Number, toY:Number, content:Node) {
+    hideBalloon();
+    balloon = Balloon {
+        x: Math.min(Math.max(x,0.0), stage.scene.width - balloon.layoutBounds.width)
+        y: Math.min(Math.max(y,0.0), stage.scene.height - balloon.layoutBounds.height)
+        toX: toX
+        toY: toY
+        content: content
+    }
+    insert balloon into stage.scene.content;
+}
+
+public function hideBalloon() {
+    if (balloon != null) delete balloon from stage.scene.content;
+}
 
 function run() {
     var screenSize:Dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -69,9 +88,6 @@ function run() {
 
     var controller = FrontController.getInstance();
 
-    var configDialogVisible:Boolean = false;
-    var aboutDialogVisible:Boolean = false;
-
     //WindowHelper.extractWindow(configDialog.stage).setAlwaysOnTop(true);
 
     var stageRef:Rectangle;
@@ -82,7 +98,7 @@ function run() {
 
     var contentGroup:Group;
 
-    var stage:JFXStage = JFXStage {
+    stage = JFXStage {
         title: "{model.appInfo.name} {model.appInfo.versionString}"
         width: stageWidth
         height: stageHeight
