@@ -6,15 +6,20 @@
 
 package tweetbox.ui;
 
+import java.lang.Math;
+
 import javafx.scene.CustomNode;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.Cursor;
+import javafx.scene.paint.Paint;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.text.Font;
 
 import tweetbox.generic.component.HTMLNode;
+import tweetbox.generic.component.HTMLPane;
 import tweetbox.generic.component.Link;
 import tweetbox.generic.component.Icon;
 import tweetbox.util.DateUtil;
@@ -33,17 +38,24 @@ public class TweetContentRenderer extends CustomNode {
     public var tweet:TweetVO;
 
     public var maxWidth:Number;
+    public var maxHeight:Number;
 
     public var user:UserVO = tweet.user;
 
-    var nodeStyle = bind Style.getApplicationStyle();
+    var nodeStyle = bind Style.getApplicationStyle() on replace {
+        if (nodeStyle != null) rerender();
+    }
     var updateTextFont = bind nodeStyle.UPDATE_TEXT_FONT;
+    var updateTextColor = bind nodeStyle.UPDATE_TEXT_FILL as Color;
+    var linkColor = bind nodeStyle.UPDATE_LINK_FILL as Color;
 
     protected var tweetContent: Node[] = [];
     var tcCurrentRow:Number = 0;
     var tcX:Number = 0;
     var tcY:Number = 0;
     var tcRowHeight:Number = 0;
+
+    var renderedNode:Node;
 
     protected function linkClicked(url:String) {
         println("link: {url} clicked");
@@ -53,7 +65,7 @@ public class TweetContentRenderer extends CustomNode {
     protected function addToTweetContent(node:Node) {
         var w:Number = 0;
         var h:Number = 0;
-        var bounds = node.layoutBounds;
+        def bounds = node.layoutBounds;
         w = bounds.width;
         h = bounds.height;
         if (tcX+h >= maxWidth) {
@@ -122,12 +134,59 @@ public class TweetContentRenderer extends CustomNode {
         addToTweetContent(HTMLNode {html: tweet.source font: bind nodeStyle.UPDATE_TEXT_FONT onLinkClicked:linkClicked});
         return tweetContent;
     }
+    
+    function createLinkHtml(content:String, url:String): String {
+        return setStyle("<a href=\"{url}\">{content}</a>", updateTextFont, linkColor);
+    }
 
+    function setStyle(html:String, font:Font, color:Color):String {
+        def rgbhex = java.lang.Integer.toHexString(color.getAWTColor().getRGB());
+        def colorHtml = if (rgbhex != null and rgbhex.length() == 8) "#{rgbhex.substring(2)}" else "#000000";
+        def fontSize:Integer = Math.round(font.size);
+        return "<font name=\"{font.name}\" size=\"{font.size}\" color=\"{colorHtml}\">{html}</font>";
+    }
+
+    protected function createTextHtml(content:String): String {
+        def tokens:String[] = content.split("\\s");
+        var result:String = "";
+        for (t:String in tokens) {
+            if (t.startsWith("http") or t.startsWith("ftp"))
+                result = "{result}{createLinkHtml(t, "link")} "
+            else if (t.startsWith("@"))
+                result = "{result}{createLinkHtml(t, "http://twitter.com/{t.substring(1)}")} "
+            else if (t.startsWith("#"))
+                result = "{result}{createLinkHtml(t, "http://www.hashtags.org/tag/{t.substring(1)}")} "
+            else {
+                result = "{result}{t} "
+            }
+        }
+        return result.trim();
+    }
+
+
+    function createHtmlPane(): Node {
+        def sender = createLinkHtml("{user.screenName}", "http://twitter.com/{user.screenName}");
+        def content = if (tweet.text == null) "" else createTextHtml(tweet.text);
+        def createdAt = DateUtil.formatAsTweetDisplayDate(tweet.createdAt);
+
+        return HTMLPane {
+            width: maxWidth
+            height: maxHeight
+            font: bind updateTextFont
+            html: setStyle("{sender}: {content}\n{createdAt} with {tweet.source}", , updateTextFont, updateTextColor)
+            onLinkClicked: linkClicked
+        }
+    }
+
+    public function rerender() {
+        renderedNode = createHtmlPane();
+    }
 
     public override function create(): Node {
+        rerender();
         return Group {
             cache:true
-            content: createTweetContent()
+            content: bind renderedNode
         };
     }
 }

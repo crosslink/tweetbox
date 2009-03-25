@@ -53,6 +53,7 @@ public class TweetsView extends CustomNode, Resizable {
         for (row in [0..newTweets - 1]) {
             insert TweetNode {
                 width: width - 5
+                height: 80
                 tweet: TweetVO {
                     response: updateArray[row] as TwitterResponse
                 }
