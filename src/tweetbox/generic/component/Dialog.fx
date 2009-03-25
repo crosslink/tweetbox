@@ -40,6 +40,10 @@ public class Dialog extends CustomNode {
 
     public var width:Integer;
     public var height:Integer;
+
+    public var onOpen: function():Void;
+    public var onClose: function():Void;
+
     var x:Integer = 10;
     var y:Integer = 10;
 
@@ -140,6 +144,7 @@ public class Dialog extends CustomNode {
     }
 
     public function open(scene:Scene): Void {
+        onOpen();
         insert this into scene.content;
         this.owner = scene;
         fade.rate = 1.0;
@@ -149,6 +154,7 @@ public class Dialog extends CustomNode {
     }
 
     public function close(): Void {
+        onClose();
         this.visible = false;
         if (owner != null) delete this from owner.content;
         owner = null;
