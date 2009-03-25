@@ -34,7 +34,12 @@ public class DateUtil {
     }
 
     public static String formatAsTweetDisplayDate(Date d) {
-        return TWEET_DISPLAY_DATE_FORMAT.format(d);
+        if (d != null) {
+            return TWEET_DISPLAY_DATE_FORMAT.format(d);
+        }
+        else {
+            return "";
+        }
     }
     
 }
