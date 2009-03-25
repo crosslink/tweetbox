@@ -39,12 +39,13 @@ public class AppearanceOptionsView extends CustomConfigNode {
         return Group {
             content: [
                 ListBox {
-                    translateY: 5
-                    translateX: 10
+                    translateY: 10
+                    translateX: 65
                     model: model.themes;
                     cellHeight: 70
+                    cellSpacing: 10
                     height: 160
-                    width: 70
+                    width: 240
                     cellRenderer: themeCellRenderer
                 }
             ]
