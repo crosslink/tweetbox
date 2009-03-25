@@ -49,6 +49,7 @@ public function create(): Dialog {
         title: "TweetBox configuration"
         width: width
         height: height
+
         content: [
             TabNavigator {
                 translateX: 10
@@ -115,6 +116,13 @@ public function create(): Dialog {
             },
         ]
 
+        onOpen: function() {
+            controller.stopReceiving();
+        }
+
+        onClose: function() {
+            controller.startReceiving();
+        }
     }
 }
 
