@@ -29,7 +29,7 @@ public var STROKE1 = KULER1;
 public var STROKE2 = KULER3;
 public var STROKE3 = KULER5;
 public var STROKE4 = KULER2;
-public var STROKE5 = KULER3;
+public var STROKE5 = KULER5;
 
 public function create(): Theme {
     return Theme {
@@ -70,7 +70,7 @@ public function create(): Theme {
         // update styles
         UPDATEBOX_FILL : Style.adjustOpacity(FILL4, 0.8);;
         UPDATEBOX_STROKE : STROKE4;
-        UPDATE_FILL : FILL4;
+        UPDATE_FILL : Style.buttonStrokeGradient(FILL4);
         UPDATEBOX_DMTO_TEXT_BG_FILL : FILL4;
         UPDATEBOX_DMTO_TEXT_FILL : STROKE4;
         UPDATE_TEXT_FILL : Color.BLACK;

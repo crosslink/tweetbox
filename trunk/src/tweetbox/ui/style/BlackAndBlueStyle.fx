@@ -70,16 +70,16 @@ public function create(): Theme {
         // update styles
         UPDATEBOX_FILL : FILL4;
         UPDATEBOX_STROKE : STROKE4;
-        UPDATE_FILL : FILL4;
+        UPDATE_FILL : Style.buttonFillGradient(FILL3);
         UPDATEBOX_DMTO_TEXT_BG_FILL : FILL4;
         UPDATEBOX_DMTO_TEXT_FILL : STROKE4;
-        UPDATE_TEXT_FILL : Color.BLACK;
-        UPDATE_LINK_FILL : Color.BLUE;
+        UPDATE_TEXT_FILL : Color.WHITE;
+        UPDATE_LINK_FILL : Color.LIGHTCYAN;
         UPDATE_TEXT_FONT : Font {
             name: "Verdana"
             size: 10
         }
-        UPDATECOUNTER_TEXT_FILL : Color.BLACK;
+        UPDATECOUNTER_TEXT_FILL : Color.YELLOW;
         UPDATECOUNTER_TOOMUCH_TEXT_FILL : Color.RED;
         UPDATECOUNTER_TEXT_FONT : Font {
             name: "Verdana"
@@ -87,7 +87,7 @@ public function create(): Theme {
         }
 
         // group node styles
-        GROUPNODE_TEXT_FILL : Color.BLACK;
+        GROUPNODE_TEXT_FILL : Color.WHITE;
         GROUPNODE_TEXT_FONT : Font {
             name: "Verdana"
             size: 20
