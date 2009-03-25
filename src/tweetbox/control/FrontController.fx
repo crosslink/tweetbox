@@ -252,6 +252,28 @@ public class FrontController {
     }
 
     /**
+     * Starts all timelines
+     */
+    public function startReceiving(): Void {
+        if (isAccountConfigured("twitter")) {
+            startReceivingTimeline.playFromStart();
+        }
+        else {
+            setError("I need your Twitter login credentials");
+        }
+    }
+
+    /**
+     * Stops all timelines
+     */
+    public function stopReceiving(): Void {
+        getFriendsTimelineTimeline.stop();
+        getUserTimelineTimeline.stop();
+        getRepliesTimeline.stop();
+        getDirectMessagesTimeline.stop();
+    }
+
+    /**
      * Sends an update
      * @param update - a String containing the text of the update
      */
@@ -530,18 +552,6 @@ public class FrontController {
         //addAlertMessage("direct message was sent succesfully");
     }
 
-    function startReceiving(): Void {
-        if (isAccountConfigured("twitter")) {
-            startReceivingTimeline.play();
-        }
-    }
-
-    function stopReceiving(): Void {
-        getFriendsTimelineTimeline.stop();
-        getUserTimelineTimeline.stop();
-        getRepliesTimeline.stop();
-        getDirectMessagesTimeline.stop();
-    }
 
 }
 
