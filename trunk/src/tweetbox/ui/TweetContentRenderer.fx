@@ -17,6 +17,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.Font;
+import javafx.geometry.Point2D;
 
 import tweetbox.generic.component.HTMLNode;
 import tweetbox.generic.component.HTMLPane;
@@ -60,6 +61,17 @@ public class TweetContentRenderer extends CustomNode {
     protected function linkClicked(url:String) {
         println("link: {url} clicked");
         BrowserLauncher.openURL(url.trim());
+    }
+
+    protected function linkEntered(url:String, point:Point2D):Void {
+        Main.showBalloon(
+            point.x + 20, point.y - 100,
+            point.x, point.y,
+            Text{translateY:10 content:url});
+    }
+
+    protected function linkExited(url:String, point:Point2D):Void {
+        Main.hideBalloon();
     }
 
     protected function addToTweetContent(node:Node) {
@@ -151,7 +163,7 @@ public class TweetContentRenderer extends CustomNode {
         var result:String = "";
         for (t:String in tokens) {
             if (t.startsWith("http") or t.startsWith("ftp"))
-                result = "{result}{createLinkHtml(t, "link")} "
+                result = "{result}{createLinkHtml("link", t)} "
             else if (t.startsWith("@"))
                 result = "{result}{createLinkHtml(t, "http://twitter.com/{t.substring(1)}")} "
             else if (t.startsWith("#"))
@@ -168,13 +180,16 @@ public class TweetContentRenderer extends CustomNode {
         def sender = createLinkHtml("{user.screenName}", "http://twitter.com/{user.screenName}");
         def content = if (tweet.text == null) "" else createTextHtml(tweet.text);
         def createdAt = DateUtil.formatAsTweetDisplayDate(tweet.createdAt);
+        def source = setStyle(tweet.source, updateTextFont, linkColor);
 
         return HTMLPane {
             width: maxWidth
             height: maxHeight
             font: bind updateTextFont
-            html: setStyle("{sender}: {content}\n{createdAt} with {tweet.source}", , updateTextFont, updateTextColor)
+            html: setStyle("{sender}: {content}\n{createdAt} with {source}", , updateTextFont, updateTextColor)
             onLinkClicked: linkClicked
+            onLinkEntered: linkEntered
+            onLinkExited: linkExited
         }
     }
 
