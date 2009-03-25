@@ -10,6 +10,8 @@ import javax.swing.JEditorPane;
 import javax.swing.text.Document;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseEvent;
 import java.awt.Dimension;
 
 import javafx.stage.Stage;
@@ -21,6 +23,7 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.geometry.Point2D;
 
 /**
  * @author mnankman
@@ -40,8 +43,8 @@ public class HTMLPane extends CustomNode {
     }
 
     public var onLinkClicked: function(url:String);
-    public var onLinkEntered: function(url:String);
-    public var onLinkExited: function(url:String);
+    public var onLinkEntered: function(url:String, mousePos:Point2D);
+    public var onLinkExited: function(url:String, mousePos:Point2D);
 
     public var font:Font on replace {
         replaceEditorPaneFont();
@@ -50,6 +53,11 @@ public class HTMLPane extends CustomNode {
     public var fill:Color = Color.TRANSPARENT;
 
     var editorPane = new JEditorPane("text/html", html);
+
+    var mousePos = Point2D {
+        x: 0.0
+        y: 0.0
+    }
 
     function redimensionEditorPane(): Void {
         editorPane.setPreferredSize(new Dimension(width, height));
@@ -75,9 +83,22 @@ public class HTMLPane extends CustomNode {
                     if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED)
                         onLinkClicked(e.getURL().toString())
                     else if (e.getEventType() == HyperlinkEvent.EventType.ENTERED)
-                        onLinkEntered(e.getURL().toString())
+                        onLinkEntered(e.getURL().toString(), localToScene(mousePos))
                     else if (e.getEventType() == HyperlinkEvent.EventType.EXITED)
-                        onLinkExited(e.getURL().toString())
+                        onLinkExited(e.getURL().toString(), localToScene(mousePos))
+                }
+            }
+        );
+
+        editorPane.addMouseMotionListener(
+            MouseMotionListener {
+                override function mouseMoved(e:MouseEvent) {
+                    mousePos = Point2D {
+                        x:e.getX()
+                        y:e.getY()
+                    }
+                }
+                override function mouseDragged(e:MouseEvent) {
                 }
             }
         );
@@ -122,11 +143,11 @@ public function run() {
                     onLinkClicked: function(url:String) {
                         println("link [{url}] clicked")
                     }
-                    onLinkEntered: function(url:String) {
-                        println("link [{url}] entered")
+                    onLinkEntered: function(url:String, point:Point2D) {
+                        println("link [{url}] entered ({point.x},{point.y})")
                     }
-                    onLinkExited: function(url:String) {
-                        println("link [{url}] exited")
+                    onLinkExited: function(url:String, point:Point2D) {
+                        println("link [{url}] exited ({point.x},{point.y})")
                     }
                 }
             ]
