@@ -3,6 +3,7 @@
  * view replies
  * view direct messages
  * view user updates
+ * view favorites
  * view multiple groups of updates next to eachother
  * send update
  * remembers userid and password
@@ -26,4 +27,3 @@ NOT IMPLEMENTED (OR WORKING) YET:
  * remove direct message
  * remove from favorites
  * view followers
- * view favorites
