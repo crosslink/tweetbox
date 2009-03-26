@@ -65,8 +65,6 @@ public class UserNode extends CustomNode {
     var profileImageUrl:String = user.profileImageUrl;
     var imageViewRef:ImageView;
 
-
-
     var imageView:Node = ImageView {
         fitHeight: 50*scale
         fitWidth: 50*scale
@@ -78,10 +76,17 @@ public class UserNode extends CustomNode {
 
         onMouseEntered: function(me:MouseEvent):Void {
             tweetActionButtonGroup.visible = true;
+            showBalloon(
+                Point2D {
+                    x: imageView.boundsInScene.maxX - 10
+                    y: imageView.boundsInScene.minY + imageView.layoutBounds.height/2
+                 }
+            );
         }
 
         onMouseExited: function(me:MouseEvent):Void {
             tweetActionButtonGroup.visible = false;
+            Main.hideBalloon();
         }
     };
 
@@ -99,6 +104,7 @@ public class UserNode extends CustomNode {
                 translateY: 5
                 image: bind replyIcon
                 onMouseClicked: function(me:MouseEvent):Void {
+                    Main.hideBalloon();
                     controller.reply(
                         user,
                         Point2D{
@@ -113,6 +119,7 @@ public class UserNode extends CustomNode {
                 translateY: 5
                 image: bind dmIcon
                 onMouseClicked: function(me:MouseEvent):Void {
+                    Main.hideBalloon();
                     controller.direct(
                         user,
                         Point2D{
@@ -127,6 +134,7 @@ public class UserNode extends CustomNode {
                 translateY: 25
                 image: bind rtIcon
                 onMouseClicked: function(me:MouseEvent):Void {
+                    Main.hideBalloon();
                     controller.retweet(
                         tweet,
                         Point2D{
@@ -141,12 +149,42 @@ public class UserNode extends CustomNode {
                 translateY: 25
                 image: bind addFavIcon
                 onMouseClicked: function(me:MouseEvent):Void {
+                    Main.hideBalloon();
                     controller.favorite(tweet);
                 }
             }
         ]
 
     };
+
+    function showBalloon(point:Point2D) {
+        var balloonContent:Node =
+            Group {
+                content: [
+                    Text {
+                        translateY:10
+                        content: "{user.screenName}:"
+                    },
+                    Text {
+                        translateY:30
+                        content: "{user.followersCount} followers"
+                    },
+                    Text {
+                        translateY:50
+                        wrappingWidth: 120
+                        content: "{user.description}"
+                    },
+                ]
+            }
+
+
+        Main.showBalloon(
+            point.x + 20, point.y - 100,
+            point.x, point.y,
+            balloonContent);
+
+    }
+
 
     public override function create(): Node {
         return Group {

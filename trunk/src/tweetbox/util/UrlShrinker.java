@@ -36,4 +36,20 @@ public class UrlShrinker {
 
     }
 
+    public static String expandShortUrl(String shortUrl) {
+        String request = shortUrl;
+        System.out.println("expandShortUrl(" + request + ")");
+        try {
+            URL url = new URL(request);
+            URLConnection connection;
+            connection = url.openConnection();
+            connection.setDoInput(true);
+            BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            return input.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(UrlShrinker.class.getName()).log(Level.SEVERE, null, ex);
+            return shortUrl;
+        }
+
+    }
 }
