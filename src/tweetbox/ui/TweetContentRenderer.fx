@@ -59,15 +59,21 @@ public class TweetContentRenderer extends CustomNode {
     var renderedNode:Node;
 
     protected function linkClicked(url:String) {
-        println("link: {url} clicked");
         BrowserLauncher.openURL(url.trim());
+        Main.hideBalloon();
     }
 
     protected function linkEntered(url:String, point:Point2D):Void {
+        var balloonContent:Node =
+            Text {
+                translateY:10
+                content:url
+            }
+
         Main.showBalloon(
             point.x + 20, point.y - 100,
             point.x, point.y,
-            Text{translateY:10 content:url});
+            balloonContent);
     }
 
     protected function linkExited(url:String, point:Point2D):Void {
