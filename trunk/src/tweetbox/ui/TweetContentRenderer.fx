@@ -181,18 +181,22 @@ public class TweetContentRenderer extends CustomNode {
         return result.trim();
     }
 
-
-    function createHtmlPane(): Node {
+    function createTweetHtml() {
         def sender = createLinkHtml("{user.screenName}", "http://twitter.com/{user.screenName}");
         def content = if (tweet.text == null) "" else createTextHtml(tweet.text);
         def createdAt = DateUtil.formatAsTweetDisplayDate(tweet.createdAt);
         def source = setStyle(tweet.source, updateTextFont, linkColor);
+        tweet.html = setStyle("{sender}: {content}\n{createdAt} with {source}", , updateTextFont, updateTextColor);
+    }
+
+    function createHtmlPane(): Node {
+        if (tweet.html == null) createTweetHtml();
 
         return HTMLPane {
             width: maxWidth
             height: maxHeight
             font: bind updateTextFont
-            html: setStyle("{sender}: {content}\n{createdAt} with {source}", , updateTextFont, updateTextColor)
+            html: bind tweet.html
             onLinkClicked: linkClicked
             onLinkEntered: linkEntered
             onLinkExited: linkExited
@@ -200,10 +204,11 @@ public class TweetContentRenderer extends CustomNode {
     }
 
     public function rerender() {
-        renderedNode = createHtmlPane();
+        createTweetHtml();
     }
 
     public override function create(): Node {
+        renderedNode = createHtmlPane();
         rerender();
         return Group {
             cache:true
