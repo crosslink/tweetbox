@@ -147,9 +147,11 @@ public class HorizontalScrollBar extends ScrollBar {
                             fill: bind scrollbarTrackFill
 
                             onMouseReleased: function(e:MouseEvent):Void {
-                                scrollForward.stop();
-                                scrollBackwards.stop();
-                                scrollTo(e.x);
+                                if (updateThumbPos(e.x)!=0) {
+                                    scrollForward.stop();
+                                    scrollBackwards.stop();
+                                    scrollTo(e.x)
+                                };
                             }
                         },
                         //Scrollbar thumb
@@ -164,10 +166,11 @@ public class HorizontalScrollBar extends ScrollBar {
                             arcWidth: scrollButtonSize / 2
 
                             onMouseDragged: function(e:MouseEvent):Void {
-                                //println("thumb dragged: {e} dragAnchorY={e.dragAnchorY} dragY={e.dragY}");
-                                scrollForward.stop();
-                                scrollBackwards.stop();
-                                scrollTo(e.x);
+                                if (updateThumbPos(e.x)!=0) {
+                                    scrollForward.stop();
+                                    scrollBackwards.stop();
+                                    scrollTo(e.x)
+                                }
                             }
                         }
 

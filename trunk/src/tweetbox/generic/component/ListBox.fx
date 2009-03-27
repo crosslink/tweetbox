@@ -14,6 +14,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.geometry.Rectangle2D;
+import javafx.animation.Timeline;
+import javafx.animation.KeyFrame;
+import javafx.animation.Interpolator;
 
 import java.lang.Math;
 
@@ -32,7 +35,7 @@ public class ListBox extends CustomNode {
 
     public var model: Object[] on replace {
         totalHeight = sizeof model * (cellHeight+cellSpacing);
-        renderCells(vertScrollBar.scrollPosition);
+        scroll(vertScrollBar.scrollPosition);
     };
 
     public var height:Number on replace {
@@ -66,14 +69,31 @@ public class ListBox extends CustomNode {
 
     public-read var selectedNode:Node = null;
 
-    function renderCells(scrollPosition:Number):Void {
-        //println("renderCells() {scrollPosition} : {sizeof model} : {totalHeight}");
+    var startIndex:Integer;
+
+    var scroller = Timeline {
+        keyFrames: [
+            KeyFrame {
+                time: bind 25ms
+                action: renderCells
+            }
+        ]
+    };
+
+    function scroll(scrollPosition:Number) {
+        scroller.stop();
+        startIndex = Math.round((0.0-scrollPosition) / (cellHeight+cellSpacing));
+        scroller.play();
+    }
+
+
+    function renderCells():Void {
+        println("renderCells() {startIndex}");
         var nodes:Node[] = [];
         var n:Node;
         var cellWrapper:Group;
         var nextY:Number = 0.0;
         var nodeIndex:Integer;
-        var startIndex:Integer = Math.round((0.0-scrollPosition) / (cellHeight+cellSpacing));
         var endIndex:Integer;
 
         for (i:Integer in [0..visibleCells]) {
@@ -104,7 +124,7 @@ public class ListBox extends CustomNode {
     }
 
     public override function create(): Node {
-        renderCells(0);
+        scroll(0);
         return Group {
             content: [
                 Group{
@@ -117,7 +137,7 @@ public class ListBox extends CustomNode {
                     scrolledViewDimension: bind totalHeight
                     scrollStepSize: cellHeight+cellSpacing
                     onScroll: function(p:Number) {
-                        renderCells(p);
+                        scroll(p);
                     }
                 }
             ]
