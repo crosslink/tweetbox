@@ -113,8 +113,6 @@ public class VerticalScrollBar extends ScrollBar {
                                 scrollForward.stop();
                             }
                             onMouseClicked: function(e:MouseEvent):Void {
-                                scrollForward.stop();
-                                scrollBackwards.stop();
                                 scrollBy(scrollStepSize);
                             }
                         },
@@ -138,9 +136,11 @@ public class VerticalScrollBar extends ScrollBar {
                             fill: bind scrollbarTrackFill
 
                             onMouseReleased: function(e:MouseEvent):Void {
-                                scrollForward.stop();
-                                scrollBackwards.stop();
-                                scrollTo(e.y)
+                                if (updateThumbPos(e.y)!=0) {
+                                    scrollForward.stop();
+                                    scrollBackwards.stop();
+                                    scrollTo(e.y)
+                                }
                             }
                         },
                         //Scrollbar thumb
@@ -156,9 +156,11 @@ public class VerticalScrollBar extends ScrollBar {
 
                             onMouseDragged: function(e:MouseEvent):Void {
                                 //println("thumb dragged: {e} dragAnchorY={e.dragAnchorY} dragY={e.dragY}");
-                                scrollForward.stop();
-                                scrollBackwards.stop();
-                                scrollTo(e.y)
+                                if (updateThumbPos(e.y)!=0) {
+                                    scrollForward.stop();
+                                    scrollBackwards.stop();
+                                    scrollTo(e.y)
+                                }
                             }
                         }
 

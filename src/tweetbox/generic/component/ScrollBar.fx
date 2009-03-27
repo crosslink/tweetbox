@@ -48,16 +48,19 @@ public abstract class ScrollBar extends CustomNode {
      * Scroll the associated view by the provided number of pixels
      * @param pixels - the number of pixels to scroll
      */
-    public function scrollBy(viewPixels:Number) {
+    public function scrollBy(viewPixels:Number):Void {
         var thumbTranslation:Number = viewPixels*trackViewRatio;
-        scrollTo(thumbPos + thumbTranslation)
+        if (updateThumbPos(thumbPos + thumbTranslation)!=0) {
+            scrollTo(thumbPos + thumbTranslation);
+        }
     }
 
     /**
-     * Scroll the associated view to the provided position
+     * Update the thumb position to the provided position
      * @param pos - the position to scroll to
+     * @return the difference between the new and the old thumb position
      */
-    public function scrollTo(newPos:Number) {
+    public function updateThumbPos(newPos:Number): Number {
         // Keep the scroll thumb within the bounds of the scrollbar
         var oldPos = thumbPos;
         // Keep the scroll thumb within the bounds of the scrollbar
@@ -72,11 +75,26 @@ public abstract class ScrollBar extends CustomNode {
             // keep thumb above the bottom of the track
             thumbPos = Math.max(trackLength - thumbLength, 0.0);
         }
-        if (oldPos != newPos) {
-            //println("scroll event: thumbPos={thumbPos}, trackLength={trackLength}, scrollPosition={scrollPosition}, trackViewRatio={trackViewRatio}, viewTrackRatio={viewTrackRatio}");
-            onScroll(scrollPosition);
-        }
+        return thumbPos-oldPos;
     }
+
+    /**
+     * Scroll the associated view to the provided position
+     * @param pos - the position to scroll to
+     */
+    public function scrollTo(newPos:Number) {
+        scrollPosition = 0.0 - (thumbPos * viewTrackRatio);
+        onScroll(scrollPosition);
+    }
+
+    /**
+     * Stop the scroll timelines
+     */
+    public function stopScrolling() {
+        scrollForward.stop();
+        scrollBackwards.stop();
+    }
+
 
     function calculateRatios(): Void {
         viewTrackRatio = scrolledViewDimension / trackLength;
@@ -132,7 +150,7 @@ public abstract class ScrollBar extends CustomNode {
      * The ScrollView component uses this to transform the view such that the correct portion is shown
      * DERIVED CLASSES SHOULD *NOT* OVERRIDE THIS
      */
-    public-read var scrollPosition:Number = bind 0.0 - (thumbPos * viewTrackRatio);
+    public-read var scrollPosition:Number = 0.0;
 
     /** the points of the arrow shapes defined by the deriving classes */
     protected var arrowPoints:Number[] = [

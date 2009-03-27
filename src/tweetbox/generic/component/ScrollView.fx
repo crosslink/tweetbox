@@ -92,9 +92,11 @@ public class ScrollView extends CustomNode {
                 }
                 
             onMouseWheelMoved: function(e:MouseEvent):Void {
-                vertScrollBar.scrollForward.stop();
-                vertScrollBar.scrollBackwards.stop();
-                vertScrollBar.scrollBy(e.wheelRotation * scrollStepSize);
+                if (showVerticalScrollBar) {
+                    vertScrollBar.scrollForward.stop();
+                    vertScrollBar.scrollBackwards.stop();
+                    vertScrollBar.scrollBy(e.wheelRotation * scrollStepSize);
+                }
             }
         };
     }
