@@ -166,7 +166,7 @@ public class FrontController {
         repeatCount: java.lang.Double.POSITIVE_INFINITY
     };
 
-    var waitDur:Duration = 3s;
+    var waitDur:Duration = 100ms;
     /** the timeline for scheduling the retrieval of the replies */
     var startReceivingTimeline:Timeline = Timeline {
         keyFrames: [
