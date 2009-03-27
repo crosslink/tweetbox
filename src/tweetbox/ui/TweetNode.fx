@@ -57,7 +57,7 @@ public class TweetNode extends CustomNode {
     var controller = FrontController.getInstance();
     var model = Model.getInstance();
 
-    var tweetContentBox:HBox = HBox {
+    var tweetContentBox:Group = Group {
         translateY: 2
         //verticalAlignment: VerticalAlignment.TOP
         content: [
@@ -68,7 +68,7 @@ public class TweetNode extends CustomNode {
                 tweet: tweet;
             },
             TweetContentRenderer {
-                translateX: 7
+                translateX: 60
                 maxWidth: tweetContentWidth
                 maxHeight: tweetContentHeight
                 tweet: tweet

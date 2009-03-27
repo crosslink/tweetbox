@@ -26,5 +26,11 @@ public class TweetCellRenderer extends ListBoxCellRenderer {
         tn.width = bounds.width;
         tn.height = bounds.height;
         return tn;
+//        return TweetNode {
+//            width: bounds.width
+//            height: bounds.height
+//            tweet: data as TweetVO
+//        }
+
     }
 }

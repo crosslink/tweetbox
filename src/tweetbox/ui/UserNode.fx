@@ -189,6 +189,11 @@ public class UserNode extends CustomNode {
     public override function create(): Node {
         return Group {
             content: [
+                Rectangle {
+                    fill: Color.TRANSPARENT
+                    width: 50*scale
+                    height: 50*scale
+                },
                 imageView,
                 tweetActionButtonGroup,
                 if (tweet==null) {
