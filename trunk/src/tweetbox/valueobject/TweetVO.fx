@@ -13,6 +13,8 @@ import twitter4j.DirectMessage;
 import twitter4j.TwitterResponse;
 import twitter4j.User;
 
+import javax.swing.text.Document;
+
 /**
  * @author mnankman
  */
@@ -39,24 +41,26 @@ public class TweetVO {
     }
 
     public var text:String = bind
-            if (status != null)
-                status.getText()
-            else if (dm != null)
-                dm.getText()
-            else if (response instanceof User) "{user.description}, {user.followersCount} followers, location: {user.location}"
-            else null;
+        if (status != null)
+            status.getText()
+        else if (dm != null)
+            dm.getText()
+        else if (response instanceof User) "{user.description}, {user.followersCount} followers, location: {user.location}"
+        else null;
+
+    public var html: String = null;
 
     public var createdAt:Date = bind
-            if (status != null)
-                status.getCreatedAt()
-            else if (dm != null)
-                dm.getCreatedAt()
-            else null;
+        if (status != null)
+            status.getCreatedAt()
+        else if (dm != null)
+            dm.getCreatedAt()
+        else null;
 
     public var source:String = bind status.getSource();
 
     public var inReplyToId = bind status.getInReplyToUserId();
     
     public var isReply:Boolean = bind (status.getInReplyToUserId() != -1)
-    
+
 }
