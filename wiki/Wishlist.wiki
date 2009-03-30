@@ -17,6 +17,16 @@ This page collects all the wishes for extra functionality and features.
  * Remove direct messages
  * Remove favorites
 
+== Filtering updates ==
+ * Add filter as a new group on the left side of the screen
+  * filter by sender(s)
+  * filter by keyword
+  * filter by properties: such as: 
+   * "contains link"
+   * "is a location update from brightkite"
+ * Remove filter
+ * Edit filter
+
 
 = Feature wishes =
 
