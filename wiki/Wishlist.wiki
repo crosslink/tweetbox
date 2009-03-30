@@ -6,26 +6,26 @@ This page collects all the wishes for extra functionality and features.
 = Functionality wishes =
 
 == Timeline retrieval ==
-* get more than 20 updates: all updates since last time + cache updates on user PC
+ * get more than 20 updates: all updates since last time + cache updates on user PC
 
 == Social functions ==
-* Follow/unfollow
-* View followers (this could be costly in terms of Twitter API access)
+ * Follow/unfollow
+ * View followers (this could be costly in terms of Twitter API access)
 
 == Functionality for managing updates & messages ==
-* Remove updates
-* Remove direct messages
-* Remove favorites
+ * Remove updates
+ * Remove direct messages
+ * Remove favorites
 
 
 = Feature wishes =
 
 == Twitter API ==
-* monitor API health
-* take the API health into account when retreiving tweets (lower frequency to accomodate poor health)
+ * monitor API health
+ * take the API health into account when retreiving tweets (lower frequency to accomodate poor health)
 
 == Improved alerts ==
-Improved alerts that display the top 3 (preferably configurable) new received tweets.
+ * Improved alerts that display the top 3 (preferably configurable) new received tweets.
 
 == Configuration == 
-* configurable interval for communicating with twitter API
+ * configurable interval for communicating with twitter API
