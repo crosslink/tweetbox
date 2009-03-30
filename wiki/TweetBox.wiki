@@ -1,4 +1,5 @@
 TweetBox is the name for JavaFX based twitter desktop client.
-The project can be easily found on the web through the domain name "tweetbox.org" 
+
+The project can be easily found on the web through http://tweetbox.org 
 
 The stable (or better: non-development) version can be launched through this url: http://webstart.tweetbox.org
