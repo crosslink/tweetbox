@@ -16,8 +16,11 @@ import javafx.scene.Cursor;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.text.Font;
 import javafx.geometry.Point2D;
+import javafx.scene.image.*;
+import javafx.scene.shape.Rectangle;
 
 import tweetbox.generic.component.HTMLNode;
 import tweetbox.generic.component.HTMLPane;
@@ -29,6 +32,8 @@ import tweetbox.valueobject.TweetVO;
 import tweetbox.valueobject.UserVO;
 
 import tweetbox.util.BrowserLauncher;
+import tweetbox.util.TwitPicUtil;
+import tweetbox.generic.util.ImageCache;
 
 /**
  * @author mnankman
@@ -65,10 +70,44 @@ public class TweetContentRenderer extends CustomNode {
 
     protected function linkEntered(url:String, point:Point2D):Void {
         var balloonContent:Node =
-            Text {
-                translateY:10
-                content:url
+            if (url.startsWith(TwitPicUtil.TWITPIC_SERVICE)) {
+                var picId = TwitPicUtil.extractPicId(url);
+                var imageUrl = TwitPicUtil.getThumbUrl(picId);
+                if (imageUrl != null)
+                    Group {
+                        content: [
+                            Rectangle {
+                                fill: Color.TRANSPARENT;
+                                width: 200
+                                height: 200
+                            },
+                            Text {
+                                translateY:80
+                                translateX: 10
+                                wrappingWidth: 180
+                                textAlignment: TextAlignment.CENTER
+                                content: "loading twitpic thumbnail for picture {picId}"
+                            },
+                            ImageView {
+                                fitHeight:200
+                                fitWidth:200
+                                image: ImageCache.getInstance().getImage(imageUrl)
+                            }
+                        ]
+                    }
+
+                else
+                    Text {
+                        translateY:10
+                        content:url
+                    }
+
             }
+            else
+                Text {
+                    translateY:10
+                    content:url
+                }
 
         Main.showBalloon(
             point.x + 20, point.y - 100,
