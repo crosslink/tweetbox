@@ -96,11 +96,12 @@ public class TweetContentRenderer extends CustomNode {
                             translateX: 10
                             wrappingWidth: 180
                             textAlignment: TextAlignment.CENTER
-                            content: "loading twitpic thumbnail for picture {picId}"
+                            content: "wait..."
                         },
                         ImageView {
-                            fitHeight:200
+                            preserveRatio:true
                             fitWidth:200
+                            fitHeight:200
                             image: ImageCache.getInstance().getImage(imageUrl)
                         }
                     ]
