@@ -178,10 +178,7 @@ public class UserNode extends CustomNode {
             }
 
 
-        Main.showBalloon(
-            point.x + 20, point.y - 100,
-            point.x, point.y,
-            balloonContent);
+        Main.showBalloon(point.x, point.y, balloonContent);
 
     }
 
