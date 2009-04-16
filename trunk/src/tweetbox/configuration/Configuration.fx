@@ -34,10 +34,10 @@ public class Configuration {
     public var numAccounts = bind accounts.size();
     
     public var twitterAPISettings = TwitterAPISettingsVO {
-        getDirectMessagesInterval: 5m
-        getFriendTimelineInterval: 5m
+        getDirectMessagesInterval: 15m
+        getFriendTimelineInterval: 15m
         getUserTimelineInterval: 1h
-        getRepliesInterval: 5m
+        getRepliesInterval: 15m
     };
 
     public var urlShorteningService = "http://tinyurl.com/api-create.php";
