@@ -62,11 +62,17 @@ function showConfigDialog(scene:Scene) {
 var stage:JFXStage;
 var balloon:Balloon;
 
-public function showBalloon(x:Number, y:Number, toX:Number, toY:Number, content:Node) {
+public function showBalloon(toX:Number, toY:Number, content:Node) {
     hideBalloon();
+    var x:Number =
+        if (toX < stage.scene.width/2) toX + 50
+        else toX - content.layoutBounds.width - 50;
+    var y:Number =
+        if (toY < stage.scene.height/2) toY + 50
+        else toY - content.layoutBounds.height - 50;
     balloon = Balloon {
-        x: Math.min(Math.max(x,0.0), stage.scene.width - balloon.layoutBounds.width)
-        y: Math.min(Math.max(y,0.0), stage.scene.height - balloon.layoutBounds.height)
+        x: x
+        y: y
         toX: toX
         toY: toY
         content: content
