@@ -33,6 +33,7 @@ import tweetbox.valueobject.UserVO;
 
 import tweetbox.util.BrowserLauncher;
 import tweetbox.util.TwitPicUtil;
+import tweetbox.util.MobypictureUtil;
 import tweetbox.generic.util.ImageCache;
 
 /**
@@ -69,50 +70,50 @@ public class TweetContentRenderer extends CustomNode {
     }
 
     protected function linkEntered(url:String, point:Point2D):Void {
+        var imageUrl:String = null;
+        var picId:String = null;
+
+        if (url.startsWith(TwitPicUtil.TWITPIC_SERVICE)) {
+            picId = TwitPicUtil.extractPicId(url);
+            imageUrl = TwitPicUtil.getThumbUrl(picId);
+        }
+        else if (url.startsWith(MobypictureUtil.MOBYPICTURE)) {
+            picId = MobypictureUtil.extractPicId(url);
+            imageUrl = MobypictureUtil.getThumbUrl(picId);
+        }
+
         var balloonContent:Node =
-            if (url.startsWith(TwitPicUtil.TWITPIC_SERVICE)) {
-                var picId = TwitPicUtil.extractPicId(url);
-                var imageUrl = TwitPicUtil.getThumbUrl(picId);
-                if (imageUrl != null)
-                    Group {
-                        content: [
-                            Rectangle {
-                                fill: Color.TRANSPARENT;
-                                width: 200
-                                height: 200
-                            },
-                            Text {
-                                translateY:80
-                                translateX: 10
-                                wrappingWidth: 180
-                                textAlignment: TextAlignment.CENTER
-                                content: "loading twitpic thumbnail for picture {picId}"
-                            },
-                            ImageView {
-                                fitHeight:200
-                                fitWidth:200
-                                image: ImageCache.getInstance().getImage(imageUrl)
-                            }
-                        ]
-                    }
+            if (imageUrl != null)
+                Group {
+                    content: [
+                        Rectangle {
+                            fill: Color.TRANSPARENT;
+                            width: 200
+                            height: 200
+                        },
+                        Text {
+                            translateY:80
+                            translateX: 10
+                            wrappingWidth: 180
+                            textAlignment: TextAlignment.CENTER
+                            content: "loading twitpic thumbnail for picture {picId}"
+                        },
+                        ImageView {
+                            fitHeight:200
+                            fitWidth:200
+                            image: ImageCache.getInstance().getImage(imageUrl)
+                        }
+                    ]
+                }
 
-                else
-                    Text {
-                        translateY:10
-                        content:url
-                    }
-
-            }
             else
                 Text {
                     translateY:10
                     content:url
                 }
 
-        Main.showBalloon(
-            point.x + 20, point.y - 100,
-            point.x, point.y,
-            balloonContent);
+
+        Main.showBalloon(point.x, point.y, balloonContent);
     }
 
     protected function linkExited(url:String, point:Point2D):Void {
@@ -191,7 +192,8 @@ public class TweetContentRenderer extends CustomNode {
         addToTweetContent(HTMLNode {html: tweet.source font: bind nodeStyle.UPDATE_TEXT_FONT onLinkClicked:linkClicked});
         return tweetContent;
     }
-    
+
+
     function createLinkHtml(content:String, url:String): String {
         return setStyle("<a href=\"{url}\">{content}</a>", updateTextFont, linkColor);
     }
@@ -208,7 +210,10 @@ public class TweetContentRenderer extends CustomNode {
         var result:String = "";
         for (t:String in tokens) {
             if (t.startsWith("http") or t.startsWith("ftp"))
-                result = "{result}{createLinkHtml("link", t)} "
+                if (t.contains(TwitPicUtil.TWITPIC_SERVICE) or t.contains(MobypictureUtil.MOBYPICTURE))
+                    result = "{result}{createLinkHtml("picture", t)} "
+                else
+                    result = "{result}{createLinkHtml("link", t)} "
             else if (t.startsWith("@"))
                 result = "{result}{createLinkHtml(t, "http://twitter.com/{t.substring(1)}")} "
             else if (t.startsWith("#"))
