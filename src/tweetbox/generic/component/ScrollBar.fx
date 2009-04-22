@@ -126,7 +126,7 @@ public abstract class ScrollBar extends CustomNode {
     /** length of the scrollbar thumb; 
      * DERIVED CLASSES SHOULD *NOT* OVERRIDE THIS
      */
-    protected var thumbLength:Number = bind Math.max(5+scrollBarButtonSizeCorrection, trackViewRatio * trackLength) - scrollBarButtonSizeCorrection;
+    protected var thumbLength:Number = bind Math.max(15+scrollBarButtonSizeCorrection, trackViewRatio * trackLength) - scrollBarButtonSizeCorrection;
 
     /**
      * the ratio between the scrolled dimension of the view and the length of the track;
