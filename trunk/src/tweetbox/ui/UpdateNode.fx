@@ -187,6 +187,7 @@ public class UpdateNode extends CustomNode {
                 result = "{result} {t}"
             }
         }
+        result = result.trim();
         updateTextArea.setText(result);
         textLength = result.length();
     }
