@@ -560,11 +560,14 @@ public class FrontController {
     }
 
     function updateGroup(group:GroupVO, newUpdates:Set) {
-        group.updates.addAll(newUpdates);
-        group.newUpdates = newUpdates.size();
-        var iterator = group.updates.iterator();
-        def mostRecentUpdate:Status = iterator.next() as Status;
-        group.mostRecentUpdateId = mostRecentUpdate.getId();
+        if (newUpdates != null and newUpdates.size() > 0) {
+            group.updates.addAll(newUpdates);
+            group.newUpdates = newUpdates.size();
+            var iterator = group.updates.iterator();
+            def mostRecentUpdate:Object = iterator.next();
+            if (mostRecentUpdate instanceof Status)
+                group.mostRecentUpdateId = (mostRecentUpdate as Status).getId();
+        }
     }
 
 
