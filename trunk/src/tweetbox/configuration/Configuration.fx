@@ -45,7 +45,7 @@ public class Configuration {
     public var themeName = "The Mesh";
 
     public var applicationStage:javafx.stage.Stage;
-    
+
     public function addAccount(account:AccountVO) {
         accounts.put(account.id, account);
     }
@@ -87,6 +87,8 @@ public class Configuration {
             
             for (group:GroupVO in groups) {
                 config.setProperty("group.{group.id}.expanded", "{group.expanded}");
+                config.setProperty("group.{group.id}.since.id", "{group.mostRecentUpdateId}");
+                config.setProperty("group.{group.id}.updates.max", "{group.maxVisibleUpdates}");
             }
 
             config.setProperty("application.theme", "{themeName}");
@@ -125,6 +127,8 @@ public class Configuration {
 
             for (group:GroupVO in groups) {
                 group.expanded = new java.lang.Boolean(config.getProperty("group.{group.id}.expanded")).booleanValue();
+                group.mostRecentUpdateId = new java.lang.Long(config.getProperty("group.{group.id}.since.id")).longValue();
+                group.maxVisibleUpdates = new java.lang.Integer(config.getProperty("group.{group.id}.updates.max")).intValue();
             }
 
             themeName = config.getProperty("application.theme") as String;

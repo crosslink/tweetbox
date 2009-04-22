@@ -17,9 +17,11 @@ public class GroupVO {
     public var title:String;
     public var newUpdates:Integer = 0;
     public var updates:java.util.Set = new java.util.TreeSet(new TwitterResponseComparator());
+    public var mostRecentUpdateId:Integer = -1;
     public var filter:String;
     public var imageURL:String;
     public var expanded:Boolean=false;
     public var refresh:function():Void;
     public var showAlerts:Boolean=true;
+    public var maxVisibleUpdates:Integer = 50;
 }
