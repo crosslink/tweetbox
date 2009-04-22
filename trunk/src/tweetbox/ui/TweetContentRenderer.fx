@@ -231,7 +231,15 @@ public class TweetContentRenderer extends CustomNode {
         def content = if (tweet.text == null) "" else createTextHtml(tweet.text);
         def createdAt = DateUtil.formatAsTweetDisplayDate(tweet.createdAt);
         def source = setStyle(tweet.source, updateTextFont, linkColor);
-        tweet.html = setStyle("{sender}: {content}\n{createdAt} with {source}", , updateTextFont, updateTextColor);
+
+        def inReply =
+            if (tweet.isReply) {
+                def inReplyToLink = createLinkHtml("{tweet.inReplyToId}", "http://twitter.com/{tweet.inReplyToUserId}/status/{tweet.inReplyToId}");
+                " in reply to {inReplyToLink}"
+            } else
+                "";
+        
+        tweet.html = setStyle("{sender}{inReply}: {content}\n{createdAt} with {source}", , updateTextFont, updateTextColor);
     }
 
     function createHtmlPane(): Node {

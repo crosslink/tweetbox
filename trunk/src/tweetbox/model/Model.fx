@@ -24,6 +24,7 @@ public class Model {
     public var isError:Boolean;
    
     public var updateText:String;
+    public var inReplyToId: Integer = -1;
     public var updateNodeVisible:Boolean = false;
     public var updateNodePosition:Point2D = Point2D {
         x: 0
