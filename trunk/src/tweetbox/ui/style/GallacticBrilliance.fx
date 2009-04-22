@@ -94,7 +94,7 @@ public function create(): Theme {
         }
 
         // alert box styles
-        ALERT_TEXT_FILL : FILL4;
+        ALERT_TEXT_FILL : Color.WHITE;
         ALERT_TEXT_FONT : Font {
             name: "Verdana"
             size: 12
