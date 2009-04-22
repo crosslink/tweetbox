@@ -59,7 +59,8 @@ public class TweetVO {
 
     public var source:String = bind status.getSource();
 
-    public var inReplyToId = bind status.getInReplyToUserId();
+    public var inReplyToId:Integer = bind status.getInReplyToStatusId();
+    public var inReplyToUserId:Integer = bind status.getInReplyToUserId();
     
     public var isReply:Boolean = bind (status.getInReplyToUserId() != -1)
 
