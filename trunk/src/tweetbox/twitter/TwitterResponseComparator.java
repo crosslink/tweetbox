@@ -5,6 +5,7 @@
 
 package tweetbox.twitter;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import twitter4j.TwitterResponse;
 import twitter4j.Status;
@@ -15,7 +16,7 @@ import twitter4j.User;
  *
  * @author mnankman
  */
-public class TwitterResponseComparator implements Comparator {
+public class TwitterResponseComparator implements Comparator, Serializable {
 
     @Override
     public int compare(Object o1, Object o2) throws ClassCastException {
