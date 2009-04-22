@@ -31,8 +31,9 @@ public class TweetsView extends CustomNode, Resizable {
 
     public var onHide:function(group:GroupVO):Void;
     
-    var newTweets = bind group.newUpdates on replace {
+    var newTweets:Integer = bind group.newUpdates on replace {
         var updateArray:Object[] = group.updates.toArray();
+        var addedRows:Integer = 0;
         for (row in [0..newTweets - 1]) {
             insert TweetNode {
                 width: width - 5
@@ -44,13 +45,14 @@ public class TweetsView extends CustomNode, Resizable {
 //            insert TweetVO {
 //                response: updateArray[row] as TwitterResponse
 //            } before tweetListModel[row];
-        } 
-        numRows = sizeof tweetListModel;
+        }
+        delete tweetListModel[group.maxVisibleUpdates..];
+        newRows = newTweets;
     };
 
     var title:String = bind group.title;
                 
-    var numRows:Integer;
+    var newRows:Integer = 0;
             
     var nodeStyle = bind Style.getApplicationStyle();
 
@@ -70,7 +72,7 @@ public class TweetsView extends CustomNode, Resizable {
             TitleBar {
                 translateX: 2
                 translateY:2
-                title: bind "{title} ({numRows})"
+                title: bind "{title} ({newRows})"
                 width: width - 1
 
                 buttons: [
@@ -104,7 +106,6 @@ public class TweetsView extends CustomNode, Resizable {
 
         ]
     }
-
 
     public override function create(): Node {
         return view;

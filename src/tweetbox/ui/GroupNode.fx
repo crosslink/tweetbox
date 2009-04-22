@@ -105,7 +105,7 @@ public class GroupNode extends CustomNode {
             Text {
                 translateX: width * 0.6
                 translateY: height * 0.7
-                content: "{numRows}"
+                content: "{newTweets}"
                 font: bind nodeStyle.GROUPNODE_TEXT_FONT
                 fill: bind nodeStyle.GROUPNODE_TEXT_FILL
             }

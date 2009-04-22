@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Date;
 import java.util.ConcurrentModificationException;
+import java.util.Vector;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.ObjectOutputStream;
@@ -24,7 +25,7 @@ import java.io.IOException;
 import javafx.animation.*;
 import javafx.geometry.Point2D;
 
-import twitter4j.Twitter;
+import twitter4j.MoreTwitter;
 import twitter4j.Status;
 import twitter4j.User;
 import twitter4j.DirectMessage;
@@ -52,7 +53,7 @@ public class FrontController {
   */
 
     var model = Model.getInstance();
-    var twitter:Twitter = new Twitter();
+    var twitter:MoreTwitter = new MoreTwitter();
 
     /** the command responsible for getting the friends timeline */
     var getFriendsTimelineCommand = GetFriendsTimelineCommand {
@@ -171,31 +172,37 @@ public class FrontController {
     var startReceivingTimeline:Timeline = Timeline {
         keyFrames: [
             KeyFrame {
-                time: 0s
-                action: function() {
-                    getFriendsTimelineTimeline.play();
-                }
-            },
-            KeyFrame {
                 time: waitDur
                 action: function() {
-                    getRepliesTimeline.play();
+                    loadFromCache();
                 }
             },
             KeyFrame {
                 time: waitDur*2
                 action: function() {
-                    getDirectMessagesTimeline.play();
+                    getFriendsTimelineTimeline.play();
                 }
             },
             KeyFrame {
                 time: waitDur*3
                 action: function() {
-                    getUserTimelineTimeline.play();
+                    getRepliesTimeline.play();
                 }
             },
             KeyFrame {
                 time: waitDur*4
+                action: function() {
+                    getDirectMessagesTimeline.play();
+                }
+            },
+            KeyFrame {
+                time: waitDur*5
+                action: function() {
+                    getUserTimelineTimeline.play();
+                }
+            },
+            KeyFrame {
+                time: waitDur*6
                 action: function() {
                     getFavoritesCommand.run();
                 }
@@ -221,7 +228,7 @@ public class FrontController {
         model.config.applicationStage = stage;
 
         loadConfig();
-        //loadFromCache();
+        
 
         if (isAccountConfigured("twitter")) {
             var twitterAccount = getAccount("twitter");
@@ -247,7 +254,7 @@ public class FrontController {
         model.state = State.EXITING;
         stopReceiving();
         saveConfig();
-        //saveToCache();
+        saveToCache();
         System.exit(0);
     }
 
@@ -284,7 +291,9 @@ public class FrontController {
             }
             else {
                 var result:Object = null;
-                result = twitter.update(update);
+                result = 
+                    if (model.inReplyToId != -1) twitter.update(update)
+                    else twitter.update(update, model.inReplyToId);
                 updated(result as Status);
             }
         }
@@ -317,21 +326,24 @@ public class FrontController {
 
     public function cancelUpdate():Void {
         model.updateNodeVisible = false;
-        model.updateText = ""
+        model.updateText = "";
+        model.inReplyToId = -1;
     }
     
     public function reply(user:UserVO, pos:Point2D) {
         model.updateNodeVisible = true;
         model.updateNodePosition = pos;
         model.directMessageMode = false;
-        model.updateText = "{model.updateText}@{user.screenName} "
+        model.updateText = "{model.updateText}@{user.screenName} ";
+        model.inReplyToId = -1;
     }
 
     public function reply(tweet:TweetVO, pos:Point2D) {
         model.updateNodeVisible = true;
         model.updateNodePosition = pos;
         model.directMessageMode = false;
-        model.updateText = "{model.updateText}@{tweet.user.screenName} "
+        model.updateText = "{model.updateText}@{tweet.user.screenName} ";
+        model.inReplyToId = tweet.inReplyToId;
     }
 
     public function direct(user:UserVO, pos:Point2D) {
@@ -339,14 +351,16 @@ public class FrontController {
         model.updateNodePosition = pos;
         model.directMessageMode = true;
         model.directMessageReceiver = user;
-        model.updateText = "" 
+        model.updateText = "";
+        model.inReplyToId = -1
     }
     
     public function retweet(tweet:TweetVO, pos:Point2D) {
         model.updateNodeVisible = true;
         model.updateNodePosition = pos;
         model.directMessageMode = false;
-        model.updateText = "RT @{tweet.user.screenName}: {tweet.text}"
+        model.updateText = "RT @{tweet.user.screenName}: {tweet.text}";
+        model.inReplyToId = tweet.inReplyToId
     }
 
     public function favorite(tweet:TweetVO) {
@@ -405,7 +419,6 @@ public class FrontController {
         return UrlShrinker.shrinkUrl(model.config.urlShorteningService, url);
     }
 
-    /*
     public function loadFromCache() {
         var cacheFile = new File("{System.getProperty("user.home")}/tweetbox.cache");
         System.out.println("loading cache from: {cacheFile.getPath()}");
@@ -414,17 +427,11 @@ public class FrontController {
             var input:ObjectInputStream = new ObjectInputStream(new FileInputStream(cacheFile));
             cache = input.readObject() as Vector;
             
-            model.friendUpdates = cache.get(0) as Vector;
-            model.newFriendUpdates = model.friendUpdates.size();
-            
-            model.replies = cache.get(1) as Vector;
-            model.newReplies = model.replies.size();
-            
-            model.userUpdates = cache.get(2) as Vector;
-            model.newUserUpdates = model.userUpdates.size();
-            
-            model.directMessages = cache.get(3) as Vector;
-            model.newDirectMessages = model.directMessages.size();
+            updateGroup(model.friendUpdates, cache.get(0) as Set);
+            updateGroup(model.replies, cache.get(1) as Set);
+            updateGroup(model.userUpdates, cache.get(2) as Set);
+            updateGroup(model.directMessages, cache.get(3) as Set);
+            updateGroup(model.favorites, cache.get(4) as Set);
             
             System.out.println("cache loaded from: {cacheFile.getPath()}");
         }
@@ -432,15 +439,17 @@ public class FrontController {
             System.out.println("could not read from cache. Cause: {e}");
         }
     }
+
     
     public function saveToCache() {
         var cacheFile = new File("{System.getProperty("user.home")}/tweetbox.cache");
         System.out.println("saving cache to: {cacheFile.getPath()}");
         var cache:Vector = new Vector();
-        cache.add(model.friendUpdates);
-        cache.add(model.replies);
-        cache.add(model.userUpdates);
-        cache.add(model.directMessages);
+        cache.add(model.friendUpdates.updates);
+        cache.add(model.replies.updates);
+        cache.add(model.userUpdates.updates);
+        cache.add(model.directMessages.updates);
+        cache.add(model.favorites.updates);
         try {
             var output:ObjectOutputStream = new ObjectOutputStream(new FileOutputStream(cacheFile));
             output.writeObject(cache);
@@ -450,7 +459,6 @@ public class FrontController {
             System.out.println("could not save cache. Cause: {e}");
         }
     }
-    */
 
  /*
   * --------------------------------------------------------------------------
@@ -510,8 +518,7 @@ public class FrontController {
             if (group.showAlerts and group.updates.size() > 0 and newUpdates.size() > 0) {
                 addAlertMessage("{newUpdates.size()} new updates in {group.title}");
             }
-            group.updates.addAll(newUpdates);
-            group.newUpdates = newUpdates.size();
+            updateGroup(group, newUpdates);
         }
         else {
             println("processReceivedUpdates(null, {group.id})");
@@ -550,6 +557,14 @@ public class FrontController {
         model.updateNodeVisible = false;
         clearError();
         //addAlertMessage("direct message was sent succesfully");
+    }
+
+    function updateGroup(group:GroupVO, newUpdates:Set) {
+        group.updates.addAll(newUpdates);
+        group.newUpdates = newUpdates.size();
+        var iterator = group.updates.iterator();
+        def mostRecentUpdate:Status = iterator.next() as Status;
+        group.mostRecentUpdateId = mostRecentUpdate.getId();
     }
 
 

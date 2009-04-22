@@ -8,7 +8,7 @@ package tweetbox.command;
 
 import java.util.Date;
 
-import twitter4j.Twitter;
+import twitter4j.MoreTwitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterResponse;
 
@@ -21,14 +21,18 @@ import tweetbox.twitter.TwitterUtil;
  */
 
 public class GetFriendsTimelineCommand extends AbstractCommand {
-    public-init var twitter:Twitter;
+    public-init var twitter:MoreTwitter;
     public-init var group:GroupVO;
 
     var since:Date = TwitterUtil.getSinceDate(group.updates);
 
     public override function execute() {
         println("GetFriendsTimelineCommand.execute()");
-        var result = if (since != null) twitter.getFriendsTimeline(since) else twitter.getFriendsTimeline();
+        //var result = if (since != null) twitter.getFriendsTimeline(since) else twitter.getFriendsTimeline();
+        var result = if (group.mostRecentUpdateId != -1)
+            twitter.getFriendsTimeline(group.mostRecentUpdateId, group.maxVisibleUpdates)
+        else
+            twitter.getFriendsTimeline();
         since = new Date();
         return TwitterResponseVO {
             group:group
