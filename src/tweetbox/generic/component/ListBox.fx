@@ -29,6 +29,7 @@ import tweetbox.generic.component.listboxcellrenderer.*;
 public class ListBox extends CustomNode {
 
     public var cellHeight:Number = 20;
+
     public var cellSpacing:Number = 5;
 
     public var cellRenderer:ListBoxCellRenderer;
@@ -39,7 +40,10 @@ public class ListBox extends CustomNode {
     };
 
     public var height:Number on replace {
-        visibleCells = Math.round(height / (cellHeight+cellSpacing));
+        // calculate the number of cells that are rendered (with a minimum of 10,
+        // but that is a quick fix for an initialization bug that causes visibleCells to
+        // be set to -1, which in effect causes the listbox to render no cells at all)
+        visibleCells = Math.max(Math.round(height / (cellHeight+cellSpacing)), 10);
     }
 
     public var width:Number;
@@ -88,7 +92,7 @@ public class ListBox extends CustomNode {
 
 
     function renderCells():Void {
-        println("renderCells() {startIndex}");
+        //println("renderCells() {startIndex}");
         var nodes:Node[] = [];
         var n:Node;
         var cellWrapper:Group;
