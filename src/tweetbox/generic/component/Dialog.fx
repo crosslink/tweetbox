@@ -29,7 +29,7 @@ import tweetbox.ui.style.Style;
  */
 public class Dialog extends CustomNode {
 
-    public-init var title;
+    public-init var title:String;
     
     public var owner: Scene on replace {
         x = (owner.width - width) / 2;
@@ -114,7 +114,7 @@ public class Dialog extends CustomNode {
                                 Text {
                                     translateY: 15
                                     translateX: 10
-                                    content: "About TweetBox"
+                                    content: title
                                     fill: bind nodeStyle.DIALOG_TITLEBAR_TEXT_FILL
                                     font: bind nodeStyle.DIALOG_TITLEBAR_TEXT_FONT
                                 }
