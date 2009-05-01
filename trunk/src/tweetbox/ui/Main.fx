@@ -42,6 +42,7 @@ import tweetbox.generic.component.Balloon;
 import tweetbox.generic.layout.FlowBox;
 
 var aboutDialog:Dialog = null;
+var errorsDialog:Dialog = null;
 var configDialog:Dialog = null;
 
 
@@ -50,6 +51,13 @@ function showAboutDialog(scene:Scene) {
         aboutDialog = AboutDialog.create();
     }
     aboutDialog.open(scene);
+}
+
+function showErrorsDialog(scene:Scene) {
+    if (errorsDialog == null) {
+        errorsDialog = ErrorsDialog.create();
+    }
+    errorsDialog.open(scene);
 }
 
 function showConfigDialog(scene:Scene) {
@@ -174,6 +182,9 @@ function run() {
                         errorNode = ErrorNode {
                             translateX: bind stage.scene.width - errorNode.layoutBounds.width - 5
                             translateY: 5
+                            onMouseClicked: function(event):Void {
+                                showErrorsDialog(stage.scene);
+                            }
                         }
                         HomeView {
                             translateX: 5

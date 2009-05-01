@@ -52,12 +52,14 @@ public class ErrorNode extends CustomNode {
                     image: Image {
                         url: iconURL
                     }
+                    cursor: javafx.scene.Cursor.HAND;
+                    onMouseClicked: onMouseClicked
                 },
                 textRef = Text {
                     translateX: bind (width - textRef.layoutBounds.width + imageRef.layoutBounds.width) / 2
                     translateY: bind height / 2 + 5
                     translateY: 10
-                    content: bind model.error
+                    content: "error(s) occurred"//bind model.error
                     font: bind nodeStyle.ERROR_TEXT_FONT
                     fill: bind nodeStyle.ERROR_TEXT_FILL
                 }

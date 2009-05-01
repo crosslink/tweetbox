@@ -21,6 +21,7 @@ public class Model {
 
     public var state:Integer;
     public var error:String = "no error";
+    public var errors:String[] = [];
     public var isError:Boolean;
    
     public var updateText:String;
