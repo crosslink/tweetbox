@@ -24,4 +24,5 @@ public class GroupVO {
     public var refresh:function():Void;
     public var showAlerts:Boolean=true;
     public var maxVisibleUpdates:Integer = 50;
+    public var cache:Boolean=false;
 }

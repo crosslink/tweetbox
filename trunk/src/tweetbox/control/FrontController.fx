@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.Date;
 import java.util.ConcurrentModificationException;
 import java.util.Vector;
+import java.util.HashMap;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.ObjectOutputStream;
@@ -422,17 +423,18 @@ public class FrontController {
     public function loadFromCache() {
         var cacheFile = new File("{System.getProperty("user.home")}/tweetbox.cache");
         System.out.println("loading cache from: {cacheFile.getPath()}");
-        var cache:Vector = new Vector();
+        var cache:HashMap = new HashMap();
         try {
             var input:ObjectInputStream = new ObjectInputStream(new FileInputStream(cacheFile));
-            cache = input.readObject() as Vector;
-            
-            updateGroup(model.friendUpdates, cache.get(0) as Set);
-            updateGroup(model.replies, cache.get(1) as Set);
-            updateGroup(model.userUpdates, cache.get(2) as Set);
-            updateGroup(model.directMessages, cache.get(3) as Set);
-            updateGroup(model.favorites, cache.get(4) as Set);
-            
+            cache = input.readObject() as HashMap;
+
+            for (g: GroupVO in model.groups) {
+                if (cache.containsKey(g.id)) {
+                    updateGroup(g, cache.get(g.id) as Set);
+                }
+
+            }
+
             System.out.println("cache loaded from: {cacheFile.getPath()}");
         }
         catch (e:IOException) {
@@ -444,12 +446,10 @@ public class FrontController {
     public function saveToCache() {
         var cacheFile = new File("{System.getProperty("user.home")}/tweetbox.cache");
         System.out.println("saving cache to: {cacheFile.getPath()}");
-        var cache:Vector = new Vector();
-        cache.add(model.friendUpdates.updates);
-        cache.add(model.replies.updates);
-        cache.add(model.userUpdates.updates);
-        cache.add(model.directMessages.updates);
-        cache.add(model.favorites.updates);
+        var cache:HashMap = new HashMap();
+
+        for (g:GroupVO in model.groups) if (g.cache) cache.put(g.id, g.updates);
+
         try {
             var output:ObjectOutputStream = new ObjectOutputStream(new FileOutputStream(cacheFile));
             output.writeObject(cache);
@@ -460,12 +460,7 @@ public class FrontController {
         }
     }
 
- /*
-  * --------------------------------------------------------------------------
-  * private class functions
-  * --------------------------------------------------------------------------
-  */
-    function setError(error:String): Void {
+    public function setError(error:String): Void {
         var start = error.indexOf("<error>") + 7;
         var end = error.indexOf("</error>");
         if (start>6)
@@ -474,13 +469,19 @@ public class FrontController {
             model.error = "Error: {error}";
 
         model.isError = true;
+        insert model.error into model.errors;
     }
 
-    function clearError() : Void {
+    public function clearError() : Void {
         model.error = "";
         model.isError = false;
     }
 
+ /*
+  * --------------------------------------------------------------------------
+  * private class functions
+  * --------------------------------------------------------------------------
+  */
     function sendDirectMessage(update:String) {
         println("sending direct message [{update}] to [{model.directMessageReceiver.screenName}]");
         try {
@@ -561,6 +562,7 @@ public class FrontController {
 
     function updateGroup(group:GroupVO, newUpdates:Set) {
         if (newUpdates != null and newUpdates.size() > 0) {
+            println("updating group '{group.id}' with {newUpdates.size()} updates");
             group.updates.addAll(newUpdates);
             group.newUpdates = newUpdates.size();
             var iterator = group.updates.iterator();
