@@ -87,6 +87,7 @@ public class Configuration {
             
             for (group:GroupVO in groups) {
                 config.setProperty("group.{group.id}.expanded", "{group.expanded}");
+                config.setProperty("group.{group.id}.cache", "{group.cache}");
                 config.setProperty("group.{group.id}.since.id", "{group.mostRecentUpdateId}");
                 config.setProperty("group.{group.id}.updates.max", "{group.maxVisibleUpdates}");
             }
@@ -108,7 +109,9 @@ public class Configuration {
             var config:Properties = new Properties();
             var inStream:java.io.InputStream = new java.io.FileInputStream(configFile);
             config.load(inStream);
-            System.out.println("config loaded from: {configFile.getPath()}");
+            println("config loaded from: {configFile.getPath()}");
+            config.list(System.out);
+
             var account = AccountVO {
                 id: "twitter"
                 login: config.getProperty("twitter.login") as String
@@ -127,6 +130,7 @@ public class Configuration {
 
             for (group:GroupVO in groups) {
                 group.expanded = new java.lang.Boolean(config.getProperty("group.{group.id}.expanded")).booleanValue();
+                group.cache = new java.lang.Boolean(config.getProperty("group.{group.id}.cache")).booleanValue();
                 group.mostRecentUpdateId = new java.lang.Long(config.getProperty("group.{group.id}.since.id")).longValue();
                 group.maxVisibleUpdates = new java.lang.Integer(config.getProperty("group.{group.id}.updates.max")).intValue();
             }
