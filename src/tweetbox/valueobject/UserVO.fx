@@ -7,7 +7,6 @@
 package tweetbox.valueobject;
 
 import twitter4j.User;
-
 /**
  * @author mnankman
  */
@@ -15,9 +14,9 @@ import twitter4j.User;
 public class UserVO {
     public var user:User;
     
-    public var screenName:String = bind user.getScreenName() as String;
-    public var description:String = bind user.getDescription() as String;
-    public var followersCount = bind user.getFollowersCount();
-    public var location:String = bind user.getLocation();
-    public var profileImageUrl:String = bind user.getProfileImageURL().toString();
+    public-read var screenName:String = bind user.getScreenName() as String;
+    public-read var description:String = bind user.getDescription() as String;
+    public-read var followersCount = bind user.getFollowersCount();
+    public-read var location:String = bind user.getLocation();
+    public-read var profileImageUrl:String = bind user.getProfileImageURL().toString();
 }
