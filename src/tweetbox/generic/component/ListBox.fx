@@ -35,31 +35,27 @@ public class ListBox extends CustomNode {
     public var cellRenderer:ListBoxCellRenderer;
 
     public var model: Object[] on replace {
-        totalHeight = sizeof model * (cellHeight+cellSpacing);
+        delete cells; // force complete re-rendering of the list
         scroll(vertScrollBar.scrollPosition);
     };
 
-    public var height:Number on replace {
-        // calculate the number of cells that are rendered (with a minimum of 10,
-        // but that is a quick fix for an initialization bug that causes visibleCells to
-        // be set to -1, which in effect causes the listbox to render no cells at all)
-        visibleCells = Math.max(Math.round(height / (cellHeight+cellSpacing)), 10);
-    }
-
     public var width:Number;
 
-    var scrollStepSize:Number = bind cellHeight+cellSpacing;
-
-    var cellBounds = Rectangle2D {
-        width: width
-        height: cellHeight
+    public var height:Number on replace {
+        visibleCells = Math.round(height / (cellHeight+cellSpacing)) + 1;
     }
 
-    var visibleCells:Integer = 0;
+    public var scrollStepSize:Integer = cellHeight+cellSpacing;
+
+    var previousVisibleCells:Integer = 0;
+    var visibleCells:Integer = 0 on replace {
+        if (previousVisibleCells != visibleCells) renderCells();
+        previousVisibleCells = visibleCells;
+    };
 
     var cells:Node[];
 
-    var totalHeight:Number = 0;
+    var totalHeight:Number = bind sizeof model * (cellHeight+cellSpacing);
 
     var vertScrollBar:ScrollBar;
 
@@ -74,11 +70,12 @@ public class ListBox extends CustomNode {
     public-read var selectedNode:Node = null;
 
     var startIndex:Integer;
+    var smoothScrollOffset:Number = 0;
 
     var scroller = Timeline {
         keyFrames: [
             KeyFrame {
-                time: bind 25ms
+                time: bind 1ms
                 action: renderCells
             }
         ]
@@ -86,13 +83,16 @@ public class ListBox extends CustomNode {
 
     function scroll(scrollPosition:Number) {
         scroller.stop();
-        startIndex = Math.round((0.0-scrollPosition) / (cellHeight+cellSpacing));
+        def p:Number = (0.0-scrollPosition) / (cellHeight+cellSpacing);
+        startIndex = Math.max(0, Math.round(p)-1);
+        smoothScrollOffset = (startIndex - p) * (cellHeight+cellSpacing);
+        //println("{scrollPosition} : {startIndex} - {p} = {startIndex - p}");
         scroller.play();
     }
 
 
     function renderCells():Void {
-        //println("renderCells() {startIndex}");
+        //println("renderCells() {startIndex} {lastStartIndex}");
         var nodes:Node[] = [];
         var n:Node;
         var cellWrapper:Group;
@@ -100,26 +100,44 @@ public class ListBox extends CustomNode {
         var nodeIndex:Integer;
         var endIndex:Integer;
 
+        def cellBounds = Rectangle2D {width: width height: cellHeight}
+        
+        def indexDiff:Integer = startIndex - lastStartIndex;
+        def newCellsStartIndex = if (indexDiff>0) visibleCells - indexDiff else 0;
+        def newCellsEndIndex = if (sizeof cells > 0) newCellsStartIndex + Math.abs(indexDiff) else visibleCells;
+
         for (i:Integer in [0..visibleCells]) {
             nodeIndex = startIndex+i;
             if (nodeIndex < sizeof model) {
-                n = cellRenderer.create(model[nodeIndex], cellBounds);
-                cellWrapper = Group {
-                    translateY:nextY
-                    content: [
-                        n,
-                        Rectangle {
-                            width: cellBounds.width
-                            height: cellBounds.height
-                            fill: Color.TRANSPARENT
-                            onMouseReleased: function(e:MouseEvent) {
-                                selectedNode = n;
+                if (newCellsStartIndex<newCellsEndIndex and i >= newCellsStartIndex and i <= newCellsEndIndex) {
+                    //println("render new cell[{i}, {nodeIndex}]");
+                    //render new cells
+                    n = cellRenderer.create(model[nodeIndex], cellBounds);
+                    cellWrapper = Group {
+                        translateY:nextY+smoothScrollOffset
+                        content: [
+                            n,
+                            Rectangle {
+                                width: cellBounds.width
+                                height: cellBounds.height
+                                fill: Color.TRANSPARENT
+                                onMouseReleased: function(e:MouseEvent) {
+                                    selectedNode = n;
+                                }
                             }
-                        }
-                    ]
+                        ]
+                    }
+                    insert cellWrapper into nodes;
                 }
+                else {
+                    //println("reuse cell[{i}, {i+indexDiff}]");
+                    //reuse already visible cells
+                    n = cells[i+indexDiff];
+                    n.translateY = nextY+smoothScrollOffset;
+                    insert n into nodes;
+                }
+                
                 nextY = nextY + cellHeight + cellSpacing;
-                insert cellWrapper into nodes;
                 endIndex = nodeIndex;
             }
         }
@@ -128,10 +146,11 @@ public class ListBox extends CustomNode {
     }
 
     public override function create(): Node {
-        scroll(0);
+        //scroll(0);
         return Group {
             content: [
-                Group{
+                Group {
+                    //translateY: bind smoothScrollOffset
                     content:bind cells
                 },
                 vertScrollBar = VerticalScrollBar {
@@ -139,7 +158,7 @@ public class ListBox extends CustomNode {
                     visible: bind showVerticalScrollBar
                     translateX: bind width
                     scrolledViewDimension: bind totalHeight
-                    scrollStepSize: cellHeight+cellSpacing
+                    scrollStepSize: bind scrollStepSize
                     onScroll: function(p:Number) {
                         scroll(p);
                     }
@@ -168,20 +187,31 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 
 function run(): Void {
+    var model:String[] = for (i:Integer in [0..20]) {"this is line {i}"};
+    var n:Integer = sizeof model;
     Stage {
         width: 400
         height: 400
         scene: Scene {
             fill: Color.WHITE
             content: [
+                Button {
+                    label: "add item"
+                    action: function() {
+                        insert "this is line {++n}" into model
+                    }
+
+                }
+
                 ListBox {
                     translateX: 20
-                    translateY: 20
+                    translateY: 40
                     width: 100
                     height: 200
-                    model: bind for (i:Integer in [0..20]) {"this is line {i}"}
-                    cellRenderer: SimpleCellRenderer{}
+                    model: bind model
+                    //scrollStepSize: 12
                     cellHeight:50
+                    cellRenderer: SimpleCellRenderer{}
                 }
             ]
         }

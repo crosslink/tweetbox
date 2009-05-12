@@ -166,7 +166,7 @@ public class HorizontalScrollBar extends ScrollBar {
                             arcWidth: scrollButtonSize / 2
 
                             onMouseDragged: function(e:MouseEvent):Void {
-                                if (updateThumbPos(e.x)!=0) {
+                                if (updateThumbPos(e.dragX)!=0) {
                                     scrollForward.stop();
                                     scrollBackwards.stop();
                                     scrollTo(e.x)
