@@ -4,16 +4,13 @@
  */
 package tweetbox.model;
 
-import java.lang.Object;
-import java.util.Date;
-import javafx.scene.*;
-import javafx.scene.image.*;
-import javafx.scene.text.*;
 import javafx.geometry.Point2D;
 
 import tweetbox.valueobject.*;
 import tweetbox.ui.style.*;
 import tweetbox.configuration.Configuration;
+import tweetbox.twitter.UserMap;
+
 /**
  * The model behind TweetBox
  */
@@ -77,6 +74,8 @@ public class Model {
         favorites,
         userUpdates
     ];
+
+    public-read var userMap:UserMap = new UserMap();
 
     public-read def appInfo = AppInfoVO {};
 
