@@ -38,6 +38,7 @@ public abstract class ScrollBar extends CustomNode {
 
     /** The dimension, i.e. height or width, of the scrolled view */
     public var scrolledViewDimension:Number on replace {
+        //println("ScrollBar.scrolledViewDimension = {scrolledViewDimension}");
         calculateRatios();
     }
 
@@ -83,7 +84,7 @@ public abstract class ScrollBar extends CustomNode {
      * @param pos - the position to scroll to
      */
     public function scrollTo(newPos:Number) {
-        scrollPosition = 0.0 - (thumbPos * viewTrackRatio);
+        scrollPosition = Math.min(0.0, 0.0 - (newPos * viewTrackRatio));
         onScroll(scrollPosition);
     }
 
@@ -97,8 +98,10 @@ public abstract class ScrollBar extends CustomNode {
 
 
     function calculateRatios(): Void {
-        viewTrackRatio = scrolledViewDimension / trackLength;
-        trackViewRatio = trackLength / scrolledViewDimension;
+        viewTrackRatio = (scrolledViewDimension-trackLength) / trackLength;
+        trackViewRatio = trackLength / (scrolledViewDimension-trackLength);
+        thumbLength = Math.max(15, trackLength * (trackLength / scrolledViewDimension) - scrollBarButtonSizeCorrection);
+        updateThumbPos(thumbPos - thumbPos * (thumbPos / scrolledViewDimension));
     }
 
     /**

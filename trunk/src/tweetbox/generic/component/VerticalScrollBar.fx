@@ -155,8 +155,8 @@ public class VerticalScrollBar extends ScrollBar {
                             arcWidth: scrollButtonSize / 2
 
                             onMouseDragged: function(e:MouseEvent):Void {
-                                //println("thumb dragged: {e} dragAnchorY={e.dragAnchorY} dragY={e.dragY}");
-                                if (updateThumbPos(e.y)!=0) {
+                                //println("thumb dragged: {e} e.dragAnchorY={e.dragAnchorY} e.dragY={e.dragY} e.y={e.y}");
+                                if (updateThumbPos(e.dragY)!=0) {
                                     scrollForward.stop();
                                     scrollBackwards.stop();
                                     scrollTo(e.y)
