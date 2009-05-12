@@ -321,7 +321,24 @@ public class FrontController {
             setError(e.getMessage());
         }
     }
-    
+
+    /**
+     * Adds tweet to the current user's favorites
+     * @param tweet - the tweet to add to the user's favorites
+     */
+    public function getUserDetail(id: Integer): twitter4j.User {
+        try {
+            var result:Object = null;
+            result = twitter.getUserDetail("{id}");
+            return result as twitter4j.User;
+        }
+        catch (e:TwitterException) {
+            println("twitter exception: {e}");
+            setError(e.getMessage());
+            return null;
+        }
+    }
+
     public function search(query:String) {
     }
 
@@ -475,6 +492,23 @@ public class FrontController {
     public function clearError() : Void {
         model.error = "";
         model.isError = false;
+    }
+
+    public function getUser(id: Integer): UserVO {
+        if (model.userMap.containsUser(id))
+            return UserVO{user:model.userMap.getUser(id)}
+        else if (id>0) {
+            def user:twitter4j.User = getUserDetail(id);
+            if (user != null) {
+                model.userMap.addUser(user);
+                return UserVO{user:user};
+            }
+            else return null;
+        }
+        else {
+            return null;
+        }
+
     }
 
  /*
