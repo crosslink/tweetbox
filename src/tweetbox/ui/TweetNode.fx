@@ -73,15 +73,6 @@ public class TweetNode extends CustomNode {
                 maxHeight: tweetContentHeight
                 tweet: tweet
             }
-//            Group {
-//                translateX: 7
-//                translateY: 0
-//                content: TweetContentRenderer {
-//                    maxWidth: tweetContentWidth
-//                    maxHeight: tweetContentHeight
-//                    tweet: tweet
-//                }
-//            }
         ]
     };
 
