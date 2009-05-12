@@ -35,6 +35,7 @@ import tweetbox.util.BrowserLauncher;
 import tweetbox.util.TwitPicUtil;
 import tweetbox.util.MobypictureUtil;
 import tweetbox.generic.util.ImageCache;
+import tweetbox.control.FrontController;
 
 /**
  * @author mnankman
@@ -232,12 +233,17 @@ public class TweetContentRenderer extends CustomNode {
         def createdAt = DateUtil.formatAsTweetDisplayDate(tweet.createdAt);
         def source = setStyle(tweet.source, updateTextFont, linkColor);
 
-        def inReply =
-            if (tweet.isReply) {
-                def inReplyToLink = createLinkHtml("{tweet.inReplyToId}", "http://twitter.com/{tweet.inReplyToUserId}/status/{tweet.inReplyToId}");
-                " in reply to {inReplyToLink}"
-            } else
-                "";
+        def inReplyToUser:UserVO = FrontController.getInstance().getUser(tweet.inReplyToUserId);
+//        println("inReplyToUser = {inReplyToUser.screenName}");
+//        def inReply =
+//            if (tweet.isReply and inReplyToUser.user != null) {
+//                def inReplyToLink = createLinkHtml(
+//                    "{inReplyToUser.screenName}",
+//                    "http://twitter.com/{inReplyToUser.screenName}/status/{tweet.inReplyToId}");
+//                " in reply to {inReplyToLink}"
+//            } else
+//                "";
+        def inReply = "";
         
         tweet.html = setStyle("{sender}{inReply}: {content}\n{createdAt} with {source}", , updateTextFont, updateTextColor);
     }
@@ -262,7 +268,7 @@ public class TweetContentRenderer extends CustomNode {
 
     public override function create(): Node {
         renderedNode = createHtmlPane();
-        rerender();
+        //rerender();
         return Group {
             cache:true
             content: bind renderedNode
