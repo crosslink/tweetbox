@@ -7,61 +7,66 @@
 package tweetbox.valueobject;
 
 import java.util.Date;
-import tweetbox.util.DateUtil;
 import twitter4j.Status;
 import twitter4j.DirectMessage;
 import twitter4j.TwitterResponse;
 import twitter4j.User;
 
-import javax.swing.text.Document;
+import tweetbox.model.Model;
+
 
 /**
  * @author mnankman
  */
 
 public class TweetVO {
-    public var response:TwitterResponse;
+    public-init var response:TwitterResponse on replace {
+        if (response instanceof Status) {
+            status = response as Status;
+            id = status.getId();
+            user = UserVO{user: status.getUser()}
+            text = status.getText();
+            createdAt = status.getCreatedAt();
+            source = status.getSource();
+            inReplyToId = status.getInReplyToStatusId();
+            inReplyToUserId = status.getInReplyToUserId();
+            isReply = (inReplyToId != -1);
+        }
+        else if (response instanceof DirectMessage) {
+            dm = response as DirectMessage;
+            id = dm.getId();
+            user = UserVO{user: dm.getSender()}
+            text = dm.getText();
+            createdAt = dm.getCreatedAt();
+        }
+        else if (response instanceof User) {
+            user = UserVO{user: response as User}
+            text = "{user.description}, {user.followersCount} followers, location: {user.location}"
+        }
 
-    var status:Status = if (response instanceof Status) response as Status else null;
-    var dm:DirectMessage  = if (response instanceof DirectMessage) response as DirectMessage else null;
+        if (user != null) {
+            //remember this user
 
-    public var id =
-        if (status != null) status.getId()
-        else if (dm != null) dm.getId()
-        else -1;
+            //TODO: this value object shouldn't directly reference the Model instance.
+            //      must be refactored into a looser coupling!!
 
-    public var user:UserVO = UserVO {
-        user: bind
-            if (status != null)
-                status.getUser()
-            else if (dm != null)
-                dm.getSender()
-            else if (response instanceof User) response as User 
-            else null;
+            Model.getInstance().userMap.addUser(user.user);
+        }
+
     }
 
-    public var text:String = bind
-        if (status != null)
-            status.getText()
-        else if (dm != null)
-            dm.getText()
-        else if (response instanceof User) "{user.description}, {user.followersCount} followers, location: {user.location}"
-        else null;
+    var status:Status = null;
+    var dm:DirectMessage  = null;
+
+    public-read var id = -1;
+    public-read var user:UserVO = null;
+    public-read var text:String = null;
+    public-read var createdAt:Date = null;
+    public-read var source:String = bind status.getSource();
+    public-read var inReplyToId:Integer = -1;
+    public-read var inReplyToUserId:Integer = -1;
+    public-read var isReply:Boolean = false;
 
     public var html: String = null;
-
-    public var createdAt:Date = bind
-        if (status != null)
-            status.getCreatedAt()
-        else if (dm != null)
-            dm.getCreatedAt()
-        else null;
-
-    public var source:String = bind status.getSource();
-
-    public var inReplyToId:Integer = bind status.getInReplyToStatusId();
-    public var inReplyToUserId:Integer = bind status.getInReplyToUserId();
-    
-    public var isReply:Boolean = bind (status.getInReplyToUserId() != -1)
 
 }
