@@ -22,15 +22,15 @@ import twitter4j.TwitterResponse;
 
 public class TweetCellRenderer extends ListBoxCellRenderer {
     public override function create(data:Object, bounds:Rectangle2D) {
-        var tn:TweetNode = data as TweetNode;
-        tn.width = bounds.width;
-        tn.height = bounds.height;
-        return tn;
-//        return TweetNode {
-//            width: bounds.width
-//            height: bounds.height
-//            tweet: data as TweetVO
-//        }
+//        var tn:TweetNode = data as TweetNode;
+//        tn.width = bounds.width;
+//        tn.height = bounds.height;
+//        return tn;
+        return TweetNode {
+            width: bounds.width
+            height: bounds.height
+            tweet: data as TweetVO
+        }
 
     }
 }

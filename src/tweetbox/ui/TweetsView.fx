@@ -35,16 +35,16 @@ public class TweetsView extends CustomNode, Resizable {
         var updateArray:Object[] = group.updates.toArray();
         var addedRows:Integer = 0;
         for (row in [0..newTweets - 1]) {
-            insert TweetNode {
-                width: width - 5
-                height: 80
-                tweet: TweetVO {
-                    response: updateArray[row] as TwitterResponse
-                }
-            } before tweetListModel[row];
-//            insert TweetVO {
-//                response: updateArray[row] as TwitterResponse
+//            insert TweetNode {
+//                width: width - 5
+//                height: 80
+//                tweet: TweetVO {
+//                    response: updateArray[row] as TwitterResponse
+//                }
 //            } before tweetListModel[row];
+            insert TweetVO {
+                response: updateArray[row] as TwitterResponse
+            } before tweetListModel[row];
         }
         delete tweetListModel[group.maxVisibleUpdates..];
         newRows = newTweets;
