@@ -19,6 +19,7 @@ import javafx.scene.paint.Color;
 
 public class SimpleCellRenderer extends ListBoxCellRenderer {
     public override function create(data:Object, bounds:Rectangle2D) {
+        //println("SimpleCellRenderer.create({data}, {bounds})");
         return Group {
             content: [
                 
@@ -33,7 +34,7 @@ public class SimpleCellRenderer extends ListBoxCellRenderer {
                     translateY: 15
                     translateX: 0
                     content: "{data}"
-                    //wrappingWidth: bounds.width
+                    wrappingWidth: bounds.width
                 },
             ]
         }
