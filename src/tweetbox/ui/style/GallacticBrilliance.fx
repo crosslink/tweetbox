@@ -97,7 +97,7 @@ public function create(): Theme {
         ALERT_TEXT_FILL : Color.WHITE;
         ALERT_TEXT_FONT : Font {
             name: "Verdana"
-            size: 12
+            size: 14
             embolden: true
         }
 

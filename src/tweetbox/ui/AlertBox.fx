@@ -57,7 +57,6 @@ public class AlertBox {
     };
 
     // a media player for playing a short beep when new tweets arrive
-    // but it doesn't work!?
     var mediaPlayer = MediaPlayer{
         media: Media {
             source: "http://www.xs4all.nl/~mnankman/tweetbox/beep.mp3"
@@ -108,6 +107,7 @@ public class AlertBox {
                     Text {
                         wrappingWidth: bind width - 10
                         content: message
+                        fill: bind nodeStyle.ALERT_TEXT_FILL
                         font: bind nodeStyle.ALERT_TEXT_FONT
                     }
                 }
@@ -149,16 +149,19 @@ public class AlertBox {
             controller.clearAlertMessages();
             fade.rate = -1.0;
             fade.play();
-            stage.visible = false;
+            mediaPlayer.stop();
         }
     }    
     
     var fade = Timeline {
         keyFrames: [
             KeyFrame { 
-                time:300ms 
+                time:500ms
                 values:stageOpacityValue => 1.0 tween Interpolator.LINEAR
-                
+                action: function() {
+                    //stage.visible = stageOpacityValue>0;
+                }
+
             }
         ]
     };
