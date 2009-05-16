@@ -75,7 +75,7 @@ public class ListBox extends CustomNode {
     var scroller = Timeline {
         keyFrames: [
             KeyFrame {
-                time: bind 1ms
+                time: bind 15ms
                 action: renderCells
             }
         ]
