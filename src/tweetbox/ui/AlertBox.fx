@@ -50,7 +50,7 @@ public class AlertBox {
     var model = Model.getInstance();
     var controller = FrontController.getInstance();
     
-    var stageOpacityValue:Number = 0.0;
+    var visibleStagePart:Number = 0.0;
 
     var messageCount:Integer = bind model.alertMessageCount on replace {
         if (messageCount>0) show() else hide();
@@ -118,9 +118,8 @@ public class AlertBox {
     var stage:JFXStage = JFXStage {
         alwaysOnTop: true
         x: screenSize.width - width - 25
-        y: screenSize.height - height - 50
+        y: bind screenSize.height - (height * visibleStagePart) - 50
         title: "TweetBox Alert"
-        opacity: bind stageOpacityValue
         width: width
         height: height
         style: StageStyle.TRANSPARENT
@@ -136,9 +135,9 @@ public class AlertBox {
         if (not stage.visible) {
             println("showing alertBox pos=({stage.x},{stage.y}) dim=({stage.width}x{stage.height})");
             stage.visible = true;
-            fade.rate = 1.0;
+            slide.rate = 1.0;
             mediaPlayer.play();
-            fade.play();
+            slide.play();
             autoHide.play();
         }
     }
@@ -147,19 +146,19 @@ public class AlertBox {
         if (stage.visible) {
             println("hiding alertBox");
             controller.clearAlertMessages();
-            fade.rate = -1.0;
-            fade.play();
+            slide.rate = -1.0;
+            slide.play();
             mediaPlayer.stop();
         }
     }    
     
-    var fade = Timeline {
+    var slide = Timeline {
         keyFrames: [
             KeyFrame { 
-                time:500ms
-                values:stageOpacityValue => 1.0 tween Interpolator.LINEAR
+                time:400ms
+                values:visibleStagePart => 1.0 tween Interpolator.LINEAR
                 action: function() {
-                    //stage.visible = stageOpacityValue>0;
+                    stage.visible = visibleStagePart>0;
                 }
 
             }
