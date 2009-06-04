@@ -91,7 +91,7 @@ public class Model {
 
 
 
-    public var alertMessages:String[] = [];
+    public var alertMessages:Object[] = [];
     public var alertMessageCount:Integer = 0;
     
 }

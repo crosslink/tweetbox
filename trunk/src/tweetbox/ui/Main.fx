@@ -217,8 +217,6 @@ function run() {
     var windowFrame:Frame = stage.getWindow().getOwner() as Frame;
     
     var alertBox = AlertBox {
-        width: 300
-        height: 200
         onClick: function() {
             if (windowFrame.getState()==Frame.ICONIFIED) windowFrame.setState(Frame.NORMAL);
             windowFrame.setVisible(true);
