@@ -31,14 +31,16 @@ import tweetbox.generic.component.HTMLNode;
 import tweetbox.model.Model;
 import tweetbox.ui.style.Style;
 import tweetbox.control.FrontController;
+import tweetbox.valueobject.TweetVO;
+import javafx.scene.paint.Color;
 
 /**
  * @author mnankman
  */
 
 public class AlertBox {
-    public var width:Integer;
-    public var height:Integer;
+//    var width:Number = bind content.layoutBounds.width;
+//    var height:Number = bind content.layoutBounds.height;
 
     public var onClick: function();
 
@@ -62,6 +64,8 @@ public class AlertBox {
             source: "http://www.xs4all.nl/~mnankman/tweetbox/beep.mp3"
         }
     }
+
+    var messageBox:VBox;
     
     var content:Group = Group {
         content: [
@@ -72,8 +76,8 @@ public class AlertBox {
                 stroke: bind nodeStyle.APPLICATION_BACKGROUND_STROKE
                 strokeWidth: 3
                 x:0 y:0
-                width: bind width - 2
-                height: bind height - 2
+                width: bind messageBox.layoutBounds.width + 10
+                height: bind 20 + messageBox.layoutBounds.height + 10
                 fill: bind nodeStyle.APPLICATION_BACKGROUND_FILL
 
                 onMouseClicked:
@@ -87,7 +91,7 @@ public class AlertBox {
                     Rectangle {
                         x:3
                         y:3
-                        width: bind width - 6
+                        width: bind messageBox.layoutBounds.width + 4
                         height: bind 20
                         fill: bind nodeStyle.APPLICATION_TITLEBAR_FILL
                     },
@@ -100,15 +104,29 @@ public class AlertBox {
                     }
                 ]
             },
-            VBox {
+            messageBox = VBox {
                 translateX: 5
                 translateY: 40
                 content: bind for (message in model.alertMessages) {
-                    Text {
-                        wrappingWidth: bind width - 10
-                        content: message
-                        fill: bind nodeStyle.ALERT_TEXT_FILL
-                        font: bind nodeStyle.ALERT_TEXT_FONT
+                    if (message instanceof String)
+                        Text {
+                            wrappingWidth: 400
+                            content: message as String
+                            fill: bind nodeStyle.ALERT_TEXT_FILL
+                            font: bind nodeStyle.ALERT_TEXT_FONT
+                        }
+                    else if (message instanceof Node) {
+                        message as Node
+                    }
+                    else if (message instanceof TweetVO) {
+                        TweetNode {
+                            width: 400
+                            height: 80
+                            tweet: message as TweetVO
+                        }
+                    }
+                    else {
+                        null
                     }
                 }
             }
@@ -117,11 +135,11 @@ public class AlertBox {
 
     var stage:JFXStage = JFXStage {
         alwaysOnTop: true
-        x: screenSize.width - width - 25
-        y: bind screenSize.height - (height * visibleStagePart) - 50
+        x: bind screenSize.width - content.layoutBounds.width - 25
+        y: bind screenSize.height - content.layoutBounds.height  - 50 //* visibleStagePart
         title: "TweetBox Alert"
-        width: width
-        height: height
+        width: bind content.layoutBounds.width
+        height: bind content.layoutBounds.height
         style: StageStyle.TRANSPARENT
         resizable: false
         visible: false;
@@ -146,8 +164,9 @@ public class AlertBox {
         if (stage.visible) {
             println("hiding alertBox");
             controller.clearAlertMessages();
-            slide.rate = -1.0;
-            slide.play();
+            //slide.rate = -1.0;
+            //slide.play();
+            stage.visible = false;
             mediaPlayer.stop();
         }
     }    
@@ -157,9 +176,6 @@ public class AlertBox {
             KeyFrame { 
                 time:400ms
                 values:visibleStagePart => 1.0 tween Interpolator.LINEAR
-                action: function() {
-                    stage.visible = visibleStagePart>0;
-                }
 
             }
         ]
@@ -184,13 +200,18 @@ public function run(): Void {
     println("screensize: {screenSize.width} x {screenSize.height}");
     
     var ab = AlertBox {
-        width: 300
-        height: 300
         autoHideDelay: 24h
         onClick: function() {
             System.exit(0);
         }
     }
     FrontController.getInstance().addAlertMessage("Click this box to close it");
+    FrontController.getInstance().addAlertMessageObject(
+            Circle {
+                centerX: 50, centerY: 100
+                radius: 20
+                fill: Color.BLACK
+            }
+    );
     ab.show();
 }

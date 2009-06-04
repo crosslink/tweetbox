@@ -9,6 +9,7 @@ package tweetbox.control;
 import tweetbox.model.*;
 import tweetbox.valueobject.*;
 import java.lang.System;
+import java.lang.Math;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
@@ -419,10 +420,18 @@ public class FrontController {
     }
 
     public function addAlertMessage(message:String): Void {
-        if (model.alertMessages != null and sizeof model.alertMessages > 0) 
+        if (model.alertMessages != null and sizeof model.alertMessages > 0)
             insert message into model.alertMessages
         else
             model.alertMessages = [message];
+        model.alertMessageCount++;
+    }
+
+    public function addAlertMessageObject(object:Object): Void {
+        if (model.alertMessages != null and sizeof model.alertMessages > 0)
+            insert object into model.alertMessages
+        else
+            model.alertMessages = [object];
         model.alertMessageCount++;
     }
 
@@ -552,6 +561,15 @@ public class FrontController {
             var newUpdates:Set = TwitterUtil.getNewUpdates(updates, group.updates);
             if (group.showAlerts and group.updates.size() > 0 and newUpdates.size() > 0) {
                 addAlertMessage("{newUpdates.size()} new updates in {group.title}");
+                def updateArray = newUpdates.toArray();
+                def n:Integer = Math.min(newUpdates.size(), 3);
+                for (i:Integer in [0..n-1]) {
+                    addAlertMessageObject(
+                        TweetVO {
+                            response: updateArray[i] as TwitterResponse
+                        }
+                    );
+                }
             }
             updateGroup(group, newUpdates);
         }
