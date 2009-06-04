@@ -85,7 +85,7 @@ public class ListBox extends CustomNode {
         scroller.stop();
         def p:Number = (0.0-scrollPosition) / (cellHeight+cellSpacing);
         startIndex = Math.max(0, Math.round(p)-1);
-        smoothScrollOffset = (startIndex - p) * (cellHeight+cellSpacing);
+        //smoothScrollOffset = (startIndex - p) * (cellHeight+cellSpacing);
         //println("{scrollPosition} : {startIndex} - {p} = {startIndex - p}");
         scroller.play();
     }
