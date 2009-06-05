@@ -30,7 +30,7 @@ public class HorizontalScrollBar extends ScrollBar {
     /** The view (a Node) that is scrolled by this scrollbar */
     public var view:Node;
 
-    var viewWidth = bind view.boundsInLocal.width on replace {
+    var viewWidth = bind view.layoutBounds.width on replace {
         if (view != null) scrolledViewDimension = viewWidth;
     }
 

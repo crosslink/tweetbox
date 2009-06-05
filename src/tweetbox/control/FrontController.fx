@@ -294,8 +294,10 @@ public class FrontController {
             else {
                 var result:Object = null;
                 result = 
-                    if (model.inReplyToId != -1) twitter.update(update)
-                    else twitter.update(update, model.inReplyToId);
+                    if (model.inReplyToId != -1)
+                        twitter.update(update)
+                    else
+                        twitter.update(update, model.inReplyToId);
                 updated(result as Status);
             }
         }

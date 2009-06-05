@@ -36,7 +36,8 @@ public class ListBox extends CustomNode {
 
     public var model: Object[] on replace {
         delete cells; // force complete re-rendering of the list
-        scroll(vertScrollBar.scrollPosition);
+        //scroll(vertScrollBar.scrollPosition);
+        scroll(0.0);
     };
 
     public var width:Number;
