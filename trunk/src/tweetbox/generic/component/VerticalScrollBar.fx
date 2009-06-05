@@ -25,7 +25,7 @@ public class VerticalScrollBar extends ScrollBar {
     /** The view (a Node) that is scrolled by this scrollbar */
     public var view:Node;
 
-    var viewHeight = bind view.boundsInLocal.height on replace {
+    var viewHeight = bind view.layoutBounds.height on replace {
         if (view != null) scrolledViewDimension = viewHeight;
     }
 
