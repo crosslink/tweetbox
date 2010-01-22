@@ -10,7 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.text.Text;
 import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
-import javafx.geometry.Rectangle2D;
+import javafx.geometry.Bounds;
 import javafx.scene.paint.Color;
 import javafx.scene.input.MouseEvent;
 
@@ -25,7 +25,7 @@ import tweetbox.model.Model;
  */
 
 public class ThemeCellRenderer extends ListBoxCellRenderer {
-    public override function create(data:Object, bounds:Rectangle2D) {
+    public override function create(data:Object, bounds:Bounds) {
         def theme = data as Theme;
         return Group {
             content: [

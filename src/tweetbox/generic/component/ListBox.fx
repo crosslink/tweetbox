@@ -10,13 +10,11 @@ import javafx.scene.CustomNode;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.layout.VBox;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.geometry.Rectangle2D;
+import javafx.geometry.BoundingBox;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
-import javafx.animation.Interpolator;
 
 import java.lang.Math;
 
@@ -46,7 +44,7 @@ public class ListBox extends CustomNode {
         visibleCells = Math.round(height / (cellHeight+cellSpacing)) + 1;
     }
 
-    public var scrollStepSize:Integer = cellHeight+cellSpacing;
+    public var scrollStepSize:Number = cellHeight+cellSpacing;
 
     var previousVisibleCells:Integer = 0;
     var visibleCells:Integer = 0 on replace {
@@ -101,7 +99,7 @@ public class ListBox extends CustomNode {
         var nodeIndex:Integer;
         var endIndex:Integer;
 
-        def cellBounds = Rectangle2D {width: width height: cellHeight}
+        def cellBounds = BoundingBox {width: width height: cellHeight}
         
         def indexDiff:Integer = startIndex - lastStartIndex;
         def newCellsStartIndex = if (indexDiff>0) visibleCells - indexDiff else 0;

@@ -10,7 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.text.Text;
 import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
-import javafx.geometry.Rectangle2D;
+import javafx.geometry.Bounds;
 import javafx.scene.paint.Color;
 
 /**
@@ -18,7 +18,7 @@ import javafx.scene.paint.Color;
  */
 
 public class SimpleCellRenderer extends ListBoxCellRenderer {
-    public override function create(data:Object, bounds:Rectangle2D) {
+    public override function create(data:Object, bounds:Bounds) {
         //println("SimpleCellRenderer.create({data}, {bounds})");
         return Group {
             content: [

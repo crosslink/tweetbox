@@ -201,7 +201,7 @@ public class TweetContentRenderer extends CustomNode {
     }
 
     function setStyle(html:String, font:Font, color:Color):String {
-        def rgbhex = java.lang.Integer.toHexString(color.getAWTColor().getRGB());
+        def rgbhex = "#000000";//java.lang.Integer.toHexString(color.getAWTColor().getRGB());
         def colorHtml = if (rgbhex != null and rgbhex.length() == 8) "#{rgbhex.substring(2)}" else "#000000";
         def fontSize:Integer = Math.round(font.size);
         return "<font name=\"{font.name}\" size=\"{font.size}\" color=\"{colorHtml}\">{html}</font>";
@@ -245,7 +245,7 @@ public class TweetContentRenderer extends CustomNode {
 //                "";
         def inReply = "";
         
-        tweet.html = setStyle("{sender}{inReply}: {content}\n{createdAt} with {source}", , updateTextFont, updateTextColor);
+        tweet.html = setStyle("{sender}{inReply}: {content}\n{createdAt} with {source}", updateTextFont, updateTextColor);
     }
 
     function createHtmlPane(): Node {

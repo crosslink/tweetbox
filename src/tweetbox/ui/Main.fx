@@ -14,15 +14,10 @@ import javafx.scene.*;
 import javafx.scene.shape.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
-import javafx.scene.transform.*;
-import javafx.stage.*;
-import javafx.animation.*;
-import javafx.scene.text.Text;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.HBox;
 
 import org.jfxtras.stage.JFXStage;
-import org.jfxtras.stage.WindowHelper;
 
 import java.lang.Object;
 import java.lang.Math;
@@ -31,15 +26,11 @@ import java.awt.Dimension;
 import java.awt.Frame;
 
 import tweetbox.model.Model;
-import tweetbox.model.State;
 import tweetbox.ui.style.Style;
 import tweetbox.control.FrontController;
-import tweetbox.generic.component.ScrollView;
 import tweetbox.generic.component.Button;
-import tweetbox.generic.component.Window;
 import tweetbox.generic.component.Dialog;
 import tweetbox.generic.component.Balloon;
-import tweetbox.generic.layout.FlowBox;
 
 var aboutDialog:Dialog = null;
 var errorsDialog:Dialog = null;
@@ -119,14 +110,12 @@ function run() {
         x: (screenSize.width - stageWidth) / 2
         y: (screenSize.height - stageHeight) / 2
         resizable: true
-        visible: true
+        visible: false
 
         icons: [
             Image {url: "{__DIR__}images/tweetboxlogo25.gif"},
             Image {url: "{__DIR__}images/tweetboxlogo100.gif"},
         ]
-
-        visible: false
 
         onClose: function():Void {
             controller.exit();

@@ -115,4 +115,7 @@ public class TweetsView extends CustomNode, Resizable {
         return "TweetsView[title = {title}, newTweets = {newTweets}, expanded = {expanded}] ";
     }
 
+    public override function getPrefHeight(width: Number) : Number {0}
+    public override function getPrefWidth(width: Number) : Number {0}
+
 }
