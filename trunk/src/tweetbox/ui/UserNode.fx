@@ -78,8 +78,8 @@ public class UserNode extends CustomNode {
             tweetActionButtonGroup.visible = true;
             showBalloon(
                 Point2D {
-                    x: imageView.boundsInScene.maxX - 10
-                    y: imageView.boundsInScene.minY + imageView.layoutBounds.height/2
+                    x: localToScene(imageView.boundsInLocal).maxX - 10
+                    y: localToScene(imageView.boundsInLocal).minY + imageView.layoutBounds.height/2
                  }
             );
         }
@@ -108,8 +108,8 @@ public class UserNode extends CustomNode {
                     controller.reply(
                         user,
                         Point2D{
-                            x: imageView.boundsInScene.minX
-                            y: imageView.boundsInScene.minY+imageView.boundsInLocal.height
+                            x: localToScene(imageView.boundsInLocal).minX
+                            y: localToScene(imageView.boundsInLocal).minY+imageView.boundsInLocal.height
                         });
                 }
             },
@@ -123,8 +123,8 @@ public class UserNode extends CustomNode {
                     controller.direct(
                         user,
                         Point2D{
-                            x: imageView.boundsInScene.minX
-                            y: imageView.boundsInScene.minY+imageView.boundsInLocal.height
+                            x: localToScene(imageView.boundsInLocal).minX
+                            y: localToScene(imageView.boundsInLocal).minY+imageView.boundsInLocal.height
                         });
                 }
             },
@@ -138,8 +138,8 @@ public class UserNode extends CustomNode {
                     controller.retweet(
                         tweet,
                         Point2D{
-                            x: imageView.boundsInScene.minX
-                            y: imageView.boundsInScene.minY+imageView.boundsInLocal.height
+                            x: localToScene(imageView.boundsInLocal).minX
+                            y: localToScene(imageView.boundsInLocal).minY+imageView.boundsInLocal.height
                         });
                 }
             },

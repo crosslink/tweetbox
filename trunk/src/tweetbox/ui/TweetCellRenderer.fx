@@ -10,7 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.text.Text;
 import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
-import javafx.geometry.Rectangle2D;
+import javafx.geometry.Bounds;
 import javafx.scene.paint.Color;
 import tweetbox.generic.component.listboxcellrenderer.ListBoxCellRenderer;
 import tweetbox.valueobject.TweetVO;
@@ -21,7 +21,7 @@ import twitter4j.TwitterResponse;
  */
 
 public class TweetCellRenderer extends ListBoxCellRenderer {
-    public override function create(data:Object, bounds:Rectangle2D) {
+    public override function create(data:Object, bounds:Bounds) {
 //        var tn:TweetNode = data as TweetNode;
 //        tn.width = bounds.width;
 //        tn.height = bounds.height;

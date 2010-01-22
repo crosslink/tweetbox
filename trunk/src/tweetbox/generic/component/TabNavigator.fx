@@ -9,7 +9,7 @@ package tweetbox.generic.component;
 import javafx.scene.CustomNode;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.Flow;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -17,8 +17,6 @@ import javafx.scene.Scene;
 import javafx.scene.text.Text;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
-
-import tweetbox.generic.layout.FlowBox;
 
 import tweetbox.ui.style.Style;
 
@@ -73,11 +71,9 @@ public class TabNavigator extends CustomNode {
         return VBox {
             spacing: 0
             content: [
-                FlowBox {
-                    spacing: 0
+                Flow {
                     width: bind width
                     content: tabs
-                    invalidLayout: true
                 },
                 view
             ]

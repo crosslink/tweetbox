@@ -7,12 +7,12 @@
 package tweetbox.generic.component.listboxcellrenderer;
 
 import javafx.scene.Node;
-import javafx.geometry.Rectangle2D;
+import javafx.geometry.Bounds;
 
 /**
  * @author mnankman
  */
 
 public abstract class ListBoxCellRenderer {
-    public abstract function create(data:Object, bounds:Rectangle2D): Node;
+    public abstract function create(data:Object, bounds:Bounds): Node;
 }

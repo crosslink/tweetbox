@@ -23,7 +23,6 @@ import tweetbox.valueobject.UserVO;
 import tweetbox.util.DateUtil;
 import tweetbox.util.HtmlUtil;
 import tweetbox.ui.style.Style;
-import tweetbox.generic.layout.FlowBox;
 import tweetbox.generic.component.HTMLNode;
 import tweetbox.generic.component.HTMLPane;
 import tweetbox.control.FrontController;

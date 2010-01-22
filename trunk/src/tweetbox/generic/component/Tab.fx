@@ -58,7 +58,7 @@ public class Tab extends CustomNode {
     var tabPoints = bind [
         0.0, tabHeight,
         3.0, 0.0,
-        tabWidth-3.0, 0.0
+        tabWidth-3.0, 0.0,
         tabWidth, tabHeight
     ];
 

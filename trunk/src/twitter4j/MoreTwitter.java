@@ -35,7 +35,7 @@ public class MoreTwitter extends Twitter {
                     new PostParameter("since_id", String.valueOf(sinceId)),
                     new PostParameter("count", String.valueOf(count))
                 },
-                true).asDocument(), this);
+                true), this);
     }
 
     /**
@@ -54,6 +54,6 @@ public class MoreTwitter extends Twitter {
                     new PostParameter("since_id", String.valueOf(sinceId)),
                     new PostParameter("count", String.valueOf(count))
                 },
-                true).asDocument(), this);
+                true), this);
     }
 }
