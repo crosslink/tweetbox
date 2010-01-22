@@ -7,17 +7,12 @@
 package tweetbox.ui;
 
 import javafx.scene.CustomNode;
-import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.layout.Container;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
-import java.lang.Math;
 
 import tweetbox.model.Model;
 
-import tweetbox.generic.layout.FlowBox;
-import tweetbox.generic.layout.SortingFlowBox;
 import tweetbox.valueobject.GroupVO;
 import tweetbox.generic.component.ScrollView;
 
@@ -59,8 +54,7 @@ public class HomeView extends CustomNode {
         }
     };
 
-    var flowBox:FlowBox;
-
+    
     public override function create(): Node {
         return HBox {
             spacing: 10
