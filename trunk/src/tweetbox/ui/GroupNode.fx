@@ -10,8 +10,6 @@ import javafx.scene.CustomNode;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.image.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
 import twitter4j.TwitterResponse;
@@ -23,8 +21,6 @@ import tweetbox.generic.component.Button;
 import tweetbox.valueobject.GroupVO;
 import tweetbox.valueobject.UserVO;
 import tweetbox.ui.style.Style;
-import tweetbox.generic.util.ImageCache;
-import tweetbox.generic.layout.FlowBox;
 /**
  * @author mnankman
  */
