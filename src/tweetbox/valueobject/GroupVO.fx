@@ -21,8 +21,8 @@ public class GroupVO {
     public var filter:String;
     public var imageURL:String;
     public var expanded:Boolean=false;
-    public var refresh:function():Void;
-    public var showAlerts:Boolean=true;
+    public var refresh:function():Void = null;
+    public var showAlerts:Boolean = true;
     public var maxVisibleUpdates:Integer = 50;
     public var cache:Boolean=false;
 }
