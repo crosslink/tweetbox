@@ -12,16 +12,11 @@ import javafx.scene.Scene;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.*;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.Flow;
 import javafx.scene.text.Text;
 import javafx.scene.paint.Color;
 import javafx.animation.*;
 
-import java.awt.Toolkit;
-import java.awt.Dimension;
-
-import tweetbox.generic.layout.FlowBox;
 import tweetbox.ui.style.Style;
 
 /**
@@ -53,7 +48,7 @@ public class Dialog extends CustomNode {
     public var content: Node[];
     public var buttons: Button[];
 
-    var buttonBox: FlowBox;
+    var buttonBox: Flow;
 
     var opacityValue:Number = 0.0;
     public var fade = Timeline {
@@ -130,7 +125,7 @@ public class Dialog extends CustomNode {
                         }
 
                         // the dialog  buttons
-                        buttonBox = FlowBox {
+                        buttonBox = Flow {
                             width: bind width
                             translateY: bind height - buttonBox.layoutBounds.height - 5
                             translateX: bind (width - buttonBox.layoutBounds.width) / 2
@@ -149,7 +144,7 @@ public class Dialog extends CustomNode {
         this.owner = scene;
         fade.rate = 1.0;
         fade.playFromStart();
-        buttonBox.invalidLayout = true;
+        //buttonBox.invalidLayout = true;
         this.visible = true;
     }
 
