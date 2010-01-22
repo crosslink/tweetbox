@@ -72,7 +72,7 @@ public class HTMLPane extends CustomNode {
 
     function replaceEditorPaneFont(): Void {
         if (font != null) {
-            editorPane.setFont(font.impl_getAWTFont());
+            editorPane.setFont(font.impl_getNativeFont() as java.awt.Font);
         }
     }
 
@@ -105,7 +105,7 @@ public class HTMLPane extends CustomNode {
 
         editorPane.setEditable(false);
         editorPane.setOpaque(false);
-        editorPane.setBackground(fill.getAWTColor());
+        //editorPane.setBackground(fill.getAWTColor());
 
         redimensionEditorPane();
         replaceEditorPaneFont();
