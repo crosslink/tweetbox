@@ -6,28 +6,15 @@
 
 package tweetbox.ui;
 
-import javafx.scene.CustomNode;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.Node;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.*;
-import javafx.scene.text.Text;
-
-import java.awt.Toolkit;
-import java.awt.Dimension;
-
-import org.jfxtras.stage.JFXStage;
 
 import tweetbox.model.Model;
 import tweetbox.control.FrontController;
-import tweetbox.generic.component.Button;
 import tweetbox.generic.component.TabNavigator;
 import tweetbox.generic.component.Tab;
 import tweetbox.ui.style.Style;
-import tweetbox.valueobject.AccountVO;
 import tweetbox.generic.component.Button;
-import tweetbox.generic.layout.FlowBox;
 import tweetbox.configuration.CustomConfigNode;
 import tweetbox.generic.component.Dialog;
 
