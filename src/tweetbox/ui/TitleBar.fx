@@ -33,8 +33,9 @@ public class TitleBar extends CustomNode {
     var buttonBox:HBox = HBox {
         translateY: 2
         translateX: bind (width - buttonBox.layoutBounds.width - 2)
-        content: for (btn:Button in buttons) {
-            btn
+        content: for (b:Button in buttons) {
+            delete b from (b.parent as Group).content;
+            b;
         }
     }
 
